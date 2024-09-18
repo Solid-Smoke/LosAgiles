@@ -6,6 +6,4 @@
 /back-end/.vs/back-end
 /back-end/bin/Debug/net8.0
 /back-end/obj
-/back-end/Properties
-/back-end/appsettings.Development.json
-/back-end/appsettings.json
+/back-end/.vs/ProjectEvaluation
