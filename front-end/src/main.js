@@ -3,14 +3,17 @@ import App from "./App.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import AddAddressForm from "./components/AddAddressForm.vue";
 
+import { createRouter, createWebHistory } from "vue-router";
+import HomepageView from './components/HomepageView.vue';
+import RegisterBusinessView from './components/RegisterBusinessView.vue';
+
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: "/AddressListView/AddAddressForm",
-      name: "AddAddressForm",
-      component: AddAddressForm,
-    },
+    { path: "/", name: "Home", component: HomepageView },
+    { path: "/RegistrarEmprendimiento", name: "Register Business", component: RegisterBusinessView },
+    { path: "/AddressListView/AddAddressForm", name: "AddAddressForm", component: AddAddressForm },
   ],
 });
 
