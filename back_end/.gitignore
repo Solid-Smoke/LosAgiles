@@ -1,3 +1,6 @@
+efpt.config.json
+efpt.config.json.user
+
 obj/
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -484,3 +487,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+appsettings.json
+appsettings.Development.json
