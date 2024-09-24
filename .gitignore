@@ -8,3 +8,4 @@
 /back-end/obj
 /back-end/.vs/ProjectEvaluation
 *.ini
+back_end/Properties/launchSettings.json
