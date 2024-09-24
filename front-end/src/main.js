@@ -1,4 +1,30 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { BootstrapVue3} from 'bootstrap-vue-3';
 
-createApp(App).mount('#app')
+// Importar archivos CSS de Bootstrap y BootstrapVue (el orden es importante)
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
+
+import App from './App.vue';
+import { createRouter, createWebHistory } from "vue-router";
+import HomepageView from './components/HomepageView.vue';
+
+// Configurar el enrutador
+const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+        { path: "/", name: "Home", component: HomepageView },
+    ],
+});
+
+// Crear la aplicaci�n Vue
+const app = createApp(App);
+
+// Hacer BootstrapVue disponible en toda la aplicaci�n
+app.use(BootstrapVue3);
+
+// Usar el enrutador
+app.use(router);
+
+// Montar la aplicaci�n
+app.mount("#app");
