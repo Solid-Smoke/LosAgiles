@@ -7,11 +7,11 @@ namespace back_end.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaisesController : ControllerBase
+    public class ShopController : ControllerBase
     {
         private readonly ApplicationHandler handler;
 
-        public PaisesController()
+        public ShopController()
         {
             handler = new ApplicationHandler();
         }
