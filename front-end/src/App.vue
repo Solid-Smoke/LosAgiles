@@ -26,6 +26,7 @@
         </b-navbar>
     </div>
     <RegisterBusinessView v-model="modalShow"/>
+    <router-view></router-view>
 </template>
 
 
