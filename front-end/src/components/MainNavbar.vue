@@ -24,9 +24,12 @@
                 </b-navbar-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item @click="openModalProduct">Añadir Producto</b-nav-item>
+                    <b-nav-item @click="openModalProduct">A&ntilde;adir Producto</b-nav-item>
                 </b-navbar-nav>
 
+                <b-navbar-nav>
+                    <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
+                </b-navbar-nav>
             </b-collapse>
         </b-navbar>
     </div>
@@ -61,4 +64,14 @@
     };
 </script>
 
-<style></style>
+<style>
+    .discreteLink {
+        color: black;
+        text-decoration: none;
+    }
+
+    .discreteLink:hover {
+        color: black;
+        text-decoration: none;
+    }
+</style>
