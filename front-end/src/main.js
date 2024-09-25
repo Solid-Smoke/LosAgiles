@@ -13,7 +13,7 @@ import HomepageView from './components/HomepageView.vue';
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: "/", name: "Home", component: HomepageView }
+        { path: "/", name: "Home", component: HomepageView },
     ],
 });
 
