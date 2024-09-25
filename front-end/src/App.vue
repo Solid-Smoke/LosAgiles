@@ -22,28 +22,45 @@
                         <b-dropdown-item href="#" disabled>Ver empresa</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
+
+                <b-navbar-nav>
+                    <b-nav-item @click="openModalProduct">Añadir Producto</b-nav-item> 
+                </b-navbar-nav>
             </b-collapse>
         </b-navbar>
     </div>
+
     <RegisterBusinessView v-model="modalShow"/>
+    <AddProductView v-model="modelShowProduct"/>
+    
+    <router-view></router-view>
 </template>
 
 
 <script>
+    import AddProductView from './components/AddProductView.vue';
     import RegisterBusinessView from './components/RegisterBusinessView.vue';
 
     export default {
         components: {
-            RegisterBusinessView
+            RegisterBusinessView,
+            AddProductView
         },
+
         data() {
             return {
-                modalShow: false
+                modalShow: false,
+                modelShowProduct:false
             }
         },
+
         methods: {
             openModal() {
                 this.modalShow = true;
+            },
+
+            openModalProduct() {
+                this.modelShowProduct = true;
             }
         }
     };
