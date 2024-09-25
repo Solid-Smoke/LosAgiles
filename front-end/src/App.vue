@@ -15,7 +15,7 @@
 
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item href="#">Mis datos</b-dropdown-item>
-                    </b-nav-item-dropdown> 
+                    </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Mis empresas" right>
                         <b-dropdown-item @click="openModal">Registrar Empresa</b-dropdown-item>
@@ -24,7 +24,10 @@
                 </b-navbar-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item @click="openModalProduct">Añadir Producto</b-nav-item> 
+                    <b-nav-item @click="openModalProduct">Añadir Producto</b-nav-item>
+                </b-navbar-nav>
+                <b-navbar-nav>
+                    <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -67,4 +70,13 @@
 </script>
 
 <style>
+    .discreteLink {
+        color:black;
+        text-decoration: none;
+    }
+
+    .discreteLink:hover {
+        color: black;
+        text-decoration: none;
+    }
 </style>
