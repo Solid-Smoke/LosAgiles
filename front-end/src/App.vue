@@ -26,6 +26,7 @@
                 <b-navbar-nav>
                     <b-nav-item @click="openModalProduct">Añadir Producto</b-nav-item>
                 </b-navbar-nav>
+
                 <b-navbar-nav>
                     <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
                 </b-navbar-nav>
