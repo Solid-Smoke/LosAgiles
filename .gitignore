@@ -7,3 +7,5 @@
 /back-end/bin/Debug/net8.0
 /back-end/obj
 /back-end/.vs/ProjectEvaluation
+*.ini
+back_end/Properties/launchSettings.json
