@@ -18,7 +18,7 @@
 
             <div class="form-group">
                 <label for="image" class="form-label">Imagen del Producto</label><br>
-                <input type="file" class="form-control-file" id="image" required>
+                <input type="file" class="form-control-file" id="image" @change="onFileChange" required>
             </div><br>
 
             <button type="submit" class="btn btn-success btn-block">Añadir Producto</button>
@@ -34,11 +34,16 @@
                 formData: {
                     name: "",
                     description: "",
-                    price: ""
+                    price: "",
+                    productImage: null
                 },
             };
         },
         methods: {
+            onFileChange(event){
+                const file = event.target.files[0];
+                this.formData.productImage = file;
+            },
             saveProductDetails() {
                 console.log("Datos a guardar: ", this.formData);
                 this.closeModal();
