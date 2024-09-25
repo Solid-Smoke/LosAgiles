@@ -1,83 +1,18 @@
 ﻿<template>
-    <div>
-        <b-navbar toggleable="lg" type="dark" variant="info">
-            <b-navbar-brand href="/">Los Ágiles</b-navbar-brand>
-
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-            <b-collapse id="nav-collapse" is-nav>
-                <!-- Right aligned nav items -->
-                <b-navbar-nav class="ml-auto">
-                    <b-nav-form>
-                        <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-                        <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-                    </b-nav-form>
-
-                    <b-nav-item-dropdown text="Mi perfil" right>
-                        <b-dropdown-item href="#">Mis datos</b-dropdown-item>
-                    </b-nav-item-dropdown>
-
-                    <b-nav-item-dropdown text="Mis empresas" right>
-                        <b-dropdown-item @click="openModal">Registrar Empresa</b-dropdown-item>
-                        <b-dropdown-item href="#" disabled>Ver empresa</b-dropdown-item>
-                    </b-nav-item-dropdown>
-                </b-navbar-nav>
-
-                <b-navbar-nav>
-                    <b-nav-item @click="openModalProduct">Añadir Producto</b-nav-item>
-                </b-navbar-nav>
-
-                <b-navbar-nav>
-                    <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
-                </b-navbar-nav>
-            </b-collapse>
-        </b-navbar>
-    </div>
-
-    <RegisterBusinessView v-model="modalShow"/>
-    <AddProductView v-model="modelShowProduct"/>
-    
+    <MainNavbar />
     <router-view></router-view>
 </template>
 
 
 <script>
-    import AddProductView from './components/AddProductView.vue';
-    import RegisterBusinessView from './components/RegisterBusinessView.vue';
+    import MainNavbar from './components/MainNavbar.vue';
 
     export default {
         components: {
-            RegisterBusinessView,
-            AddProductView
+            MainNavbar
         },
-
-        data() {
-            return {
-                modalShow: false,
-                modelShowProduct:false
-            }
-        },
-
-        methods: {
-            openModal() {
-                this.modalShow = true;
-            },
-
-            openModalProduct() {
-                this.modelShowProduct = true;
-            }
-        }
     };
 </script>
 
 <style>
-    .discreteLink {
-        color:black;
-        text-decoration: none;
-    }
-
-    .discreteLink:hover {
-        color: black;
-        text-decoration: none;
-    }
 </style>
