@@ -8,12 +8,14 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 import App from './App.vue';
 import { createRouter, createWebHistory } from "vue-router";
 import HomepageView from './components/HomepageView.vue';
+import AddAddressForm from "./components/AddAddressForm.vue";
 
 // Configurar el enrutador
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: "/", name: "Home", component: HomepageView },
+        { path: "/AddressListView/AddAddressForm", name: "AddAddressForm", component: AddAddressForm, },
     ],
 });
 
