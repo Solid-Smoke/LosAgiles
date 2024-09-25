@@ -17,14 +17,14 @@ const router = createRouter({
     ],
 });
 
-// Crear la aplicaci�n Vue
+// Crear la aplicación Vue
 const app = createApp(App);
 
-// Hacer BootstrapVue disponible en toda la aplicaci�n
+// Hacer BootstrapVue disponible en toda la aplicación
 app.use(BootstrapVue3);
 
 // Usar el enrutador
 app.use(router);
 
-// Montar la aplicaci�n
+// Montar la aplicación
 app.mount("#app");
