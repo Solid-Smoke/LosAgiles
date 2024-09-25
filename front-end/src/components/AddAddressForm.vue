@@ -56,6 +56,7 @@ export default {
     // if no prop is passed, will be "/" by default.
     props: {
         parentRoute: String,
+        userId: Number,
         value: { //This is for if the programmer want to use modal-show with this component
             type: Boolean,
             default: false,
@@ -84,6 +85,7 @@ export default {
                 console.log("Form data to send:\n", this.formData);
                 axios
                     .post("https://localhost:7024/api/ShopController/storeFormData", {
+                        userId: this.userId,
                         province: this.formData.province,
                         canton: this.formData.canton,
                         district: this.formData.district,
