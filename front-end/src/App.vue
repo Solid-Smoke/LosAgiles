@@ -15,4 +15,13 @@
 </script>
 
 <style>
+    .discreteLink {
+        color:black;
+        text-decoration: none;
+    }
+
+    .discreteLink:hover {
+        color: black;
+        text-decoration: none;
+    }
 </style>
