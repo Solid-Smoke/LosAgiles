@@ -1,4 +1,11 @@
 <template>
+    <div class="col-1 p-4 pb-0">
+        <a href="/">
+            <button type="button" class="btn btn-secondary">
+                Regresar
+            </button>
+        </a>
+    </div>
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="card p-4 shadow" style="max-width: 400px; width: 100%">
             <h3 class="text-center">Registro de usuario</h3>
