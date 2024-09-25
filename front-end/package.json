@@ -36,9 +36,17 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "@babel/eslint-parser"
+      "parser": "@babel/eslint-parser",
+      "requireConfigFile": false
     },
-    "rules": {}
+    "rules": {
+      "vue/no-parsing-error": [
+        "error",
+        {
+          "invalid-first-character-of-tag-name": false
+        }
+      ]
+    }
   },
   "browserslist": [
     "> 1%",
