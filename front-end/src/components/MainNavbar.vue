@@ -30,6 +30,10 @@
                 <b-navbar-nav>
                     <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
                 </b-navbar-nav>
+
+                <b-navbar-nav>
+                    <b-nav-item><a href="/login" class="discreteLink">Iniciar sesi&oacute;n</a></b-nav-item>
+                </b-navbar-nav>
             </b-collapse>
         </b-navbar>
     </div>
