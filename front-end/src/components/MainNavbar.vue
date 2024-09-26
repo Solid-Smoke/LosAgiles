@@ -24,7 +24,7 @@
                 </b-navbar-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item @click="openModalProduct">A&ntilde;adir Producto</b-nav-item>
+                    <b-nav-item @click="openProductModal">A&ntilde;adir Producto</b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav>
@@ -34,7 +34,7 @@
         </b-navbar>
     </div>
     <RegisterBusinessModal ref="registerBusinessModal" />
-    <AddProductView v-model="modelShowProduct" />
+    <AddProductView ref="addProductModal" />
 </template>
 
 <script>
@@ -49,7 +49,7 @@
         data() {
             return {
                 registerBusinessModal: false,
-                modelShowProduct:false
+                addProductModal:false
             }
         },
         methods: {
@@ -57,8 +57,8 @@
                 this.$refs.registerBusinessModal.openModal();
             
             },
-            openModalProduct() {
-                this.modelShowProduct = true;
+            openProductModal() {
+                this.$refs.addProductModal.openModal();
             }
         },
     };
