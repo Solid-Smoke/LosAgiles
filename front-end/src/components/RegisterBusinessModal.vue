@@ -10,14 +10,16 @@
                        type="text"
                        id="BusinessName"
                        class="form-control"
+                       placeholder="Nombre"
                        required />
             </div>
             <div class="form-group">
                 <label for="ID_Type">Tipo de Cedula:</label>
                 <select v-model="BusinessData.ID_Type"
                         id="ID_Type"
-                        required
-                        class="form-control">
+                        class="form-control"
+                        placeholder="ID"
+                        required>
                     <option value="" disabled>
                         Seleccione un tipo
                     </option>
@@ -28,9 +30,12 @@
             <div class="form-group">
                 <label for="BusinessID">Cedula:</label>
                 <input v-model="BusinessData.BusinessID"
-                       type="text"
+                       type="number"
                        id="BusinessID"
                        class="form-control"
+                       placeholder="Cedula"
+                       maxlength="10"
+                       pattern="\d{10}"
                        required />
             </div>
             <div class="form-group">
@@ -39,6 +44,7 @@
                        type="email"
                        id="BusinessEmail"
                        class="form-control"
+                       placeholder="Correo"
                        required />
             </div>
             <div class="form-group">
@@ -47,6 +53,7 @@
                        type="number"
                        id="BusinessPhone"
                        class="form-control"
+                       placeholder="Telefono"
                        required />
             </div>
             <div class="form-group">
@@ -79,7 +86,7 @@
                 RegisterBusinessModal:false,
                 BusinessData: {
                     BusinessName: "", ID_Type: "", BusinessID: "",
-                    BusinessEmail: "", BusinessPhone: 0,
+                    BusinessEmail: "", BusinessPhone: "",
                     Licenses: ""
                 },
             };
@@ -94,7 +101,7 @@
                 this.BusinessData.ID_Type = "";
                 this.BusinessData.BusinessID = "";
                 this.BusinessData.BusinessEmail = "";
-                this.BusinessData.BusinessPhone = 0;
+                this.BusinessData.BusinessPhone = "";
                 this.BusinessData.Licenses = "";
             },
             openModal() {
