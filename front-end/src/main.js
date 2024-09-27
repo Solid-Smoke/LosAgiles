@@ -9,6 +9,8 @@ import App from './App.vue';
 import { createRouter, createWebHistory } from "vue-router";
 import HomepageView from './components/HomepageView.vue';
 import RegisterUserView from './components/RegisterUserView.vue';
+import LoginUserView from './components/LoginUserView.vue';
+import LoginAdminView from './components/LoginAdminView.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -16,6 +18,8 @@ const router = createRouter({
     routes: [
         { path: "/", name: "Home", component: HomepageView },
         { path: "/Registro", name: "Register User", component: RegisterUserView },
+        { path: "/Login", name: "Login", component: LoginUserView },
+        { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
     ],
 });
 
