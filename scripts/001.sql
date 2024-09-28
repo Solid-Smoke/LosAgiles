@@ -24,12 +24,3 @@ CREATE TABLE ClientsAddresses (
     OtherSigns VARCHAR(500)
 );
 
-CREATE TABLE BusinessesAddresses (
-    BusinessID INT NOT NULL PRIMARY KEY FOREIGN KEY REFERENCES Businesses(BusinessID),
-    Province VARCHAR(20),
-    Canton VARCHAR(40),
-    District VARCHAR(50),
-    PostalCode INT,
-    OtherSigns VARCHAR(500)
-);
-
