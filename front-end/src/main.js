@@ -21,7 +21,7 @@ const router = createRouter({
         { path: "/Registro", name: "Register User", component: RegisterUserView },
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
-        { path: "/AddressListView", name: "AddressListView", component: AddressListView },
+        { path: "/direcciones", name: "AddressListView", component: AddressListView },
     ],
 });
 
