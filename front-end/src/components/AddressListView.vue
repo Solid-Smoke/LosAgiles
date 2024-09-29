@@ -21,18 +21,23 @@
                 </tr>
             </tbody>
         </table>
-        <b-button @click="console.log('test')" variant="success" style="float: right">Agregar dirección</b-button>
+        <b-button @click="this.openAddAddressForm()" variant="success" style="float: right">Agregar dirección</b-button>
+        <AddAddressForm ref="addAddressForm" />
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { BackendAPIAddress } from '@/main';
+import AddAddressForm from './AddAddressForm.vue';
     export default {
+        components: {
+            AddAddressForm
+        },
         data() {
             return {
-                addresses: [{province: "San José", canton: "Central", district: "El distrito", postalCode: "12343", otherSigns: "asdasfdf \n\nffsdf\n\ndsfsdfsdf\ndsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfdsfsdfsdfds      fsdfsdfdsfsdfsdf     dsfsdfsdfdsfsdfsdf dsfsdfsdfdsfs"},
-                            {province: "San José", canton: "Central", district: "El distrito", postalCode: "12343", otherSigns: "Del palo de mango, 500 oeste, 400 sur, casa blanca"}]
+                addAddressModal: false,
+                addresses: []
             };
         },
         methods: {
@@ -41,6 +46,9 @@ import { BackendAPIAddress } from '@/main';
                 (response) => {
                     this.addreses = response.data;
                 });
+            },
+            openAddAddressForm() {
+                this.$refs.addAddressForm.openModal();
             }
         },
         props: {
