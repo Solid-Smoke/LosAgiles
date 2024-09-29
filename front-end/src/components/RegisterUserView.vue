@@ -4,42 +4,34 @@
             <h3 class="text-center">Registro de usuario</h3>
             <form @submit.prevent="saveUserDetails">
                 <div class="form-group">
-                    <label for="firstName">Nombre:</label>
-                    <input v-model="formData.firstName"
+                    <label for="Name">Nombre:</label>
+                    <input v-model="formData.Name"
                            type="text"
-                           id="firstName"
+                           id="Name"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="lastnames">Apellido(s):</label>
-                    <input v-model="formData.lastnames"
+                    <label for="lastNames">Apellido(s):</label>
+                    <input v-model="formData.lastNames"
                            type="text"
-                           id="lastnames"
+                           id="lastNames"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="legalID">Cedula:</label>
-                    <input v-model="formData.legalID"
-                           type="number"
-                           id="legalID"
-                           class="form-control"
-                           required />
-                </div>
-                <div class="form-group">
-                    <label for="birthday">Fecha de nacimiento:</label>
-                    <input v-model="formData.birthday"
+                    <label for="BirthDate">Fecha de nacimiento:</label>
+                    <input v-model="formData.BirthDate"
                            type="date"
-                           id="birthday"
+                           id="BirthDate"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="userEmail">Correo electr&oacute;nico:</label>
-                    <input v-model="formData.userEmail"
+                    <label for="Email">Correo electr&oacute;nico:</label>
+                    <input v-model="formData.Email"
                            type="email"
-                           id="userEmail"
+                           id="Email"
                            class="form-control"
                            required />
                 </div>
@@ -52,10 +44,10 @@
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="password">Contrase&ntilde;a:</label>
-                    <input v-model="formData.password"
+                    <label for="UserPassword">Contrase&ntilde;a:</label>
+                    <input v-model="formData.UserPassword"
                            type="password"
-                           id="password"
+                           id="UserPassword"
                            class="form-control"
                            @input="validatePasswords"
                            required />
@@ -92,19 +84,22 @@
 </template>
 
 <script>
+import axios from "axios";
+import { BackendAPIAddress } from "@/main";
+
     export default {
         data() {
             return {
                 formData: {
-                    userName: "", userEmail: "", firstName: "", legalID: "",
-                    lastnames: "", birthday: "", password: "", passwordConfirm: "",
+                    userName: "", Email: "", Name: "", lastNames: "",
+                   BirthDate: "", UserPassword: "", passwordConfirm: "",
                 },
             };
         },
         methods: {
             validatePasswords() {
                 const confirmInput = this.$refs.confirmInput;
-                if (this.formData.passwordConfirm === this.formData.password) {
+                if (this.formData.passwordConfirm === this.formData.UserPassword) {
                     confirmInput.setCustomValidity('');
                 } else {
                     confirmInput.setCustomValidity('No coincide con el espacio anterior');
@@ -112,6 +107,23 @@
             },
             saveUserDetails() {
                 console.log("Datos a guardar:", this.formData);
+                axios
+                    .post(BackendAPIAddress + "/storeUsers", {
+                        UserID: 0,
+                        userName: this.formData.userName,
+                        Email: this.formData.Email,
+                        Name: this.formData.Name,
+                        lastNames: this.formData.lastNames,
+                        BirthDate: this.formData.BirthDate,
+                        UserPassword: this.formData.UserPassword
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                        window.location.href = "/";
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
         },
     };
