@@ -11,6 +11,7 @@ import HomepageView from './components/HomepageView.vue';
 import RegisterUserView from './components/RegisterUserView.vue';
 import LoginUserView from './components/LoginUserView.vue';
 import LoginAdminView from './components/LoginAdminView.vue';
+import UsersDataView from './components/UsersDataView.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -20,8 +21,11 @@ const router = createRouter({
         { path: "/Registro", name: "Register User", component: RegisterUserView },
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
+        { path: "/usersData", name: "usersData", component: UsersDataView}
     ],
 });
+
+export const BackendAPIAddress = "https://localhost:7168/api";
 
 // Crear la aplicación Vue
 const app = createApp(App);
