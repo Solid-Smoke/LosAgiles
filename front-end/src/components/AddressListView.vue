@@ -42,10 +42,12 @@ import AddAddressForm from './AddAddressForm.vue';
         },
         methods: {
             getUserAddressList() {
-            axios.get(BackendAPIAddress + "/getUserAddressList/details?userId=" + this.userId.toString()).then(
-                (response) => {
-                    this.addreses = response.data;
-                });
+                axios
+                .get(BackendAPIAddress + "/getAllClientAddresses/details?userId=" + 1)
+                .then(
+                    (response) => {
+                        this.addresses = response.data;
+                    });
             },
             openAddAddressForm() {
                 this.$refs.addAddressForm.openModal();
@@ -53,6 +55,9 @@ import AddAddressForm from './AddAddressForm.vue';
         },
         props: {
             userId: Number
+        },
+        created() {
+            this.getUserAddressList();
         }
     }
 </script>
