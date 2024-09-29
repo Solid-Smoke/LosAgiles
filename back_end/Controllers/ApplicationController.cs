@@ -16,10 +16,23 @@ namespace back_end.Controllers
             handler = new ApplicationHandler();
         }
 
-        [HttpGet("[action]/details")]
-        public List<Person> getPersons(int count)
+        [HttpPost("[action]")]
+        public async Task<ActionResult<bool>> storeClientAddress(ClientsAddress address)
         {
-            return handler.getPersons(count);
+            try
+            {
+                if (address == null)
+                {
+                    return BadRequest();
+                }
+                ApplicationHandler handler = new ApplicationHandler();
+                var result = handler.storeClientAddress(address);
+                return new JsonResult(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error storing address");
+            }
         }
     }
 }
