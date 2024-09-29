@@ -71,7 +71,7 @@ export default {
                 province: "",
                 canton: "",
                 district: "",
-                postalCode: "",
+                postalCode: 0,
                 otherSigns: "",
             },
             // This 2 values will change, just setted initial value.
@@ -90,16 +90,16 @@ export default {
                 console.log("Form data to send:\n", this.formData);
                 axios
                     .post(BackendAPIAddress + "/storeClientAddress", {
-                        userId: this.userId,
+                        addressId: 0, // will be ignored in backend
+                        userId: 1,
                         province: this.formData.province,
                         canton: this.formData.canton,
                         district: this.formData.district,
-                        postalCode: this.formData.postalCode,
+                        postalCode: Number(this.formData.postalCode),
                         otherSigns: this.formData.otherSigns
                     })
                     .then(function (response) {
                         console.log(response);
-                        window.location.href = this.parent_route;
                     })
                     .catch(function (error) {
                         console.log(error);
