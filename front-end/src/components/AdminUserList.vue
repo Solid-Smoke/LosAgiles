@@ -2,37 +2,31 @@
     <MainNavbar />
 
     <div class="container mt-5">
-        <h1 class="display-4 text-center" style="margin-bottom: 20px;">LISTA DE USUARIOS</h1>
+        <h1 class="display-4 text-center mb-4"><strong>LISTA DE USUARIOS</strong></h1>
 
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-                <tr class="text-center">
-                    <th style="padding: 15px;">USUARIO</th>
-                    <th style="padding: 15px;" >CORREO</th>
-                    <th style="padding: 15px;">ROL</th>
-                    <th style="padding: 15px;">ESTADO CUENTA</th>
-                    <th style="padding: 15px;">ACCIONES</th>
-                </tr>
-            </thead>
+        <b-row class="font-weight-bold text-center mb-2 border-bottom border-2 border-dark">
+            <b-col cols="2" style="padding: 15px;">USUARIO</b-col>
+            <b-col cols="3" style="padding: 15px;">CORREO</b-col>
+            <b-col cols="2" style="padding: 15px;">ROL</b-col>
+            <b-col cols="2" style="padding: 15px;">ESTADO CUENTA</b-col>
+            <b-col cols="3" style="padding: 15px;">ACCIONES</b-col>
+        </b-row>
 
-            <tbody>
-                <tr v-for = "(user, index) of users" :key = "index" class="text-center">
-                    <td style="padding: 15px;">{{ user.name }}</td>
-                    <td style="padding: 15px;">{{ user.email }}</td>
-                    <td style="padding: 15px;">{{ user.role }}</td>
-                    <td style="padding: 15px;">{{ user.state }}</td>
-                    <td style="padding: 15px;">
-                        <button class="btn btn-success btn-sm" style="margin-right: 20px;">Activar</button>
-                        <button class="btn btn-primary btn-sm" style="margin-right: 20px;">Desactivar</button>
-                        <button class="btn btn-danger btn-sm">Bloquear</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <b-row v-for="(user, index) in users" :key="index" class="text-center align-items-center mb-2 border-bottom py-2">
+            <b-col cols="2">{{ user.name }}</b-col>
+            <b-col cols="3">{{ user.email }}</b-col>
+            <b-col cols="2">{{ user.role }}</b-col>
+            <b-col cols="2">{{ user.state }}</b-col>
+            <b-col cols="3">
+                <b-button variant="success" size="sm" class="mr-2" style="margin-right: 20px;">Activar</b-button>
+                <b-button variant="primary" size="sm" class="mr-2" style="margin-right: 20px;">Desactivar</b-button>
+                <b-button variant="danger" size="sm" style="margin-right: 20px;">Bloquear</b-button>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
-<script>
+<script scoped>
     import MainNavbar from './MainNavbar.vue';
     
     export default {
@@ -55,5 +49,5 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style>
 </style>
