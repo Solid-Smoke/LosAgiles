@@ -14,28 +14,12 @@
                        required />
             </div>
             <div class="form-group">
-                <label for="ID_Type">Tipo de Cedula:</label>
-                <select v-model="BusinessData.ID_Type"
-                        id="ID_Type"
-                        class="form-control"
-                        placeholder="ID"
-                        required>
-                    <option value="" disabled>
-                        Seleccione un tipo
-                    </option>
-                    <option>Fisica</option>
-                    <option>Juridica</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="BusinessID">Cedula:</label>
+                <label for="BusinessID">Identificacion (Cedula Fisica o Cedula Juridica):</label>
                 <input v-model="BusinessData.BusinessID"
-                       type="number"
+                       type="text"
                        id="BusinessID"
                        class="form-control"
                        placeholder="Cedula"
-                       maxlength="10"
-                       pattern="\d{10}"
                        required />
             </div>
             <div class="form-group">
@@ -64,14 +48,66 @@
                           class="form-control" />
             </div>
             <div class="form-group">
-                <button type="button" class="btn btn-info btn-block">
-                    Ingresar Direccion
-                </button>
+                <label for="Province">Provincia:</label>
+                <select v-model="BusinessAddress.Province"
+                        id="Province"
+                        class="form-control"
+                        required>
+                    <option value="" disabled>Seleccione una provincia</option>
+                    <option value="San José">San José</option>
+                    <option value="Alajuela">Alajuela</option>
+                    <option value="Cartago">Cartago</option>
+                    <option value="Heredia">Heredia</option>
+                    <option value="Guanacaste">Guanacaste</option>
+                    <option value="Puntarenas">Puntarenas</option>
+                    <option value="Limón">Limón</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Canton">Canton:</label>
+                <input v-model="BusinessAddress.Canton"
+                       type="text"
+                       id="Canton"
+                       class="form-control"
+                       placeholder="Canton"
+                       maxlength="40"
+                       required />
+            </div>
+
+            <div class="form-group">
+                <label for="District">Distrito:</label>
+                <input v-model="BusinessAddress.District"
+                       type="text"
+                       id="District"
+                       class="form-control"
+                       placeholder="Distrito"
+                       maxlength="40"
+                       required />
+            </div>
+
+            <div class="form-group">
+                <label for="PostalCode">Codigo Postal:</label>
+                <input v-model="BusinessAddress.PostalCode"
+                       type="text"
+                       id="PostalCode"
+                       class="form-control"
+                       placeholder="Codigo Postal"
+                       maxlength="10"
+                       required />
+            </div>
+
+            <div class="form-group">
+                <label for="OtherSigns">Otras Señales:</label>
+                <textarea v-model="BusinessAddress.OtherSigns"
+                          id="OtherSigns"
+                          class="form-control"
+                          maxlength="500">
+                </textarea>
             </div>
             <div>
-                <button 
-                    type="submit" 
-                    class="btn btn-success btn-block">
+                <button type="submit"
+                        class="btn btn-success btn-block">
                     Guardar
                 </button>
             </div>
@@ -85,26 +121,42 @@
             return {
                 RegisterBusinessModal:false,
                 BusinessData: {
-                    BusinessName: "", ID_Type: "", BusinessID: "",
+                    BusinessName: "", BusinessID: "",
                     BusinessEmail: "", BusinessPhone: "",
                     Licenses: ""
                 },
+                BusinessAddress: {
+                    Province: '',
+                    Canton: '',
+                    District: '',
+                    PostalCode: '',
+                    OtherSigns: ''
+                },
+                loginData: {
+                    userID: "",
+                }
             };
         },
         methods: {
             saveBusinessData() {
-                console.log("Datos a guardar:", this.BusinessData);
+                this.$emit('business-data-saved', this.BusinessData);
                 this.closeModal();
             },
             resetFormFields() {
                 this.BusinessData.BusinessName = "";
-                this.BusinessData.ID_Type = "";
                 this.BusinessData.BusinessID = "";
                 this.BusinessData.BusinessEmail = "";
                 this.BusinessData.BusinessPhone = "";
                 this.BusinessData.Licenses = "";
+
+                this.BusinessAddress.Province = "";
+                this.BusinessAddress.Canton = "";
+                this.BusinessAddress.District = "";
+                this.BusinessAddress.PostalCode = "";
+                this.BusinessAddress.OtherSigns = "";
             },
-            openModal() {
+            openModal(data) {
+                this.loginData = data;
                 this.RegisterBusinessModal = true; 
                 this.resetFormFields();
             },

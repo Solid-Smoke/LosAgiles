@@ -33,7 +33,7 @@
             </b-collapse>
         </b-navbar>
     </div>
-    <RegisterBusinessModal ref="registerBusinessModal" />
+    <RegisterBusinessModal ref="registerBusinessModal" @business-data-saved="handleBusinessDataSaved"/>
     <AddProductView v-model="modelShowProduct" />
 </template>
 
@@ -49,17 +49,24 @@
         data() {
             return {
                 registerBusinessModal: false,
-                modelShowProduct:false
+                modelShowProduct: false,
+                loginData: {
+                    userID: "111111111",
+                }
             }
         },
         methods: {
             openRegisterBusinessModal() {
-                this.$refs.registerBusinessModal.openModal();
-            
+                this.$refs.registerBusinessModal.openModal(this.loginData.userID);        
             },
             openModalProduct() {
                 this.modelShowProduct = true;
-            }
+            },
+            handleBusinessDataSaved(businessData) {
+                this.BusinessData = businessData;
+                console.log("Datos del Emprendimiento:", this.BusinessData);
+                console.log("Nombre de la empresa: ", this.BusinessData.BusinessName);
+            },
         },
     };
 </script>
