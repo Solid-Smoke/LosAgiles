@@ -9,13 +9,14 @@ import App from './App.vue';
 import { createRouter, createWebHistory } from "vue-router";
 import HomepageView from './components/HomepageView.vue';
 import RegisterUserView from './components/RegisterUserView.vue';
-
+import MyBusinessView from './components/MyBusinessView.vue';
 // Configurar el enrutador
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: "/", name: "Home", component: HomepageView },
         { path: "/Registro", name: "Register User", component: RegisterUserView },
+        { path: "/MisEmpresas", name: "My Business", component: MyBusinessView },
     ],
 });
 
