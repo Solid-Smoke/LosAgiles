@@ -15,14 +15,29 @@ namespace back_end.Handlers
             sqlConnection = new SqlConnection(connectionRoute);
         }
 
-        public List<Person> getPersons(int top)
-        {
-            using (sqlConnection)
-            {
-                sqlConnection.Open();
-                return sqlConnection.Query<Person>($"select top {top} * from Person.Person").ToList();
-            }
+        private int query(string query) {
+            sqlConnection.Open();
+            int rowsAffected = sqlConnection.Execute(query);
+            sqlConnection.Close();
+            return rowsAffected;
         }
 
+        public int storeUsers(Users user) {
+            string query = $@"INSERT INTO Clients
+                            (Name,
+                            LastNames,
+                            UserName,
+                            Email,
+                            BirthDate,
+                            UserPassword)
+                            VALUES (
+                            '{user.Name}',
+                            '{user.lastNames}',
+                            '{user.userName}',
+                            '{user.Email}',
+                            '{user.BirthDate}',
+                            '{user.UserPassword}')";
+            return this.query(query);
+        }
     }
 }

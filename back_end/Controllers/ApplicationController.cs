@@ -16,10 +16,25 @@ namespace back_end.Controllers
             handler = new ApplicationHandler();
         }
 
-        [HttpGet("[action]/details")]
-        public List<Person> getPersons(int count)
-        {
-            return handler.getPersons(count);
+        //[HttpGet("[action]/details")]
+        //public List<Person> getPersons(int count)
+        //{
+        //    return handler.getPersons(count);
+        //}
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult<bool>> storeUsers(Users user) {
+            try {
+                if (user == null) {
+                    return BadRequest();
+                }
+                ApplicationHandler handler = new ApplicationHandler();
+                var result = handler.Users(user);
+                return new JsonResult(result);
+            }
+            catch (Exception) {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error storing user");
+            }
         }
     }
 }
