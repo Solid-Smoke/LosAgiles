@@ -15,14 +15,15 @@ namespace back_end.Handlers
             sqlConnection = new SqlConnection(connectionRoute);
         }
 
-        public List<Person> getPersons(int top)
+        public List<ClientsAddresses> getAllClientAddresses(int clientID)
         {
-            using (sqlConnection)
-            {
-                sqlConnection.Open();
-                return sqlConnection.Query<Person>($"select top {top} * from Person.Person").ToList();
-            }
+            string query = $@"SELECT * FROM ClientsAddresses
+                            WHERE UserID = {clientID}";
+            sqlConnection.Open();
+            var addresses = sqlConnection.Query<ClientsAddresses>(query)
+                .ToList();
+            sqlConnection.Close();
+            return addresses;
         }
-
     }
 }

@@ -17,9 +17,9 @@ namespace back_end.Controllers
         }
 
         [HttpGet("[action]/details")]
-        public List<Person> getPersons(int count)
+        public List<ClientsAddresses> getAllClientAddresses(int userId)
         {
-            return handler.getPersons(count);
+            return handler.getAllClientAddresses(userId);
         }
     }
 }
