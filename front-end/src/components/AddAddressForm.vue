@@ -51,12 +51,14 @@
 <script>
 import axios from "axios";
 import provinces from "../assets/provinces_data.json";
+import { BackendAPIAddress } from "@/main";
 export default {
     //parent_route is what route will be sended the user interface after submitting the form,
     // if no prop is passed, will be "/" by default.
     props: {
         parentRoute: String,
         userId: Number,
+        isBusiness: Boolean,
         value: { //This is for if the programmer want to use modal-show with this component
             type: Boolean,
             default: false,
@@ -80,11 +82,14 @@ export default {
 
     },
     methods: {
+        validateFormData() {
+            return !(this.formData.otherSigns.length > 500);
+        },
         sendFormData() {
-            if (!(this.formData.otherSigns.length > 500)) {
+            if (this.validateFormData()) {
                 console.log("Form data to send:\n", this.formData);
                 axios
-                    .post("https://localhost:7024/api/ShopController/storeFormData", {
+                    .post(BackendAPIAddress + "/storeClientAddress", {
                         userId: this.userId,
                         province: this.formData.province,
                         canton: this.formData.canton,
