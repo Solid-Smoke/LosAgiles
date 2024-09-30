@@ -9,16 +9,19 @@
             <b-col>ESTADO CUENTA</b-col>
             <b-col>NOMBRE</b-col>
             <b-col>APELLIDOS</b-col>
+            <b-col>ID EMPRESA</b-col>
             <b-col>ACCIONES</b-col>
         </b-row>
 
         <b-row v-for="(user, index) in users" :key="index" class="text-center align-items-center mb-2 border-bottom py-2">
-            <b-col cols="2">{{ user.userName }}</b-col>
-            <b-col cols="3">{{ user.email }}</b-col>
-            <b-col cols="2">{{ user.state }}</b-col>
-            <b-col cols="2">{{ user.name }}</b-col>
-            <b-col cols="2">{{ user.lastNames }}</b-col>
-            <b-col cols="3">
+            <b-col>{{ user.userId }}</b-col>
+            <b-col>{{ user.userName }}</b-col>
+            <b-col>{{ user.email }}</b-col>
+            <b-col>{{ user.state }}</b-col>
+            <b-col>{{ user.name }}</b-col>
+            <b-col>{{ user.lastNames }}</b-col>
+            <b-col>{{ user.businessId }}</b-col>
+            <b-col>
                 <b-button variant="success" size="sm" class="mr-2" style="margin-right: 20px;">Activar</b-button>
                 <b-button variant="primary" size="sm" class="mr-2" style="margin-right: 20px;">Desactivar</b-button>
                 <b-button variant="danger" size="sm" style="margin-right: 20px;">Eliminar</b-button>
@@ -47,12 +50,22 @@ import { BackendAPIAddress } from '@/main';
         },
         methods: {
             getUsersData(pageNumber) {
-                axios
-                .get(BackendAPIAddress + "/getAllUserData/details?pageNumber=" + pageNumber)
-                .then(
-                    (response) => {
-                        this.users = response.data;
-                    });
+                axios // Calculation below is for an offset for pagination
+                    .get(BackendAPIAddress + "/getAllUsersData/details?offset="
+                        + ((pageNumber - 1) * this.pageMaxRows).toString()
+                        + "&maxRows=" + this.pageMaxRows.toString())
+                    .then(
+                        (response) => {
+                            this.users = response.data;
+                        });
+            },
+            getUserCount() {
+                axios // Calculation below is for an offset for pagination
+                    .get(BackendAPIAddress + "/getUserCount")
+                    .then(
+                        (response) => {
+                            this.userCount = response.data;
+                        });
             },
             goPrevious() {
                 if(this.actualPage > 1) {
@@ -67,6 +80,7 @@ import { BackendAPIAddress } from '@/main';
         },
         created() {
             this.getUsersData(this.actualPage);
+            this.getUserCount();
         }
     }
 </script>
