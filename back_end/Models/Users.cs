@@ -13,7 +13,7 @@ public partial class Users
 
     public string Email { get; set; }
 
-    public short AccountState { get; set; }
+    public string AccountState { get; set; }
 
     public string Name { get; set; }
 
