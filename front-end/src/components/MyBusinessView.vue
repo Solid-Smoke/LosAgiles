@@ -1,11 +1,37 @@
 <template>
     <MainNavbar />
-    <div class="container mt-5">
-        <h1 class="display-4 text-center">Ver Mis Empresas</h1>
-    </div>
-    <div>
-        <b-table striped responsive small hover :items="items" :fields="fields"></b-table>
-    </div>
+        <h1 class="display-4 text-center mb-4"><strong>Emprendimientos</strong></h1>
+        <b-container class="d-flex justify-content-center">
+            <b-row cols="6">
+                <b-col md="auto">Nombre</b-col>
+                <b-col md="auto">Cédula Asociada</b-col>
+                <b-col md="auto">Información de Contacto</b-col>
+                <b-col md="auto">Permisos</b-col>
+                <b-col md="auto">Ubicación</b-col>
+                <b-col md="auto">Ver Inventario</b-col>
+            </b-row>
+
+            <b-row v-for="business in businesses" :key="business.BusinessID" class="mb-2">
+                <b-col>{{ business.BusinessID }}</b-col>
+                <b-col>{{ business.Name }}</b-col>
+                <b-col>{{ business.IDNumber }}</b-col>
+
+                <b-col>
+                    <b-button @click="showContactInfo(business)" variant="primary">Ver Contacto</b-button>
+                </b-col>
+
+                <b-col>{{ business.Permissions }}</b-col>
+
+                <b-col>
+                    <b-button @click="showLocation(business)" variant="success">Ver Ubicación</b-button>
+                </b-col>
+
+                <b-col>
+                    <b-button @click="viewInventory(business)" variant="info">Inventario</b-button>
+                </b-col>
+
+            </b-row>
+        </b-container>
 </template>
 
 <script>
@@ -16,46 +42,24 @@
         },
         data() {
             return {
-                // Note `isActive` is left out and will not appear in the rendered table
-                fields: ['Identificacion', 'Nombre','Email', 'Telefono', 'Permisos',
-                        'Telefono', 'Provincia', 'Canton', 'Distrito','Extra'],
-                items: [
-                    {
-                        Identificacion: '123456789',
-                        Nombre: 'AAAAAAA',
-                        Email: 'empresa1@correo.com',
-                        Telefono: '+50612345678',
-                        Permisos: '-------------',
-                        Provincia: 'San Jose',
-                        Canton: 'Central',
-                        Distrito: 'Carmen',
-                    },
-                    {
-                        Identificacion: '987654321',
-                        Nombre: 'BBBBBBBBBBBB',
-                        Email: 'empresa2@correo.com',
-                        Telefono: '+50687654321',
-                        Permisos: '-------------',
-                        Provincia: 'Alajuela',
-                        Canton: 'Alajuela',
-                        Distrito: 'Alajuela'
-                    },
-                    {
-                        Identificacion: '111222333',
-                        Nombre: 'CCCCCCCC',
-                        Email: 'empresa3@correo.com',
-                        Telefono: '+50623456789',
-                        Permisos: '-------------',
-                        Provincia: 'Cartago',
-                        Canton: 'Cartago',
-                        Distrito: 'Cartago'
-                    }
-                ]
+                userID: 1,
+                items: [],
             }
         },
 
         methods: {
-            
+            showContactInfo(business) {
+                // Emitimos el prop o acción para mostrar la información de contacto
+                alert(`Contacto de ${business.Name}: ${business.Email}, Tel: ${business.Telephone}`);
+            },
+            showLocation(business) {
+                // Emitimos el prop o acción para mostrar la ubicación
+                alert(`Ubicación de ${business.Name}: ${business.address.Province}, ${business.address.Canton}, ${business.address.District}`);
+            },
+            viewInventory(business) {
+                // Lógica para ver el inventario del negocio
+                alert(`Inventario de ${business.Name}`);
+            },
         },
     };
 </script>

@@ -18,7 +18,7 @@
 
                     <b-nav-item-dropdown text="Mis empresas">
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
-                        <b-dropdown-item href="#" disabled>Ver empresa</b-dropdown-item>
+                        <b-dropdown-item href="/MisEmpresas">Ver empresa</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
 
