@@ -35,6 +35,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         data() {
             return {
@@ -46,6 +48,15 @@
         methods: {
             verifyUser() {
                 console.log("Datos a utilizar:", this.formData);
+                axios.get("https://localhost:7168/api/Login", {
+                    UserName: this.formData.UserName,
+                    UserPassword: this.formData.UserPassword
+                }).then((response) => {
+                    console.log(response.data);
+                    //this.user = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
         },
     };

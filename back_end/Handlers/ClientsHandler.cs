@@ -45,24 +45,11 @@ namespace back_end.Handlers
                     BirthDate = Convert.ToDateTime(columna["BirthDate"]),
                     UserPassword = Convert.ToString(columna["UserPassword"]),
                     AccountState = Convert.ToString(columna["AccountState"]),
-                    //Rol = Convert.ToString(columna["Rol"])
+                    Rol = Convert.ToString(columna["Rol"])
                 });
             }
             return clients;
         }
-
-        //public ClientModel Authenticate(string UserName, string UserPassword) {
-        //    string query = @"SELECT * FROM dbo.Clients WHERE UserName=@UserName AND UserPassword=@UserPassword";
-        //    var commandInQuery = new SqlCommand(query, _conexion);
-        //    commandInQuery.Parameters.AddWithValue("@UserName", UserName);
-        //    commandInQuery.Parameters.AddWithValue("@UserPassword", UserPassword);
-        //    _conexion.Open();
-        //    DataTable result = CrearTablaConsulta(query);
-        //    _conexion.Close();
-        //    ClientModel response = new ClientModel();
-        //    response.Name = result.
-        //    return response;
-        //}
 
         public List<ClientModel> Authenticate(string UserName, string UserPassword)
         {
@@ -82,7 +69,7 @@ namespace back_end.Handlers
                     BirthDate = Convert.ToDateTime(columna["BirthDate"]),
                     UserPassword = Convert.ToString(columna["UserPassword"]),
                     AccountState = Convert.ToString(columna["AccountState"]),
-                    //Rol = Convert.ToString(columna["Rol"])
+                    Rol = Convert.ToString(columna["Rol"])
                 });
             }
             return clients;
