@@ -19,6 +19,9 @@
                            class="form-control"
                            required />
                 </div>
+                <div v-if="errorMessage" class="alert alert-danger">
+                    {{ errorMessage }}
+                </div>
                 <div>
                     <button type="submit" class="btn btn-success btn-block">
                         Ingresar
@@ -43,6 +46,7 @@
                 formData: {
                     userName: "", userPassword: ""
                 },
+                errorMessage: ""
             };
         },
         methods: {
@@ -55,11 +59,17 @@
                     }
                 }).then((response) => {
                     console.log(response.data);
-                    this.user = response.data;
-                    localStorage.setItem('user', JSON.stringify(response.data));
-                    window.location.href = "/";
+                    if (response.data.length > 0) {
+                        this.user = response.data;
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                        window.location.href = "/";
+                    } else {
+                        console.log("Sin datos");
+                        this.errorMessage = 'Usuario o contraseña incorrectas!';
+                    }
                 }).catch(function (error) {
                     console.log(error);
+                    this.errorMessage = 'Error al conectar con el servidor.';
                 });
             },
             logout() {
