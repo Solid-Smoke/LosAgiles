@@ -1,7 +1,8 @@
 ﻿namespace back_end.Models
 {
-    public class BusinessWithAddressModel
+    public class CompleteBusinessModel
     {
+        public int? UserID { get; set; }
         public int? BusinessID { get; set; }
         public required string? Name { get; set; }
         public required string? IDNumber { get; set; }

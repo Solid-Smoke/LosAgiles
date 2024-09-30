@@ -30,7 +30,7 @@ namespace back_end.Controllers
         }
 
         [HttpPost("~/NewBusiness")]
-        public async Task<ActionResult<bool>> createNewBusiness(BusinessWithAddressModel newBusiness)
+        public async Task<ActionResult<bool>> createNewBusiness(CompleteBusinessModel newBusiness)
         {
             try
             {

@@ -33,7 +33,7 @@
             </b-collapse>
         </b-navbar>
     </div>
-    <RegisterBusinessModal ref="registerBusinessModal" @business-data-saved="handleBusinessDataSaved"/>
+    <RegisterBusinessModal ref="registerBusinessModal"/>
     <AddProductView v-model="modelShowProduct" />
 </template>
 
@@ -61,11 +61,6 @@
             },
             openModalProduct() {
                 this.modelShowProduct = true;
-            },
-            handleBusinessDataSaved(businessData) {
-                this.BusinessData = businessData;
-                console.log("Datos del Emprendimiento:", this.BusinessData);
-                console.log("Nombre de la empresa: ", this.BusinessData.BusinessName);
             },
         },
     };

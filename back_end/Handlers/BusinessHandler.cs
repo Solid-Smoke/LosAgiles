@@ -70,41 +70,51 @@ namespace back_end.Handlers
             return businessData;
         }
 
-        public bool insertNewBusiness(BusinessWithAddressModel newBusinessAddress)
+        public bool insertNewBusiness(CompleteBusinessModel newBusiness)
         {
             var queryInsertBusiness = @"INSERT INTO Businesses ([Name], [IDNumber], [Email], [Telephone], [Permissions])" +
                                     "VALUES (@Name, @IDNumber, @Email, @Telephone, @Permissions);" +
                                     "SELECT CAST(SCOPE_IDENTITY() AS INT)";
             var commandInsertBusiness = new SqlCommand(queryInsertBusiness, _connection);
-            commandInsertBusiness.Parameters.AddWithValue("@Name", newBusinessAddress.Name);
-            commandInsertBusiness.Parameters.AddWithValue("@IDNumber", newBusinessAddress.IDNumber);
-            commandInsertBusiness.Parameters.AddWithValue("@Email", newBusinessAddress.Email);
-            commandInsertBusiness.Parameters.AddWithValue("@Telephone", newBusinessAddress.Telephone);
-            commandInsertBusiness.Parameters.AddWithValue("@Permissions", newBusinessAddress.Permissions);
+            commandInsertBusiness.Parameters.AddWithValue("@Name", newBusiness.Name);
+            commandInsertBusiness.Parameters.AddWithValue("@IDNumber", newBusiness.IDNumber);
+            commandInsertBusiness.Parameters.AddWithValue("@Email", newBusiness.Email);
+            commandInsertBusiness.Parameters.AddWithValue("@Telephone", newBusiness.Telephone);
+            commandInsertBusiness.Parameters.AddWithValue("@Permissions", newBusiness.Permissions);
 
             var queryInsertBusinessAddress = @"INSERT INTO BusinessesAddresses" +
                                             "([BusinessID], [Province], [Canton], [District], [PostalCode], [OtherSigns])" +
                                             "VALUES(@BusinessID, @Province, @Canton, @District, @PostalCode, @OtherSigns);";
             var commandInsertBusinessAddress = new SqlCommand(queryInsertBusinessAddress, _connection);
-            commandInsertBusinessAddress.Parameters.AddWithValue("@Province", newBusinessAddress.Province);
-            commandInsertBusinessAddress.Parameters.AddWithValue("@Canton", newBusinessAddress.Canton);
-            commandInsertBusinessAddress.Parameters.AddWithValue("@District", newBusinessAddress.District);
-            commandInsertBusinessAddress.Parameters.AddWithValue("@PostalCode", newBusinessAddress.PostalCode);
-            commandInsertBusinessAddress.Parameters.AddWithValue("@OtherSigns", newBusinessAddress.OtherSigns);
+            commandInsertBusinessAddress.Parameters.AddWithValue("@Province", newBusiness.Province);
+            commandInsertBusinessAddress.Parameters.AddWithValue("@Canton", newBusiness.Canton);
+            commandInsertBusinessAddress.Parameters.AddWithValue("@District", newBusiness.District);
+            commandInsertBusinessAddress.Parameters.AddWithValue("@PostalCode", newBusiness.PostalCode);
+            commandInsertBusinessAddress.Parameters.AddWithValue("@OtherSigns", newBusiness.OtherSigns);
+
+            var queryInsertEmployee = @"INSERT INTO Employees (BusinessID, UserID)" +
+                                       "VALUES(@BusinessID, @UserID);";
+            var commandInsertEmployee = new SqlCommand(queryInsertEmployee, _connection);
+            commandInsertEmployee.Parameters.AddWithValue("@UserID", newBusiness.UserID); // clientId será el ID del cliente (UserID)
 
             _connection.Open();
             var transaction = _connection.BeginTransaction();
             commandInsertBusiness.Transaction = transaction;
             commandInsertBusinessAddress.Transaction = transaction;
-
+            commandInsertEmployee.Transaction = transaction;
             bool result;
             try
             {
                 // Inserta el negocio y obtiene el BusinessID generado
-                newBusinessAddress.BusinessID = Convert.ToInt32(commandInsertBusiness.ExecuteScalar());
-                commandInsertBusinessAddress.Parameters.AddWithValue("@BusinessID", newBusinessAddress.BusinessID);
+                newBusiness.BusinessID = Convert.ToInt32(commandInsertBusiness.ExecuteScalar());
+                commandInsertBusinessAddress.Parameters.AddWithValue("@BusinessID", newBusiness.BusinessID);
+                commandInsertEmployee.Parameters.AddWithValue("@BusinessID", newBusiness.BusinessID);
 
-                result = commandInsertBusinessAddress.ExecuteNonQuery() >= 1;
+                // Ejecuta las inserciones de negocio, dirección y empleado
+                var businessInserted = commandInsertBusinessAddress.ExecuteNonQuery() >= 1;
+                var employeeInserted = commandInsertEmployee.ExecuteNonQuery() >= 1;
+
+                result = businessInserted && employeeInserted;
 
                 if (result)
                 {
