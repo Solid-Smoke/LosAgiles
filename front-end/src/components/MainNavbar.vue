@@ -53,8 +53,7 @@
         data() {
             return {
                 registerBusinessModal: false,
-                addProductModal:false
-                modelShowProduct: false,
+                addProductModal: false,
                 loginData: {
                     userID: "111111111",
                 }
