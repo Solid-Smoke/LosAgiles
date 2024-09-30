@@ -13,6 +13,7 @@ import RegisterUserView from './components/RegisterUserView.vue';
 import LoginUserView from './components/LoginUserView.vue';
 import LoginAdminView from './components/LoginAdminView.vue';
 import AddressListView from './components/AddressListView.vue';
+import AdminUserList from './components/AdminUserList.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -24,6 +25,7 @@ const router = createRouter({
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
         { path: "/direcciones", name: "AddressListView", component: AddressListView },
+        { path: "/UserList", name: "userList", component: AdminUserList },
     ],
 });
 

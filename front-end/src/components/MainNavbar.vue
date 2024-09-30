@@ -28,12 +28,12 @@
                     <b-nav-item @click="openProductModal">A&ntilde;adir Producto</b-nav-item>
                 </b-navbar-nav>
 
-                <b-navbar-nav>
-                    <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
+                <b-navbar-nav class="ms-auto">
+                    <b-nav-item><a href="/login" class="discreteLink">Iniciar sesi&oacute;n</a></b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item><a href="/login" class="discreteLink">Iniciar sesi&oacute;n</a></b-nav-item>
+                    <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
