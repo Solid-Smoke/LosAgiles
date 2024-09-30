@@ -17,13 +17,20 @@ namespace back_end.Handlers
 
         public List<Users> getAllUsersData(int offset, int maxRows)
         {
-            string query = $@"SELECT Clients.UserID, Clients.UserName,
-                                     Clients.Email, Clients.AccountState,
-                                     Clients.[Name], Clients.LastNames,
-                                     Employees.BusinessID
-                               FROM Clients
-                               LEFT JOIN Employees
-                               ON Clients.UserID = Employees.UserID
+            string query = $@"SELECT Clients.UserID,
+                            Clients.UserName,
+                            Clients.Email,
+                            Clients.AccountState,
+                            Clients.[Name],
+                            Clients.LastNames,
+                            EmployeesBusinessesNames.BusinessName
+                            FROM Clients LEFT JOIN (
+                                select Businesses.Name as BusinessName,
+                                Employees.UserID
+                                from Employees inner join Businesses
+                                on Employees.BusinessID = Businesses.BusinessID
+                            ) AS EmployeesBusinessesNames
+                            ON Clients.UserID = EmployeesBusinessesNames.UserID
                                ORDER BY Clients.UserID
                                OFFSET {offset} ROWS
                                FETCH NEXT {maxRows} ROWS ONLY;";

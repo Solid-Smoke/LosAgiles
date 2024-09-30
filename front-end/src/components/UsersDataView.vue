@@ -6,22 +6,22 @@
         <b-row class="font-weight-bold text-center border-bottom border-2 border-dark">
             <b-col>ID</b-col>
             <b-col>USUARIO</b-col>
+            <b-col>EMPRESA</b-col>
             <b-col>CORREO</b-col>
             <b-col>ESTADO CUENTA</b-col>
             <b-col>NOMBRE</b-col>
             <b-col>APELLIDOS</b-col>
-            <b-col>ID EMPRESA</b-col>
             <b-col>ACCIONES</b-col>
         </b-row>
 
         <b-row v-for="(user, index) in users" :key="index" class="text-center align-items-center mb-2 border-bottom py-2">
             <b-col>{{ user.userID }}</b-col>
             <b-col>{{ user.userName }}</b-col>
+            <b-col>{{ user.businessName }}</b-col>
             <b-col>{{ user.email }}</b-col>
             <b-col>{{ user.accountState }}</b-col>
             <b-col>{{ user.name }}</b-col>
             <b-col>{{ user.lastNames }}</b-col>
-            <b-col>{{ user.businessID }}</b-col>
             <b-col>
                 <b-button variant="success" size="sm" class="mr-2">Activar</b-button>
                 <b-button variant="primary" size="sm" class="mr-2">Desactivar</b-button>

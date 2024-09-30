@@ -19,5 +19,5 @@ public partial class Users
 
     public string LastNames { get; set; }
 
-    public int? BusinessID { get; set; }
+    public string BusinessName { get; set; }
 }
