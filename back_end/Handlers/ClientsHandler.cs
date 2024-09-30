@@ -1,5 +1,4 @@
 ﻿using back_end.Models;
-using Microsoft.AspNetCore.Components.Web;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -46,7 +45,7 @@ namespace back_end.Handlers
                     BirthDate = Convert.ToDateTime(columna["BirthDate"]),
                     UserPassword = Convert.ToString(columna["UserPassword"]),
                     AccountState = Convert.ToString(columna["AccountState"]),
-                    Rol = Convert.ToString(columna["Rol"])
+                    //Rol = Convert.ToString(columna["Rol"])
                 });
             }
             return clients;
@@ -65,13 +64,16 @@ namespace back_end.Handlers
         //    return response;
         //}
 
-        public List<ClientModel> Authenticate(string UserName, string UserPassword) {
+        public List<ClientModel> Authenticate(string UserName, string UserPassword)
+        {
             List<ClientModel> clients = new List<ClientModel>();
-            string consulta = @"SELECT * FROM dbo.Clients WHERE UserName= " + UserName + " AND UserPassword=" + UserPassword;
+            string consulta = @"SELECT * FROM dbo.Clients WHERE UserName = '" + UserName + "' AND UserPassword = '" + UserPassword + "'";
             DataTable tablaResultado = CrearTablaConsulta(consulta);
 
-            foreach (DataRow columna in tablaResultado.Rows) {
-                clients.Add(new ClientModel {
+            foreach (DataRow columna in tablaResultado.Rows)
+            {
+                clients.Add(new ClientModel
+                {
                     UserID = Convert.ToInt32(columna["UserID"]),
                     Name = Convert.ToString(columna["Name"]),
                     LastNames = Convert.ToString(columna["LastNames"]),
@@ -80,7 +82,7 @@ namespace back_end.Handlers
                     BirthDate = Convert.ToDateTime(columna["BirthDate"]),
                     UserPassword = Convert.ToString(columna["UserPassword"]),
                     AccountState = Convert.ToString(columna["AccountState"]),
-                    Rol = Convert.ToString(columna["Rol"])
+                    //Rol = Convert.ToString(columna["Rol"])
                 });
             }
             return clients;
