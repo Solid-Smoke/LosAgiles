@@ -17,9 +17,15 @@ namespace back_end.Controllers
         }
 
         [HttpGet("[action]/details")]
-        public List<Person> getPersons(int count)
+        public List<Users>getAllUsersData(int offset, int maxRows)
         {
-            return handler.getPersons(count);
+            return handler.getAllUsersData(offset, maxRows);
+        }
+
+        [HttpGet]
+        public int getUserCount()
+        {
+            return handler.getUserCount();
         }
     }
 }

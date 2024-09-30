@@ -15,13 +15,33 @@ namespace back_end.Handlers
             sqlConnection = new SqlConnection(connectionRoute);
         }
 
-        public List<Person> getPersons(int top)
+        public List<Users> getAllUsersData(int offset, int maxRows)
         {
-            using (sqlConnection)
-            {
-                sqlConnection.Open();
-                return sqlConnection.Query<Person>($"select top {top} * from Person.Person").ToList();
-            }
+            string query = $@"SELECT Clients.UserID, Clients.UserName,
+                                     Clients.Email, Clients.AccountState,
+                                     Clients.[Name], Clients.LastNames,
+                                     Employees.BusinessID
+                               FROM Clients
+                               LEFT JOIN Employees
+                               ON Clients.UserID = Employees.UserID
+                               ORDER BY Clients.UserID
+                               OFFSET {offset} ROWS
+                               FETCH NEXT {maxRows} ROWS ONLY;";
+            sqlConnection.Open();
+            List<Users> result = sqlConnection.Query<Users>(query)
+                                     .ToList();
+            sqlConnection.Close();
+            return result;
+            
+        }
+
+        public int getUserCount()
+        {
+            string query = "SELECT COUNT(*) FROM Clients";
+            sqlConnection.Open();
+            int result = sqlConnection.Query<int>(query).ToList()[0];
+            sqlConnection.Close();
+            return result;
         }
 
     }
