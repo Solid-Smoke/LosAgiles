@@ -12,10 +12,10 @@
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="UserPassword">Contrase&ntilde;a:</label>
-                    <input v-model="formData.UserPassword"
+                    <label for="userPassword">Contrase&ntilde;a:</label>
+                    <input v-model="formData.userPassword"
                            type="password"
-                           id="UserPassword"
+                           id="userPassword"
                            class="form-control"
                            required />
                 </div>
@@ -41,7 +41,7 @@
         data() {
             return {
                 formData: {
-                    userName: "", UserPassword: ""
+                    userName: "", userPassword: ""
                 },
             };
         },
@@ -49,15 +49,26 @@
             verifyUser() {
                 console.log("Datos a utilizar:", this.formData);
                 axios.get("https://localhost:7168/api/Login", {
-                    UserName: this.formData.UserName,
-                    UserPassword: this.formData.UserPassword
+                    params: {
+                        UserName: this.formData.userName,
+                        UserPassword: this.formData.userPassword
+                    }
                 }).then((response) => {
                     console.log(response.data);
-                    //this.user = response.data;
+                    this.user = response.data;
+                    localStorage.setItem('user', JSON.stringify(response.data));
+                    window.location.href = "/";
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
+            logout() {
+                localStorage.removeItem('user');
+            },
+            getUserDetails() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                console.log(user[0]);
+            }
         },
     };
 </script>

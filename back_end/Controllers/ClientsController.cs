@@ -23,9 +23,9 @@ namespace back_end.Controllers
         }
 
         [HttpGet("~/api/Login")]
-        public List<ClientModel> Login(string client, string client2)
+        public List<ClientModel> Login(string UserName, string UserPassword)
         {
-            var userLogin = clientsHandler.Authenticate(client, client2);
+            var userLogin = clientsHandler.Authenticate(UserName, UserPassword);
             return userLogin;
         }
     }
