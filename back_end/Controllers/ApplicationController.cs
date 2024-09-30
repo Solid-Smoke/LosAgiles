@@ -22,7 +22,7 @@ namespace back_end.Controllers
             return handler.getAllUsersData(offset, maxRows);
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public int getUserCount()
         {
             return handler.getUserCount();
