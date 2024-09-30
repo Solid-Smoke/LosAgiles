@@ -8,6 +8,6 @@ CREATE TABLE Clients (
     Email VARCHAR(60) NOT NULL,
     BirthDate DATE NOT NULL,
     UserPassword VARCHAR(512) NOT NULL,
-    AccountState SMALLINT NOT NULL DEFAULT 1, --Estado por defecto es 1 = activo
+    AccountState VARCHAR(20) NOT NULL DEFAULT 'Activo',
     UNIQUE(UserName, Email)
 );
