@@ -51,5 +51,16 @@ namespace back_end.Handlers
             }
             return clients;
         }
+
+        public ClientModel Authenticate(string UserName, string UserPassword) {
+            string query = @"SELECT * FROM dbo.Clients WHERE UserName=@UserName AND UserPassword=@UserPassword";
+            var commandInQuery = new SqlCommand(query, _conexion);
+            commandInQuery.Parameters.AddWithValue("@UserName", UserName);
+            commandInQuery.Parameters.AddWithValue("@UserPassword", UserPassword);
+            _conexion.Open();
+            ClientModel response = commandInQuery.ExecuteNonQuery(); //Malo buscar como poner respuesta de query como respuesta
+            _conexion.Close();
+            return response;
+        }
     }
 }
