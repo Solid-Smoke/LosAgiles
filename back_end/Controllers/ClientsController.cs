@@ -22,10 +22,10 @@ namespace back_end.Controllers
             return clients;
         }
 
-        [HttpPost]
-        public List<ClientModel> Login(ClientModel client)
+        [HttpGet("~/api/Login")]
+        public List<ClientModel> Login(string client, string client2)
         {
-            var userLogin = clientsHandler.Authenticate(client.UserName, client.UserPassword);
+            var userLogin = clientsHandler.Authenticate(client, client2);
             return userLogin;
         }
     }
