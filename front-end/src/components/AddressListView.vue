@@ -60,10 +60,14 @@ import MainNavbar from './MainNavbar.vue';
             },
             openAddAddressForm() {
                 this.$refs.addAddressForm.openModal();
+            },
+            getUserId() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return Number(user[0].userID);
             }
         },
         created() {
-            this.userId = Number(localStorage.getItem('id'));
+            this.userId = this.getUserId();
             this.getUserAddressList();
         }
     }
