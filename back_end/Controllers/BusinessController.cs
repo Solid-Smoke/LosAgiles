@@ -15,21 +15,21 @@ namespace back_end.Controllers
             _businessHandler = new BusinessHandler();
         }
 
-        [HttpGet("~/AllBusinessData")]
+        [HttpGet("~/api/AllBusinessData")]
         public List<BusinessModel> getAllBusinessData()
         {
             var businesses = _businessHandler.getAllBusiness();
             return businesses;
         }
 
-        [HttpGet("~/BusinessDataByEmployeeID")]
+        [HttpGet("~/api/BusinessDataByEmployeeID")]
         public List<BusinessModel> getBusinessDataByEmployeeID(string employeeID)
         {
             var businesses = _businessHandler.getBusinessByEmployeeID(employeeID);
             return businesses;
         }
 
-        [HttpPost("~/NewBusiness")]
+        [HttpPost("~/api/NewBusiness")]
         public async Task<ActionResult<bool>> createNewBusiness(CompleteBusinessModel newBusiness)
         {
             try

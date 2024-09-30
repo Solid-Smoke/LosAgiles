@@ -8,7 +8,6 @@
                 <label for="BusinessName">Nombre de la Empresa:</label>
                 <input v-model="businessData.businessName"
                        type="text"
-                       id="businessName"
                        class="form-control"
                        placeholder="Nombre"
                        required />
@@ -17,7 +16,6 @@
                 <label for="BusinessID">Identificacion (Cedula Fisica o Cedula Juridica):</label>
                 <input v-model="businessData.businessID"
                        type="text"
-                       id="businessID"
                        class="form-control"
                        placeholder="Cedula"
                        required />
@@ -26,7 +24,6 @@
                 <label for="BusinessEmail">Correo de la Empresa:</label>
                 <input v-model="businessData.businessEmail"
                        type="email"
-                       id="businessEmail"
                        class="form-control"
                        placeholder="Correo"
                        required />
@@ -34,8 +31,7 @@
             <div class="form-group">
                 <label for="BusinessPhone">Telefono de la Empresa:</label>
                 <input v-model="businessData.businessPhone"
-                       type="number"
-                       id="businessPhone"
+                       type="text"
                        class="form-control"
                        placeholder="Telefono"
                        required />
@@ -44,13 +40,11 @@
                 <label for="Licenses">Permisos:</label>
                 <textarea v-model="businessData.licenses"
                           type="text"
-                          id="licenses"
                           class="form-control" />
             </div>
             <div class="form-group">
                 <label for="Province">Provincia:</label>
                 <select v-model="businessData.province"
-                        id="province"
                         class="form-control"
                         required>
                     <option value="" disabled>Seleccione una provincia</option>
@@ -68,7 +62,6 @@
                 <label for="Canton">Canton:</label>
                 <input v-model="businessData.canton"
                        type="text"
-                       id="canton"
                        class="form-control"
                        placeholder="Canton"
                        maxlength="40"
@@ -79,7 +72,6 @@
                 <label for="District">Distrito:</label>
                 <input v-model="businessData.district"
                        type="text"
-                       id="district"
                        class="form-control"
                        placeholder="Distrito"
                        maxlength="40"
@@ -90,7 +82,6 @@
                 <label for="PostalCode">Codigo Postal:</label>
                 <input v-model="businessData.postalCode"
                        type="text"
-                       id="postalCode"
                        class="form-control"
                        placeholder="Codigo Postal"
                        maxlength="10"
@@ -100,7 +91,6 @@
             <div class="form-group">
                 <label for="OtherSigns">Otras Señales:</label>
                 <textarea v-model="businessData.otherSigns"
-                          id="otherSigns"
                           class="form-control"
                           maxlength="500">
                 </textarea>
@@ -116,7 +106,9 @@
 </template>
 
 <script>
+    import axios from "axios";
     export default {
+        
         data() {
             return {
                 RegisterBusinessModal:false,
@@ -132,7 +124,29 @@
         },
         methods: {
             saveBusinessData() {
-                
+                axios
+                    .post("https://localhost:7168/api/NewBusiness", {
+                        userid: this.businessData.userID,
+                        businessid: 0,
+                        name: this.businessData.businessName,
+                        idnumber: this.businessData.businessID,
+                        email: this.businessData.businessEmail,
+                        telephone: this.businessData.businessPhone,
+                        permissions: this.businessData.licenses,
+
+                        province: this.businessData.province,
+                        canton: this.businessData.canton,
+                        district: this.businessData.district,
+                        postalcode: this.businessData.postalCode,
+                        othersigns: this.businessData.otherSigns,
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                        window.alert("Emprendimiento Registrado con exito !!!");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 this.closeModal();
             },
             resetFormFields() {
