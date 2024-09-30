@@ -8,6 +8,6 @@ CREATE TABLE Clients (
     Email VARCHAR(60) NOT NULL,
     BirthDate DATE NOT NULL,
     UserPassword VARCHAR(512) NOT NULL,
-	AccountState VARCHAR(10) NOT NULL,
+	  AccountState VARCHAR(10) NOT NULL,
     UNIQUE(UserName, Email)
 );
