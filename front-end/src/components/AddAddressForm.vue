@@ -91,7 +91,7 @@ export default {
                 axios
                     .post(BackendAPIAddress + "/storeClientAddress", {
                         addressId: 0, // will be ignored in backend
-                        userId: 1,
+                        userId: this.userId,
                         province: this.formData.province,
                         canton: this.formData.canton,
                         district: this.formData.district,
