@@ -8,6 +8,7 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 import App from './App.vue';
 import { createRouter, createWebHistory } from "vue-router";
 import HomepageView from './components/HomepageView.vue';
+import AddAddressForm from "./components/AddAddressForm.vue";
 import RegisterUserView from './components/RegisterUserView.vue';
 import LoginUserView from './components/LoginUserView.vue';
 import LoginAdminView from './components/LoginAdminView.vue';
@@ -18,6 +19,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: "/", name: "Home", component: HomepageView },
+        { path: "/AddressListView/AddAddressForm", name: "AddAddressForm", component: AddAddressForm, },
         { path: "/Registro", name: "Register User", component: RegisterUserView },
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
@@ -25,7 +27,7 @@ const router = createRouter({
     ],
 });
 
-export const BackendAPIAddress = "https://localhost:7024/api";
+export const BackendAPIAddress = "https://localhost:7168/api/Shop";
 
 // Crear la aplicación Vue
 const app = createApp(App);

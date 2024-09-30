@@ -17,19 +17,37 @@ namespace back_end.Controllers
         }
 
         [HttpGet("[action]/details")]
-        public async Task<ActionResult<List<ClientsAddresses>>> getAllClientAddresses(string userName)
+        public async Task<ActionResult<List<ClientsAddresses>>> getAllClientAddresses(int userId)
         {
             try
             {
-                if (userName == null)
+                if (userId == null)
                 {
                     return BadRequest();
                 }
-                return new JsonResult(handler.getAllClientAddresses(userName));
+                return new JsonResult(handler.getAllClientAddresses(userId));
             }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status404NotFound, e.Message);
+            }
+        }
+        [HttpPost("[action]")]
+        public async Task<ActionResult<bool>> storeClientAddress(ClientsAddress address)
+        {
+            try
+            {
+                if (address == null)
+                {
+                    return BadRequest();
+                }
+                ApplicationHandler handler = new ApplicationHandler();
+                var result = handler.storeClientAddress(address);
+                return new JsonResult(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error storing address");
             }
         }
     }
