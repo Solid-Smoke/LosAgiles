@@ -43,7 +43,7 @@
         data() {
             return {
                 userID: 1,
-                items: [],
+                businesses: [],
             }
         },
 
