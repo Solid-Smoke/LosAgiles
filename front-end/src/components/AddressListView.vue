@@ -23,7 +23,7 @@
             </tbody>
         </table>
         <b-button @click="this.openAddAddressForm()" variant="success" style="float: right">Agregar dirección</b-button>
-        <AddAddressForm ref="addAddressForm" />
+        <AddAddressForm ref="addAddressForm" :userId="this.userId" />
     </div>
 </template>
 
@@ -40,15 +40,16 @@ import MainNavbar from './MainNavbar.vue';
         data() {
             return {
                 addAddressModal: false,
-                addresses: []
+                addresses: [],
+                userId: -1,
             };
         },
         methods: {
             getUserAddressList() {
                 axios
                 .get(BackendAPIAddress +
-                    "/getAllClientAddresses/details?userName=" +
-                    localStorage.getItem('user'))
+                    "/getAllClientAddresses/details?userId=" +
+                    this.userId)
                 .then(
                     (response) => {
                         this.addresses = response.data;
@@ -61,11 +62,8 @@ import MainNavbar from './MainNavbar.vue';
                 this.$refs.addAddressForm.openModal();
             }
         },
-        props: {
-            userId: Number
-        },
         created() {
-            localStorage.setItem('user', "pedroav");
+            this.userId = Number(localStorage.getItem('id'));
             this.getUserAddressList();
         }
     }
