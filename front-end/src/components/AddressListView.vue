@@ -1,5 +1,5 @@
 <template>
-    <b-button href="/" variant="primary" size="lg" style="float: left">Regresar</b-button>
+    <MainNavbar/>
     <div class="container mt-5">
         <h1 class="display-4 text-center">Direcciones registradas</h1>
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth table-striped">
@@ -31,9 +31,11 @@
 import axios from 'axios';
 import { BackendAPIAddress } from '@/main';
 import AddAddressForm from './AddAddressForm.vue';
+import MainNavbar from './MainNavbar.vue';
     export default {
         components: {
-            AddAddressForm
+            AddAddressForm,
+            MainNavbar
         },
         data() {
             return {
@@ -44,11 +46,16 @@ import AddAddressForm from './AddAddressForm.vue';
         methods: {
             getUserAddressList() {
                 axios
-                .get(BackendAPIAddress + "/getAllClientAddresses/details?userId=" + 1)
+                .get(BackendAPIAddress +
+                    "/getAllClientAddresses/details?userName=" +
+                    localStorage.getItem('user'))
                 .then(
                     (response) => {
                         this.addresses = response.data;
-                    });
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             openAddAddressForm() {
                 this.$refs.addAddressForm.openModal();
@@ -58,6 +65,7 @@ import AddAddressForm from './AddAddressForm.vue';
             userId: Number
         },
         created() {
+            localStorage.setItem('user', "pedroav");
             this.getUserAddressList();
         }
     }
