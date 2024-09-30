@@ -15,11 +15,24 @@ namespace back_end.Handlers
             sqlConnection = new SqlConnection(connectionRoute);
         }
 
-        public List<ClientsAddresses> getAllClientAddresses(int clientID)
+        public List<ClientsAddresses> getAllClientAddresses(string userName)
         {
-            string query = $@"SELECT * FROM ClientsAddresses
-                            WHERE UserID = {clientID}";
             sqlConnection.Open();
+            string query = "SELECT UserID FROM Clients " +
+                $"WHERE UserName = '{userName}'";
+            List<int> result = sqlConnection.Query<int>(query).ToList();
+            int userId = -1;
+            if (result.Count > 0)
+            {
+                userId = result[0];
+            } else
+            {
+                throw new Exception(
+                    "getAllClientAddresses: Username doesnt exist");
+            }
+
+            query = $@"SELECT * FROM ClientsAddresses
+                       WHERE UserID = {userId}";
             var addresses = sqlConnection.Query<ClientsAddresses>(query)
                 .ToList();
             sqlConnection.Close();

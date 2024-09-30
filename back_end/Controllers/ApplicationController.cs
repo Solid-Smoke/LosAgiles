@@ -17,9 +17,20 @@ namespace back_end.Controllers
         }
 
         [HttpGet("[action]/details")]
-        public List<ClientsAddresses> getAllClientAddresses(int userId)
+        public async Task<ActionResult<List<ClientsAddresses>>> getAllClientAddresses(string userName)
         {
-            return handler.getAllClientAddresses(userId);
+            try
+            {
+                if (userName == null)
+                {
+                    return BadRequest();
+                }
+                return new JsonResult(handler.getAllClientAddresses(userName));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, e.Message);
+            }
         }
     }
 }
