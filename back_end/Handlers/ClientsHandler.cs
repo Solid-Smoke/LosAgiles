@@ -45,7 +45,8 @@ namespace back_end.Handlers
                     Email = Convert.ToString(columna["Email"]),
                     BirthDate = Convert.ToDateTime(columna["BirthDate"]),
                     UserPassword = Convert.ToString(columna["UserPassword"]),
-                    AccountState = Convert.ToString(columna["AccountState"])
+                    AccountState = Convert.ToString(columna["AccountState"]),
+                    Rol = Convert.ToString(columna["Rol"])
                 });
             }
             return clients;
