@@ -1,0 +1,11 @@
+USE LosAgilesDB
+
+CREATE TABLE ClientsAddresses (
+    AddressID INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    UserID INT NOT NULL FOREIGN KEY REFERENCES Clients(UserID),
+    Province VARCHAR(20) NOT NULL,
+    Canton VARCHAR(40) NOT NULL,
+    District VARCHAR(50) NOT NULL,
+    PostalCode INT NOT NULL,
+    OtherSigns VARCHAR(500) NOT NULL
+);
