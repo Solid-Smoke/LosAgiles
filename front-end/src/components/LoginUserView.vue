@@ -75,14 +75,11 @@
             logout() {
                 localStorage.removeItem('user');
             },
-            getUserDetails() { // Usage example
+            getUserDetails() {
                 const user = JSON.parse(localStorage.getItem('user'));
                 console.log(user[0]);
             }
         },
-        mounted() {
-            this.logout();
-        }
     };
 </script>
 
