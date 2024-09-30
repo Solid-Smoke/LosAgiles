@@ -24,7 +24,11 @@
                 </b-navbar-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item @click="openModalProduct">A&ntilde;adir Producto</b-nav-item>
+                    <b-nav-item @click="openProductModal">A&ntilde;adir Producto</b-nav-item>
+                </b-navbar-nav>
+
+                <b-navbar-nav class="ms-auto">
+                    <b-nav-item><a href="/login" class="discreteLink">Iniciar sesi&oacute;n</a></b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav>
@@ -33,8 +37,8 @@
             </b-collapse>
         </b-navbar>
     </div>
-    <RegisterBusinessModal ref="registerBusinessModal"/>
-    <AddProductView v-model="modelShowProduct" />
+    <RegisterBusinessModal ref="registerBusinessModal" />
+    <AddProductView ref="addProductModal" />
 </template>
 
 <script>
@@ -49,6 +53,7 @@
         data() {
             return {
                 registerBusinessModal: false,
+                addProductModal:false
                 modelShowProduct: false,
                 loginData: {
                     userID: "111111111",
@@ -59,9 +64,9 @@
             openRegisterBusinessModal() {
                 this.$refs.registerBusinessModal.openModal(this.loginData.userID);        
             },
-            openModalProduct() {
-                this.modelShowProduct = true;
-            },
+            openProductModal() {
+                this.$refs.addProductModal.openModal();
+            }
         },
     };
 </script>
