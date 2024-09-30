@@ -26,13 +26,13 @@ namespace back_end.Controllers
             return clients;
         }
 
-        [HttpPost("login")]
+        [HttpGet("~/api/login")]
         public IActionResult Login([FromBody] ClientModel client) {
             if (client == null) {
                 return BadRequest("Invalid login request.");
             }
 
-            ClientModel userLogin = clientsHandler.Authenticate(client.UserName, client.UserPassword);
+            List<ClientModel> userLogin = clientsHandler.Authenticate(client.UserName, client.UserPassword);
 
             if (userLogin == null) {
                 return Unauthorized(); // error 401

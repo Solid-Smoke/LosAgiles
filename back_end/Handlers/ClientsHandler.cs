@@ -52,15 +52,38 @@ namespace back_end.Handlers
             return clients;
         }
 
-        public ClientModel Authenticate(string UserName, string UserPassword) {
-            string query = @"SELECT * FROM dbo.Clients WHERE UserName=@UserName AND UserPassword=@UserPassword";
-            var commandInQuery = new SqlCommand(query, _conexion);
-            commandInQuery.Parameters.AddWithValue("@UserName", UserName);
-            commandInQuery.Parameters.AddWithValue("@UserPassword", UserPassword);
-            _conexion.Open();
-            ClientModel response = commandInQuery.ExecuteNonQuery(); //Malo buscar como poner respuesta de query como respuesta
-            _conexion.Close();
-            return response;
+        //public ClientModel Authenticate(string UserName, string UserPassword) {
+        //    string query = @"SELECT * FROM dbo.Clients WHERE UserName=@UserName AND UserPassword=@UserPassword";
+        //    var commandInQuery = new SqlCommand(query, _conexion);
+        //    commandInQuery.Parameters.AddWithValue("@UserName", UserName);
+        //    commandInQuery.Parameters.AddWithValue("@UserPassword", UserPassword);
+        //    _conexion.Open();
+        //    DataTable result = CrearTablaConsulta(query);
+        //    _conexion.Close();
+        //    ClientModel response = new ClientModel();
+        //    response.Name = result.
+        //    return response;
+        //}
+
+        public List<ClientModel> Authenticate(string UserName, string UserPassword) {
+            List<ClientModel> clients = new List<ClientModel>();
+            string consulta = @"SELECT * FROM dbo.Clients WHERE UserName= " + UserName + " AND UserPassword=" + UserPassword;
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+
+            foreach (DataRow columna in tablaResultado.Rows) {
+                clients.Add(new ClientModel {
+                    UserID = Convert.ToInt32(columna["UserID"]),
+                    Name = Convert.ToString(columna["Name"]),
+                    LastNames = Convert.ToString(columna["LastNames"]),
+                    UserName = Convert.ToString(columna["UserName"]),
+                    Email = Convert.ToString(columna["Email"]),
+                    BirthDate = Convert.ToDateTime(columna["BirthDate"]),
+                    UserPassword = Convert.ToString(columna["UserPassword"]),
+                    AccountState = Convert.ToString(columna["AccountState"]),
+                    Rol = Convert.ToString(columna["Rol"])
+                });
+            }
+            return clients;
         }
     }
 }
