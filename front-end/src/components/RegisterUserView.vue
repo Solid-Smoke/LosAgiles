@@ -12,10 +12,10 @@
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="lastNames">Apellido(s):</label>
-                    <input v-model="formData.lastNames"
+                    <label for="LastNames">Apellido(s):</label>
+                    <input v-model="formData.LastNames"
                            type="text"
-                           id="lastNames"
+                           id="LastNames"
                            class="form-control"
                            required />
                 </div>
@@ -36,10 +36,10 @@
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="userName">Nombre de usuario:</label>
-                    <input v-model="formData.userName"
+                    <label for="UserName">Nombre de usuario:</label>
+                    <input v-model="formData.UserName"
                            type="text"
-                           id="userName"
+                           id="UserName"
                            class="form-control"
                            required />
                 </div>
@@ -85,14 +85,14 @@
 
 <script>
 import axios from "axios";
-import { BackendAPIAddress } from "@/main";
 
     export default {
         data() {
             return {
                 formData: {
-                    userName: "", Email: "", Name: "", lastNames: "",
-                   BirthDate: "", UserPassword: "", passwordConfirm: "",
+                    UserName: "", Email: "", Name: "", LastNames: "",
+                    BirthDate: "", UserPassword: "", passwordConfirm: "",
+                    AccountState: "", Rol: ""
                 },
             };
         },
@@ -108,14 +108,16 @@ import { BackendAPIAddress } from "@/main";
             saveUserDetails() {
                 console.log("Datos a guardar:", this.formData);
                 axios
-                    .post(BackendAPIAddress + "/storeUsers", {
-                        UserID: 0,
-                        userName: this.formData.userName,
+                    .post("https://localhost:7168/api/Clients", {
+                        UserID: 0, // Ignored in back-end
+                        UserName: this.formData.UserName,
                         Email: this.formData.Email,
                         Name: this.formData.Name,
-                        lastNames: this.formData.lastNames,
+                        LastNames: this.formData.LastNames,
                         BirthDate: this.formData.BirthDate,
-                        UserPassword: this.formData.UserPassword
+                        UserPassword: this.formData.UserPassword,
+                        AccountState: this.formData.AccountState, // Ignored in back-end
+                        Rol: this.formData.Rol //Ignored in back-end
                     })
                     .then(function (response) {
                         console.log(response);
