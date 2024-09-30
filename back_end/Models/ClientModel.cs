@@ -10,5 +10,6 @@
         public DateTime BirthDate { get; set; }
         public string UserPassword { get; set; }
         public string AccountState { get; set; }
+        public string Rol { get; set; }
     }
 }
