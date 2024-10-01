@@ -12,6 +12,6 @@
         public int? DailyAmount { get; set; }
         public string? DaysAvailable { get; set; }
         public int? BusinessID { get; set; }
-        public byte[]? ProductImage { get; set; }
+        public byte[]? ProductImage { get; set; } 
     }
 }
