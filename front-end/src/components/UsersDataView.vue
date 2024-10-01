@@ -112,7 +112,6 @@ import { BackendAPIAddress } from '@/main';
                         })
                     .then(
                         (response) => {
-                            console.log(response.data);
                             this.isAdmin = response.data;
                         })
                     .catch(function (error) {

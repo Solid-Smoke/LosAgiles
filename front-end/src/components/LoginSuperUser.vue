@@ -62,11 +62,9 @@ async function hashString(message) {
         methods: {
             login() {
                 document.cookie = "superUserId=" + this.userId;
-                console.log(document.cookie);
                 window.location.href = "/usersData";
             },
             verifyUser() {
-                console.log("Datos a utilizar:", this.formData);
                 hashString(this.formData.UserPassword).then(hash => {
                     axios
                         .get(BackendAPIAddress +
