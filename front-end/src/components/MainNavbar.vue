@@ -14,6 +14,7 @@
 
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item href="#">Mis datos</b-dropdown-item>
+                        <b-dropdown-item href="/direcciones">Direcciones de entrega</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Mis empresas">

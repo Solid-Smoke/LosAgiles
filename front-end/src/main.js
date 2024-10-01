@@ -8,10 +8,12 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 import App from './App.vue';
 import { createRouter, createWebHistory } from "vue-router";
 import HomepageView from './components/HomepageView.vue';
+import AddAddressForm from "./components/AddAddressForm.vue";
 import RegisterUserView from './components/RegisterUserView.vue';
 import LoginUserView from './components/LoginUserView.vue';
 import LoginAdminView from './components/LoginAdminView.vue';
 import UsersDataView from './components/UsersDataView.vue';
+import AddressListView from './components/AddressListView.vue';
 import AdminUserList from './components/AdminUserList.vue';
 import LoginSuperUser from './components/LoginSuperUser.vue';
 import MyBusinessView from './components/MyBusinessView.vue';
@@ -23,10 +25,12 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: "/", name: "Home", component: HomepageView },
+        { path: "/AddressListView/AddAddressForm", name: "AddAddressForm", component: AddAddressForm, },
         { path: "/Registro", name: "Register User", component: RegisterUserView },
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
         { path: "/usersData", name: "usersData", component: UsersDataView},
+        { path: "/direcciones", name: "AddressListView", component: AddressListView },
         { path: "/UserList", name: "userList", component: AdminUserList },
         { path: "/sudo", name: "SuperUserLogin", component: LoginSuperUser},
         { path: "/MyBusiness", name: "userBusiness", component: MyBusinessView },
