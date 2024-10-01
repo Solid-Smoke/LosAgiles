@@ -39,7 +39,7 @@
 
     export default {
         components: {
-            MainNavbar
+            MainNavbar,
         },
         data() {
             return {
@@ -54,6 +54,14 @@
                         otherSigns: '',
                     },
                 ],
+                currentBusiness: {
+                    businessID: 0,
+                    name: '',
+                    idNumber: '',
+                    email: '',
+                    telephone: '',
+                    permissions: '',
+                },
                 businesses: [
                     {
                         businessID: 0,
@@ -104,13 +112,23 @@
                 
             },
             viewInventory(business) {
-                alert(`Inventario de ${business.name}`);
-            }
+                this.$router.push({
+                    name: 'userBusinessInventory',
+                    query: {
+                        businessID: business.businessID,
+                        name: business.name,
+                        idNumber: business.idNumber,
+                        email: business.email,
+                        telephone: business.telephone,
+                        permissions: business.permissions,
+                    },
+                });
+            },
         },
         created() {
             this.getUserBusiness();
-        }
-    };
+        },
+    }
 </script>
 
 <style></style>
