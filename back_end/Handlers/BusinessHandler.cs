@@ -69,6 +69,27 @@ namespace back_end.Handlers
             }
             return businessData;
         }
+        public List<BusinessModel> getBusinessAddressByBusinessID(string employeeID)
+        {
+            List<BusinessModel> businessData = new List<BusinessModel>();
+            string query = "SELECT * FROM dbo.Employees JOIN Businesses ON Employees.BusinessID = Businesses.BusinessID " +
+                            "WHERE Employees.UserID = " + employeeID;
+            DataTable tableQueryResult = createTableResult(query);
+            foreach (DataRow column in tableQueryResult.Rows)
+            {
+                businessData.Add(
+                    new BusinessModel
+                    {
+                        BusinessID = Convert.ToInt32(column["BusinessID"]),
+                        Name = Convert.ToString(column["Name"]),
+                        IDNumber = Convert.ToString(column["IDNumber"]),
+                        Email = Convert.ToString(column["Email"]),
+                        Telephone = Convert.ToString(column["Telephone"]),
+                        Permissions = Convert.ToString(column["Permissions"]),
+                    });
+            }
+            return businessData;
+        }
 
         public bool insertNewBusiness(CompleteBusinessModel newBusiness)
         {
