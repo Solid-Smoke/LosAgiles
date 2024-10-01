@@ -96,7 +96,7 @@ export default {
                     })
                     .then(function (response) {
                         console.log(response);
-                        window.location.href = this.parent_route;
+                        window.location.href = "/direcciones";
                     })
                     .catch(function (error) {
                         console.log(error);
