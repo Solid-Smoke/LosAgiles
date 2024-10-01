@@ -69,5 +69,25 @@ namespace back_end.Handlers
             sqlConnection.Close();
             return superUserId;
         }
+
+        public bool verifySuperUserId(int realId)
+        {
+            string query = $@"SELECT SuperUserID FROM SuperUsers
+                            WHERE SuperUserID = {realId}";
+
+            bool isSuperUser = false;
+            sqlConnection.Open();
+            List<SuperUsers> queryResult = sqlConnection.Query<SuperUsers>(query).ToList();
+            if (queryResult.Count > 0)
+            {
+                isSuperUser = true;
+            }
+            else
+            {
+                isSuperUser = false;
+            }
+            sqlConnection.Close();
+            return isSuperUser;
+        }
     }
 }
