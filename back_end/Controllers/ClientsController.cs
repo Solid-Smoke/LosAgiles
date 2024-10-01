@@ -1,7 +1,7 @@
 ﻿using back_end.Handlers;
 using back_end.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace back_end.Controllers
 {
@@ -21,6 +21,13 @@ namespace back_end.Controllers
         {
             var clients = clientsHandler.ObtenerClientes();
             return clients;
+        }
+
+        [HttpGet("~/api/Login")]
+        public List<ClientModel> Login(string UserName, string UserPassword)
+        {
+            var userLogin = clientsHandler.Authenticate(UserName, UserPassword);
+            return userLogin;
         }
     }
 }

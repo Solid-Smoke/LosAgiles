@@ -14,6 +14,8 @@ import LoginAdminView from './components/LoginAdminView.vue';
 import UsersDataView from './components/UsersDataView.vue';
 import AdminUserList from './components/AdminUserList.vue';
 import LoginSuperUser from './components/LoginSuperUser.vue';
+import MyBusinessView from './components/MyBusinessView.vue';
+import MyBusinessInventoryView from './components/MyBusinessInventoryView.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -26,6 +28,8 @@ const router = createRouter({
         { path: "/usersData", name: "usersData", component: UsersDataView},
         { path: "/UserList", name: "userList", component: AdminUserList },
         { path: "/sudo", name: "SuperUserLogin", component: LoginSuperUser},
+        { path: "/MyBusiness", name: "userBusiness", component: MyBusinessView },
+        { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
     ],
 });
 

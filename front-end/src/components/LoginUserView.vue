@@ -12,12 +12,15 @@
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="UserPassword">Contrase&ntilde;a:</label>
-                    <input v-model="formData.UserPassword"
+                    <label for="userPassword">Contrase&ntilde;a:</label>
+                    <input v-model="formData.userPassword"
                            type="password"
-                           id="UserPassword"
+                           id="userPassword"
                            class="form-control"
                            required />
+                </div>
+                <div v-if="errorMessage" class="alert alert-danger">
+                    {{ errorMessage }}
                 </div>
                 <div>
                     <button type="submit" class="btn btn-success btn-block">
@@ -35,19 +38,51 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         data() {
             return {
                 formData: {
-                    userName: "", UserPassword: ""
+                    userName: "", userPassword: ""
                 },
+                errorMessage: ""
             };
         },
         methods: {
             verifyUser() {
                 console.log("Datos a utilizar:", this.formData);
+                axios.get("https://localhost:7168/api/Login", {
+                    params: {
+                        UserName: this.formData.userName,
+                        UserPassword: this.formData.userPassword
+                    }
+                }).then((response) => {
+                    console.log(response.data);
+                    if (response.data.length > 0) {
+                        this.user = response.data;
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                        window.location.href = "/";
+                    } else {
+                        console.log("Sin datos");
+                        this.errorMessage = 'Usuario o contraseña incorrectas!';
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    this.errorMessage = 'Error al conectar con el servidor.';
+                });
             },
+            logout() {
+                localStorage.removeItem('user');
+            },
+            getUserDetails() { //Usage example
+                const user = JSON.parse(localStorage.getItem('user'));
+                console.log(user[0]);
+            }
         },
+        mounted() {
+            this.logout();
+        }
     };
 </script>
 
