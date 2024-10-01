@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace back_end.Controllers
 {
@@ -39,6 +40,38 @@ namespace back_end.Controllers
                     return BadRequest();
                 }
                 return new JsonResult(encryptorDecryptor.encryptId(handler.authSuperUser(userName, passwordHash)));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, e.Message);
+            }
+        }
+
+        [HttpGet("[action]/details")]
+        public async Task<ActionResult<bool>> verifySuperUserId(string encryptedId)
+        {
+            try
+            {
+                if (encryptedId == null)
+                {
+                    return BadRequest();
+                }
+                bool isSuperUser = false;
+                try
+                {
+                    return handler.verifySuperUserId(
+                                                Int32.Parse(
+                                                    encryptorDecryptor.getRealId(encryptedId)
+                                                    )
+                                                );
+                }
+                catch
+                {
+                    return StatusCode(
+                        StatusCodes.Status404NotFound,
+                        "Bad userID or not found in super users list"
+                    );
+                }
             }
             catch (Exception e)
             {

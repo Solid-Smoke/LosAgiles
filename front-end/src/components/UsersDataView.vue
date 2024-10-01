@@ -47,18 +47,24 @@ import { BackendAPIAddress } from '@/main';
                 userCount: 1, // 1 for default display, will be overwritten
                 actualPage: 1,
                 pageMaxRows: 5,
-            }
+            };
         },
         methods: {
             getUsersData(pageNumber) {
-                axios // Calculation below is for an offset for pagination
+                axios // Calculation below is just for an offset for pagination
                     .get(BackendAPIAddress + "/getAllUsersData/details?offset="
                         + ((pageNumber - 1) * this.pageMaxRows).toString()
-                        + "&maxRows=" + this.pageMaxRows.toString())
+                        + "&maxRows=" + this.pageMaxRows.toString(), {
+                            params: {encryptedId: this.getSuperUserId()}
+                        }
+                    )
                     .then(
                         (response) => {
                             this.users = response.data;
-                        });
+                        })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             getUserCount() {
                 axios // Calculation below is for an offset for pagination
@@ -66,7 +72,10 @@ import { BackendAPIAddress } from '@/main';
                     .then(
                         (response) => {
                             this.userCount = response.data;
-                        });
+                        })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             goPrevious() {
                 if(this.actualPage > 1) {
@@ -79,7 +88,37 @@ import { BackendAPIAddress } from '@/main';
                     this.actualPage += 1;
                 }
                 this.getUsersData(this.actualPage);
-            }
+            },
+            getSuperUserId() {
+                let name = "superUserId" + "=";
+                let decodedCookie = document.cookie;
+                let ca = decodedCookie.split(';');
+                for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            },
+            verifySuperUserId() {
+                axios
+                    .get(BackendAPIAddress
+                        + "/verifySuperUserId", {
+                            params: {id: this.getSuperUserId()}
+                        })
+                    .then(
+                        (response) => {
+                            console.log(response.data);
+                            this.isAdmin = response.data;
+                        })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
         },
         created() {
             this.getUsersData(this.actualPage);
