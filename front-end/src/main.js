@@ -16,6 +16,7 @@ import AddressListView from './components/AddressListView.vue';
 import AdminUserList from './components/AdminUserList.vue';
 import MyBusinessView from './components/MyBusinessView.vue';
 import MyBusinessInventoryView from './components/MyBusinessInventoryView.vue';
+import AdminViewAllBusiness from './components/AdminViewAllBusiness.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -30,6 +31,7 @@ const router = createRouter({
         { path: "/UserList", name: "userList", component: AdminUserList },
         { path: "/MyBusiness", name: "userBusiness", component: MyBusinessView },
         { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
+        { path: "/AdminViewAllBusiness", name: "adminViewAllBusiness", component: AdminViewAllBusiness },
     ],
 });
 
