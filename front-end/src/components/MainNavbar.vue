@@ -18,12 +18,16 @@
 
                     <b-nav-item-dropdown text="Mis empresas">
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
-                        <b-dropdown-item href="/MisEmpresas">Ver empresa</b-dropdown-item>
+                        <b-dropdown-item href="/MyBusiness">Ver empresa</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item @click="openModalProduct">A&ntilde;adir Producto</b-nav-item>
+                    <b-nav-item @click="openProductModal">A&ntilde;adir Producto</b-nav-item>
+                </b-navbar-nav>
+
+                <b-navbar-nav class="ms-auto">
+                    <b-nav-item><a href="/login" class="discreteLink">Iniciar sesi&oacute;n</a></b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav>
@@ -33,7 +37,7 @@
         </b-navbar>
     </div>
     <RegisterBusinessModal ref="registerBusinessModal" />
-    <AddProductView v-model="modelShowProduct" />
+    <AddProductView ref="addProductModal" />
 </template>
 
 <script>
@@ -48,16 +52,18 @@
         data() {
             return {
                 registerBusinessModal: false,
-                modelShowProduct:false
+                addProductModal: false,
+                loginData: {
+                    userID: "1",
+                }
             }
         },
         methods: {
             openRegisterBusinessModal() {
-                this.$refs.registerBusinessModal.openModal();
-            
+                this.$refs.registerBusinessModal.openModal(this.loginData.userID);        
             },
-            openModalProduct() {
-                this.modelShowProduct = true;
+            openProductModal() {
+                this.$refs.addProductModal.openModal();
             }
         },
     };
