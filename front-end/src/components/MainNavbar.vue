@@ -20,6 +20,10 @@
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
                         <b-dropdown-item href="/MyBusiness">Ver empresa</b-dropdown-item>
                     </b-nav-item-dropdown>
+
+                    <b-nav-item-dropdown text="Admin">
+                        <b-dropdown-item href="/AdminViewAllBusiness">Ver todas las empresas registradas</b-dropdown-item>
+                    </b-nav-item-dropdown>
                 </b-navbar-nav>
 
                 <b-navbar-nav>
