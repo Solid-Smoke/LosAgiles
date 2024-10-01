@@ -12,6 +12,7 @@ import RegisterUserView from './components/RegisterUserView.vue';
 import LoginUserView from './components/LoginUserView.vue';
 import LoginAdminView from './components/LoginAdminView.vue';
 import AdminUserList from './components/AdminUserList.vue';
+import LoginSuperUser from './components/LoginSuperUser.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -22,8 +23,11 @@ const router = createRouter({
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
         { path: "/UserList", name: "userList", component: AdminUserList },
+        { path: "/sudo", name: "SuperUserLogin", component: LoginSuperUser}
     ],
 });
+
+export const BackendAPIAddress = "https://localhost:7168/api/Shop";
 
 // Crear la aplicación Vue
 const app = createApp(App);
