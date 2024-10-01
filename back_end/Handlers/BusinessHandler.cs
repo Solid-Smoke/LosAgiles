@@ -69,23 +69,22 @@ namespace back_end.Handlers
             }
             return businessData;
         }
-        public List<BusinessModel> getBusinessAddressByBusinessID(string employeeID)
+        public List<BusinessAddressModel> getBusinessAddressByBusinessID(string businessID)
         {
-            List<BusinessModel> businessData = new List<BusinessModel>();
-            string query = "SELECT * FROM dbo.Employees JOIN Businesses ON Employees.BusinessID = Businesses.BusinessID " +
-                            "WHERE Employees.UserID = " + employeeID;
+            List<BusinessAddressModel> businessData = new List<BusinessAddressModel>();
+            string query = "SELECT * FROM BusinessesAddresses WHERE BusinessID = "+businessID;
             DataTable tableQueryResult = createTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {
                 businessData.Add(
-                    new BusinessModel
+                    new BusinessAddressModel
                     {
                         BusinessID = Convert.ToInt32(column["BusinessID"]),
-                        Name = Convert.ToString(column["Name"]),
-                        IDNumber = Convert.ToString(column["IDNumber"]),
-                        Email = Convert.ToString(column["Email"]),
-                        Telephone = Convert.ToString(column["Telephone"]),
-                        Permissions = Convert.ToString(column["Permissions"]),
+                        Province = Convert.ToString(column["Province"]),
+                        Canton = Convert.ToString(column["Canton"]),
+                        District = Convert.ToString(column["District"]),
+                        PostalCode = Convert.ToString(column["PostalCode"]),
+                        OtherSigns = Convert.ToString(column["OtherSigns"]),
                     });
             }
             return businessData;

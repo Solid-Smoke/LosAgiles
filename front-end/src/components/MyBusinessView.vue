@@ -1,42 +1,42 @@
 <template>
     <MainNavbar />
-        <h1 class="display-4 text-center mb-4"><strong>Emprendimientos</strong></h1>
-        <b-container class="d-flex justify-content-center">
-            <b-row cols="6">
-                <b-col md="auto">Nombre</b-col>
-                <b-col md="auto">Cédula Asociada</b-col>
-                <b-col md="auto">Información de Contacto</b-col>
-                <b-col md="auto">Permisos</b-col>
-                <b-col md="auto">Ubicación</b-col>
-                <b-col md="auto">Ver Inventario</b-col>
-            </b-row>
-
-            <b-row v-for="business in businesses" :key="business.BusinessID" class="mb-2">
-                <b-col>{{ business.BusinessID }}</b-col>
-                <b-col>{{ business.Name }}</b-col>
-                <b-col>{{ business.IDNumber }}</b-col>
-
-                <b-col>
-                    <b-button @click="showContactInfo(business)" variant="primary">Ver Contacto</b-button>
-                </b-col>
-
-                <b-col>{{ business.Permissions }}</b-col>
-
-                <b-col>
-                    <b-button @click="showLocation(business)" variant="success">Ver Ubicación</b-button>
-                </b-col>
-
-                <b-col>
-                    <b-button @click="viewInventory(business)" variant="info">Inventario</b-button>
-                </b-col>
-
-            </b-row>
-        </b-container>
+    <h1 class="display-4 text-center mb-4"><strong>Emprendimientos</strong></h1>
+    <div class="table-responsive-sm">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Cédula Asociada</th>
+                    <th scope="col">Información de Contacto</th>
+                    <th scope="col">Permisos</th>
+                    <th scope="col">Ubicación</th>
+                    <th scope="col">Ver Inventario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="business in businesses" :key="business.businessID">
+                    <td>{{ business.name }}</td>
+                    <td>{{ business.idNumber }}</td>
+                    <td>
+                        <button v-on:click="showContactInfo(business)" class="btn btn-primary">Ver Contacto</button>
+                    </td>
+                    <td>{{ business.permissions }}</td>
+                    <td>
+                        <button v-on:click="showLocation(business)" class="btn btn-success">Ver Ubicación</button>
+                    </td>
+                    <td>
+                        <button v-on:click="viewInventory(business)" class="btn btn-info">Inventario</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
     import MainNavbar from './MainNavbar.vue';
     import axios from "axios";
+
     export default {
         components: {
             MainNavbar
@@ -44,49 +44,70 @@
         data() {
             return {
                 userID: "3",
-                businesses: [
+                address: [
                     {
-                        UserID: 1,
-                        BusinessID: 101,
-                        Name: 'Business Name 1',
-                        IDNumber: '123456789',
-                        Email: 'email@example.com',
-                        Telephone: '123-456-7890',
-                        Permissions: 'Admin, Manager',
-                        Province: 'San José',
-                        Canton: 'Central',
-                        District: 'Carmen',
-                        PostalCode: '10101',
-                        OtherSigns: 'Some landmark details'
+                        businessID: 0,
+                        province: '',
+                        canton: '',
+                        district: '',
+                        postalCode: '',
+                        otherSigns: '',
                     },
                 ],
-            }
+                businesses: [
+                    {
+                        businessID: 0,
+                        name: '',
+                        idNumber: '',
+                        email: '',
+                        telephone: '',
+                        permissions: '',
+                    },
+                ],
+            };
         },
-
         methods: {
             getUserBusiness() {
                 axios.get("https://localhost:7168/api/BusinessDataByEmployeeID", {
-                    params: { EmployeeID: this.userID, },
+                    params: { EmployeeID: this.userID },
                 }).then(
                     (response) => {
                         this.businesses = response.data;
-                    });
+                        console.log(this.businesses);
+                    }
+                );
             },
             showContactInfo(business) {
-                // Emitimos el prop o acción para mostrar la información de contacto
-                alert(`Contacto de ${business.Name}: ${business.Email}, Tel: ${business.Telephone}`);
+                alert("Contacto de " + business.name + "\n\t" +
+                        "Correo: " + business.email + "\n\t" +
+                        "Número Telefónico: " +business.telephone);
             },
-            showLocation(business) {
-                // Emitimos el prop o acción para mostrar la ubicación
-                alert(`Ubicación de ${business.Name}: ${business.Province}, ${business.Canton}, ${business.District}`);
+            async loadLocation(business) {
+                try {
+                    const response = await axios.get("https://localhost:7168/api/BusinesessAddresessByBusinessID", {
+                        params: { BusinessID: business.businessID },
+                    });
+                    this.address = response.data[0];
+                } catch (error) {
+                    console.error("Error al cargar la ubicación: ", error);
+                }
+            },
+            async showLocation(business) {
+                await this.loadLocation(business);
+                console.log(this.address);
+                alert("Ubicación de " + business.name + "\n\t" +
+                    "Provincia: " + this.address.province + "\n\t" +
+                    "Canton: " + this.address.canton + "\n\t" +
+                    "Distrito: " + this.address.district + "\n\t" +
+                    "Codigo Postal: " + this.address.postalCode + "\n\t" +
+                    "Otras Señales: " + this.address.otherSigns);
+                
             },
             viewInventory(business) {
-                // Lógica para ver el inventario del negocio
-                alert(`Inventario de ${business.Name}`);
-            },
+                alert(`Inventario de ${business.name}`);
+            }
         },
-
-        created: function () {
+        created() {
             this.getUserBusiness();
         }
     };
