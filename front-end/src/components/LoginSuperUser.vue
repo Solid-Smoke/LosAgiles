@@ -61,9 +61,9 @@ async function hashString(message) {
         },
         methods: {
             login() {
-                document.cookie = "userId=" + this.userId;
+                document.cookie = "superUserId=" + this.userId;
                 console.log(document.cookie);
-                window.location.href = "/";
+                window.location.href = "/UserList";
             },
             verifyUser() {
                 console.log("Datos a utilizar:", this.formData);
