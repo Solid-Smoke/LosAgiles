@@ -24,5 +24,23 @@ namespace back_end.Handlers
             }
         }
 
+        public int authSuperUser(string userName, string passwordHash)
+        {
+            string query = $@"SELECT SuperUserID FROM SuperUsers
+                            WHERE Username = '{userName}'
+                            AND [Password] = '{passwordHash}'";
+            int superUserId;
+            sqlConnection.Open();
+            List<SuperUsers> queryResult = sqlConnection.Query<SuperUsers>(query).ToList();
+            if (queryResult.Count > 0)
+            {
+                superUserId = queryResult[0].SuperUserID;
+            } else
+            {
+                throw new Exception("authSuperUser: Bad user or password");
+            }
+            sqlConnection.Close();
+            return superUserId;
+        }
     }
 }
