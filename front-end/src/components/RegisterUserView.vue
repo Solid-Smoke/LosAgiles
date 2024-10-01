@@ -1,87 +1,82 @@
 <template>
-    <div class="col-1 p-4 pb-0">
-        <a href="/">
-            <button type="button" class="btn btn-secondary">
-                Regresar
-            </button>
-        </a>
-    </div>
     <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="card p-4 shadow" style="max-width: 400px; width: 100%">
+        <div class="card p-4 shadow" style="max-width: 600px; width: 100%">
             <h3 class="text-center">Registro de usuario</h3>
-            <form @submit.prevent="guardarDatosUsuario">
+            <form @submit.prevent="saveUserDetails">
                 <div class="form-group">
-                    <label for="nombre">Nombre:</label>
-                    <input v-model="datosFormulario.nombre"
+                    <label for="Name">Nombre:</label>
+                    <input v-model="formData.Name"
                            type="text"
-                           id="nombre"
+                           id="Name"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="apellidos">Apellido(s):</label>
-                    <input v-model="datosFormulario.apellidos"
+                    <label for="LastNames">Apellido(s):</label>
+                    <input v-model="formData.LastNames"
                            type="text"
-                           id="apellidos"
+                           id="LastNames"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="cedula">Cedula:</label>
-                    <input v-model="datosFormulario.cedula"
-                           type="text"
-                           id="cedula"
-                           class="form-control"
-                           required />
-                </div>
-                <div class="form-group">
-                    <label for="fechaNacimiento">Fecha de nacimiento:</label>
-                    <input v-model="datosFormulario.fechaNacimiento"
+                    <label for="BirthDate">Fecha de nacimiento:</label>
+                    <input v-model="formData.BirthDate"
                            type="date"
-                           id="fechaNacimiento"
+                           id="BirthDate"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="correo">Correo electronico:</label>
-                    <input v-model="datosFormulario.correo"
+                    <label for="Email">Correo electr&oacute;nico:</label>
+                    <input v-model="formData.Email"
                            type="email"
-                           id="correo"
+                           id="Email"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="nombreUsuario">Nombre de usuario:</label>
-                    <input v-model="datosFormulario.nombreUsuario"
+                    <label for="UserName">Nombre de usuario:</label>
+                    <input v-model="formData.UserName"
                            type="text"
-                           id="nameUsuario"
+                           id="UserName"
                            class="form-control"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="contrasena">Contrase&ntilde;a:</label>
-                    <input v-model="datosFormulario.contrasena"
+                    <label for="UserPassword">Contrase&ntilde;a:</label>
+                    <input v-model="formData.UserPassword"
                            type="password"
-                           id="contrasena"
+                           id="UserPassword"
                            class="form-control"
+                           @input="validatePasswords"
                            required />
                 </div>
                 <div class="form-group">
-                    <label for="contrasena2">Repetir contrase&ntilde;a:</label>
-                    <input type="password"
-                           id=""
+                    <label for="passwordConfirm">Repetir contrase&ntilde;a:</label>
+                    <input v-model="formData.passwordConfirm"
+                           type="password"
+                           id="passwordConfirm"
                            class="form-control"
+                           @input="validatePasswords"
+                           ref="confirmInput"
                            required />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-info btn-block" @click="ingresarDireccion">
-                        Ingresar Direccion
+                    <button type="button" class="btn btn-info btn-block"
+                            @click="ingresarDireccion">
+                        Ingresar direcci&oacute;n de entrega
                     </button>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-success btn-block">
-                        Guardar
+                        Registrarse
                     </button>
+                    <a href="/" class="mx-2">
+                        <button type="button" class="btn btn-secondary">
+                            Regresar
+                        </button>
+                    </a>
                 </div>
             </form>
         </div>
@@ -89,18 +84,48 @@
 </template>
 
 <script>
+import axios from "axios";
+
     export default {
         data() {
             return {
-                datosFormulario: {
-                    nombreUsuario: "", correo: "", nombre: "",
-                    apellidos: "", fechaNacimiento: "", contrasena: ""
+                formData: {
+                    UserName: "", Email: "", Name: "", LastNames: "",
+                    BirthDate: "", UserPassword: "", passwordConfirm: "",
+                    AccountState: "", Rol: ""
                 },
             };
         },
         methods: {
-            guardarDatosUsuario() {
-                console.log("Datos a guardar:", this.datosFormulario);
+            validatePasswords() {
+                const confirmInput = this.$refs.confirmInput;
+                if (this.formData.passwordConfirm === this.formData.UserPassword) {
+                    confirmInput.setCustomValidity('');
+                } else {
+                    confirmInput.setCustomValidity('No coincide con el espacio anterior');
+                }
+            },
+            saveUserDetails() {
+                console.log("Datos a guardar:", this.formData);
+                axios
+                    .post("https://localhost:7168/api/Clients", {
+                        UserID: 0, // Ignored in back-end
+                        UserName: this.formData.UserName,
+                        Email: this.formData.Email,
+                        Name: this.formData.Name,
+                        LastNames: this.formData.LastNames,
+                        BirthDate: this.formData.BirthDate,
+                        UserPassword: this.formData.UserPassword,
+                        AccountState: this.formData.AccountState, // Ignored in back-end
+                        Rol: this.formData.Rol //Ignored in back-end
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                        window.location.href = "/";
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
         },
     };

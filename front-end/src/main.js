@@ -29,6 +29,8 @@ const router = createRouter({
     ],
 });
 
+export const BackendAPIAddress = "https://localhost:7168/api/Shop";
+
 // Crear la aplicación Vue
 const app = createApp(App);
 
