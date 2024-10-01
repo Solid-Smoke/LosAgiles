@@ -33,7 +33,8 @@ namespace back_end.Controllers
         {
             return handler.getUserCount();
         }
-        
+
+        [HttpGet("[action]/details")]        
         public async Task<ActionResult<string>> authSuperUser(string userName, string passwordHash)
         {
             try
