@@ -1,6 +1,6 @@
 <template>
     <MainNavbar />
-    <h1 class="display-4 text-center mb-4"><strong>Emprendimientos</strong></h1>
+    <h1 class="display-4 text-center mb-4"><strong>Emprendimientos Registrados</strong></h1>
     <div class="table-responsive-sm">
         <table class="table table-striped table-hover">
             <thead>
@@ -54,14 +54,6 @@
                         otherSigns: '',
                     },
                 ],
-                currentBusiness: {
-                    businessID: 0,
-                    name: '',
-                    idNumber: '',
-                    email: '',
-                    telephone: '',
-                    permissions: '',
-                },
                 businesses: [
                     {
                         businessID: 0,
@@ -76,10 +68,8 @@
         },
         methods: {
             getUserBusiness() {
-                axios.get("https://localhost:7168/api/BusinessDataByEmployeeID", {
-                    params: { EmployeeID: this.userID },
-                }).then(
-                    (response) => {
+                axios.get("https://localhost:7168/api/AllBusinessData").
+                    then((response) => {
                         this.businesses = response.data;
                         console.log(this.businesses);
                     }
