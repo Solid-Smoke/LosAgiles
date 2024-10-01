@@ -35,5 +35,12 @@ namespace back_end.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto");
             }
         }
+
+        [HttpGet("~/api/ProductsByBusinessID")]
+        public List<ProductModel> getProductsByBusinessID(int businessID)
+        {
+            var products = _productHandler.getProductsByBusinessID(Convert.ToString(businessID));
+            return products;
+        }
     }
 }

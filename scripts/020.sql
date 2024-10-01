@@ -1,0 +1,6 @@
+CREATE TABLE SuperUsers (
+    SuperUserID INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    Username VARCHAR(30) NOT NULL UNIQUE,
+    [Password] VARCHAR(512) NOT NULL
+);
+GO

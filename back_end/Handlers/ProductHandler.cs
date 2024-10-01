@@ -6,13 +6,13 @@ namespace back_end.Handlers
 {
     public class ProductHandler
     {
-        private SqlConnection _conexion;
-        private string _rutaConexion;
+        private readonly SqlConnection _conexion;
+        private string? _rutaConexion;
 
         public ProductHandler()
         {
             var builder = WebApplication.CreateBuilder();
-            _rutaConexion = builder.Configuration.GetConnectionString("ClientsContext");
+            _rutaConexion = builder.Configuration.GetConnectionString("ARQContext");
             _conexion = new SqlConnection(_rutaConexion);
         }
 
@@ -21,6 +21,17 @@ namespace back_end.Handlers
             _conexion.Open();
             comando.ExecuteNonQuery();
             _conexion.Close();
+        }
+
+        private DataTable createTableResult(string query)
+        {
+            SqlCommand selectCommand = new SqlCommand(query, _conexion);
+            SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
+            DataTable resultTable = new DataTable();
+            _conexion.Open();
+            tableAdapter.Fill(resultTable);
+            _conexion.Close();
+            return resultTable;
         }
 
         public bool CrearProducto(ProductModel producto)
@@ -61,6 +72,32 @@ namespace back_end.Handlers
             }
 
             return true;
+        }
+
+        public List<ProductModel> getProductsByBusinessID(string businessID)
+        {
+            List<ProductModel> businessData = new List<ProductModel>();
+            string query = "SELECT * FROM PRODUCTS WHERE BusinessID = " + businessID;
+            DataTable tableQueryResult = createTableResult(query);
+            foreach (DataRow column in tableQueryResult.Rows)
+            {
+                businessData.Add(
+                    new ProductModel
+                    {
+                        ProductID = Convert.ToInt32(column["ProductID"]),
+                        Name = Convert.ToString(column["Name"]),
+                        Description = Convert.ToString(column["Description"]),
+                        Price = Convert.ToInt32(column["Price"]),
+                        Stock = Convert.ToInt32(column["Stock"]),
+                        Weight = Convert.ToDecimal(column["Weight"]),
+                        Perishable = Convert.ToBoolean(column["Perishable"]),
+                        DailyAmount = Convert.ToInt32(column["DailyAmount"]),
+                        DaysAvailable = Convert.ToString(column["DaysAvailable"]),
+                        BusinessID = Convert.ToInt32(column["BusinessID"]),
+                        ProductImage = (byte[])column["ProductImage"]
+                    });
+            }
+            return businessData;
         }
     }
 }
