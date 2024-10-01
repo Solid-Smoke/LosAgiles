@@ -53,13 +53,15 @@
         data() {
             return {
                 registerBusinessModal: false,
-                addProductModal:false
+                addProductModal: false,
+                loginData: {
+                    userID: "1",
+                }
             }
         },
         methods: {
             openRegisterBusinessModal() {
-                this.$refs.registerBusinessModal.openModal();
-            
+                this.$refs.registerBusinessModal.openModal(this.loginData.userID);        
             },
             openProductModal() {
                 this.$refs.addProductModal.openModal();
