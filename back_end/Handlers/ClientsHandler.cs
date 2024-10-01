@@ -51,5 +51,23 @@ namespace back_end.Handlers
             }
             return clients;
         }
+
+        public bool RegisterUser(ClientModel client) {
+            string query = @"INSERT INTO [dbo].[Clients] ([Name],[LastNames],
+                        [UserName],[Email],[BirthDate],[UserPassword])
+                        VALUES(@Name, @LastNames, @UserName, @Email,
+                        @BirthDate, @UserPassword) ";
+            var commandInQuery = new SqlCommand(query, _conexion);
+            commandInQuery.Parameters.AddWithValue("@Name", client.Name);
+            commandInQuery.Parameters.AddWithValue("@LastNames", client.LastNames);
+            commandInQuery.Parameters.AddWithValue("@UserName", client.UserName);
+            commandInQuery.Parameters.AddWithValue("@Email", client.Email);
+            commandInQuery.Parameters.AddWithValue("@BirthDate", client.BirthDate);
+            commandInQuery.Parameters.AddWithValue("@UserPassword", client.UserPassword);
+            _conexion.Open();
+            bool success = commandInQuery.ExecuteNonQuery() >= 1;
+            _conexion.Close();
+            return success;
+        }
     }
 }
