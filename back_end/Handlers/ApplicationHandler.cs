@@ -89,5 +89,41 @@ namespace back_end.Handlers
             sqlConnection.Close();
             return isSuperUser;
         }
+        public List<ClientsAddresses> getAllClientAddresses(int userId)
+        {
+            sqlConnection.Open();
+            string query = $@"SELECT * FROM ClientsAddresses
+                       WHERE UserID = {userId}";
+            var addresses = sqlConnection.Query<ClientsAddresses>(query)
+                .ToList();
+            sqlConnection.Close();
+            return addresses;
+        }
+        private int query(string query)
+        {
+            sqlConnection.Open();
+            int rowsAffected = sqlConnection.Execute(query);
+            sqlConnection.Close();
+            return rowsAffected;
+        }
+
+        public int storeClientAddress(ClientsAddress address)
+        {
+            string query = $@"INSERT INTO ClientsAddresses
+                            (UserID,
+                            Province,
+                            Canton,
+                            District,
+                            PostalCode,
+                            OtherSigns)
+                            VALUES (
+                            {address.UserID},
+                            '{address.Province}',
+                            '{address.Canton}',
+                            '{address.District}',
+                            {address.PostalCode},
+                            '{address.OtherSigns}')";
+            return this.query(query);
+        }
     }
 }
