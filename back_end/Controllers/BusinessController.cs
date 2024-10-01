@@ -28,6 +28,12 @@ namespace back_end.Controllers
             var businesses = _businessHandler.getBusinessByEmployeeID(employeeID);
             return businesses;
         }
+        [HttpGet("~/api/BusinesessAddresessByBusinessID")]
+        public List<BusinessAddressModel> getBusinesessAddresessByBusinessID(int businessID)
+        {
+            var businesses = _businessHandler.getBusinessAddressByBusinessID(Convert.ToString(businessID));
+            return businesses;
+        }
 
         [HttpPost("~/api/NewBusiness")]
         public async Task<ActionResult<bool>> createNewBusiness(CompleteBusinessModel newBusiness)

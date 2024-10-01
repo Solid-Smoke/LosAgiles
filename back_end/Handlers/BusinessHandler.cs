@@ -69,6 +69,26 @@ namespace back_end.Handlers
             }
             return businessData;
         }
+        public List<BusinessAddressModel> getBusinessAddressByBusinessID(string businessID)
+        {
+            List<BusinessAddressModel> businessData = new List<BusinessAddressModel>();
+            string query = "SELECT * FROM BusinessesAddresses WHERE BusinessID = "+businessID;
+            DataTable tableQueryResult = createTableResult(query);
+            foreach (DataRow column in tableQueryResult.Rows)
+            {
+                businessData.Add(
+                    new BusinessAddressModel
+                    {
+                        BusinessID = Convert.ToInt32(column["BusinessID"]),
+                        Province = Convert.ToString(column["Province"]),
+                        Canton = Convert.ToString(column["Canton"]),
+                        District = Convert.ToString(column["District"]),
+                        PostalCode = Convert.ToString(column["PostalCode"]),
+                        OtherSigns = Convert.ToString(column["OtherSigns"]),
+                    });
+            }
+            return businessData;
+        }
 
         public bool insertNewBusiness(CompleteBusinessModel newBusiness)
         {
