@@ -12,6 +12,8 @@ import RegisterUserView from './components/RegisterUserView.vue';
 import LoginUserView from './components/LoginUserView.vue';
 import LoginAdminView from './components/LoginAdminView.vue';
 import AdminUserList from './components/AdminUserList.vue';
+import MyBusinessView from './components/MyBusinessView.vue';
+import MyBusinessInventoryView from './components/MyBusinessInventoryView.vue';
 
 // Configurar el enrutador
 const router = createRouter({
@@ -22,8 +24,12 @@ const router = createRouter({
         { path: "/Login", name: "Login", component: LoginUserView },
         { path: "/AdminLogin", name: "adminLogin", component: LoginAdminView },
         { path: "/UserList", name: "userList", component: AdminUserList },
+        { path: "/MyBusiness", name: "userBusiness", component: MyBusinessView },
+        { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
     ],
 });
+
+export const BackendAPIAddress = "https://localhost:7168/api/Shop";
 
 // Crear la aplicación Vue
 const app = createApp(App);
