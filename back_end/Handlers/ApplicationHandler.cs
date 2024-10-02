@@ -11,7 +11,7 @@ namespace back_end.Handlers
         {
             var builder = WebApplication.CreateBuilder();
             var connectionRoute =
-            builder.Configuration.GetConnectionString("ApplicationDBContext");
+            builder.Configuration.GetConnectionString("ClientsContext");
             sqlConnection = new SqlConnection(connectionRoute);
         }
 
