@@ -1,5 +1,5 @@
-USE LosAgilesDB
-GO;
+USE LosAgilesDB;
+GO
 
 CREATE TABLE Products (
 	ProductID INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
@@ -14,7 +14,7 @@ CREATE TABLE Products (
 	BusinessID INT NOT NULL,
 	FOREIGN KEY (BusinessID) REFERENCES Businesses(BusinessID)
 );
-GO;
+GO
 
 CREATE TABLE Images (
 	ImageID INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
@@ -22,4 +22,4 @@ CREATE TABLE Images (
 	ProductID INT NOT NULL,
 	FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
 );
-GO;
+GO

@@ -1,5 +1,5 @@
-USE LosAgilesDB
-GO;
+USE LosAgilesDB;
+GO
 
 CREATE TABLE Clients (
     UserID INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
@@ -13,4 +13,4 @@ CREATE TABLE Clients (
     Rol VARCHAR(12) NOT NULL DEFAULT 'Comprador',
     UNIQUE(UserName, Email)
 );
-GO;
+GO
