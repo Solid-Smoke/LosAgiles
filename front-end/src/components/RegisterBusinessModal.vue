@@ -123,10 +123,14 @@
             };
         },
         methods: {
+            getUserId() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return Number(user[0].userID);
+            },
             saveBusinessData() {
                 axios
                     .post("https://localhost:7168/api/NewBusiness", {
-                        userid: this.businessData.userID,
+                        userid: this.getUserId(),
                         businessid: 0,
                         name: this.businessData.businessName,
                         idnumber: this.businessData.businessID,

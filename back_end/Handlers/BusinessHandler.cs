@@ -12,7 +12,7 @@ namespace back_end.Handlers
         public BusinessHandler()
         {
             var builder = WebApplication.CreateBuilder();
-            _routeConnection = builder.Configuration.GetConnectionString("ARQContext");
+            _routeConnection = builder.Configuration.GetConnectionString("ClientsContext");
             _connection = new SqlConnection(_routeConnection);
         }
 
