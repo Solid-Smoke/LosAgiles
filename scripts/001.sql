@@ -1,8 +1,8 @@
-USE master
-GO;
+USE master;
+GO
 
-CREATE DATABASE LosAgilesDB
-GO;
+CREATE DATABASE LosAgilesDB;
+GO
 
-USE LosAgilesDB
-GO;
+USE LosAgilesDB;
+GO

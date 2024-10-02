@@ -1,5 +1,5 @@
-USE LosAgilesDB
-GO;
+USE LosAgilesDB;
+GO
 
 CREATE TABLE ClientsAddresses (
     AddressID INT NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -10,7 +10,7 @@ CREATE TABLE ClientsAddresses (
     PostalCode INT NOT NULL,
     OtherSigns VARCHAR(500) NOT NULL
 );
-GO;
+GO
 
 CREATE TABLE Businesses (
     BusinessID INT NOT NULL PRIMARY KEY IDENTITY(1,1),      
@@ -20,7 +20,7 @@ CREATE TABLE Businesses (
     Telephone NVARCHAR(20) NOT NULL,          
     Permissions NVARCHAR(200),         
 );
-GO;
+GO
 
 CREATE TABLE BusinessesAddresses (
     BusinessID INT NOT NULL PRIMARY KEY FOREIGN KEY REFERENCES Businesses(BusinessID),
@@ -30,4 +30,4 @@ CREATE TABLE BusinessesAddresses (
     PostalCode NVARCHAR(10) NOT NULL,
     OtherSigns VARCHAR(500) NOT NULL
 );
-GO;
+GO

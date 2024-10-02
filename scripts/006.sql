@@ -1,5 +1,5 @@
-USE LosAgilesDB
-GO;
+USE LosAgilesDB;
+GO
 
 CREATE TABLE Employees (
 	BusinessID INT NOT NULL,                  
@@ -8,4 +8,4 @@ CREATE TABLE Employees (
     CONSTRAINT FK_BusinessEmployee FOREIGN KEY (BusinessID) REFERENCES Businesses(BusinessID),
 	CONSTRAINT FK_ClientEmployee FOREIGN KEY (UserID) REFERENCES Clients(UserID)
 );
-GO;
+GO
