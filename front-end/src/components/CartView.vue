@@ -18,7 +18,7 @@
                     <td>{{ product.businessName }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>₡ {{ product.price }}</td>
-                    <td>₡ {{ (product.quantity * product.price).toFixed(2) }}</td>
+                    <td>₡ {{ product.total }}</td>
                 </tr>
             </tbody>
         </table>
@@ -48,29 +48,36 @@ export default {
                     businessName: 'Emprendimiento A',
                     quantity: 2,
                     price: 1000,
+                    total: 2000,
                 },
             ],
             userID: 0,
         };
     },
-    computed: {
-        totalPrice() {
-            return this.cartProducts.reduce((total, product) => total + product.quantity * product.price, 0);
-        },
-    },
     methods: {
+        getUserCart() {
+
+        }
         checkout() {
             alert("Compra realizada con éxito!");
-            
         },
         clearCart() {
             this.cartProducts = [];
-            
         },
         closeCart() {
             this.$router.push({ name: 'Home' });
         },
+        getUserId() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            return Number(user[0].userID);
+        },
     },
+    mounted() {
+        this.userID = this.getUserId();
+    },
+    created() {
+
+    }
 };</script>
 
 <style scoped>
