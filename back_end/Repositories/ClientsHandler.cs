@@ -51,8 +51,7 @@ namespace back_end.Repositories
             return clients;
         }
 
-        public bool RegisterUser(ClientModel client)
-        {
+        public bool RegisterUser(ClientModel client) {
             string query = @"INSERT INTO [dbo].[Clients] ([Name],[LastNames], 
                         [UserName],[Email],[BirthDate],[UserPassword]) 
                         VALUES(@Name, @LastNames, @UserName, @Email, 
@@ -70,8 +69,7 @@ namespace back_end.Repositories
             return success;
         }
 
-        public List<ClientModel> Authenticate(string UserName, string UserPassword)
-        {
+        public List<ClientModel> Authenticate(string UserName, string UserPassword) {
             List<ClientModel> clients = new List<ClientModel>();
             string consulta = @"SELECT * FROM dbo.Clients WHERE UserName = '" + UserName + "' AND UserPassword = '" + UserPassword + "'";
             DataTable tablaResultado = CrearTablaConsulta(consulta);
