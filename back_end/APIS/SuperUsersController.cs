@@ -1,8 +1,8 @@
-﻿using back_end.Handlers;
-using back_end.Models;
+﻿using back_end.Domain;
+using back_end.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace back_end.Controllers {
+namespace back_end.APIS {
     [Route("api/[controller]")]
     [ApiController]
     public class SuperUsersController : ControllerBase {

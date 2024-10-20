@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace back_end.Models
+namespace back_end.Domain
 {
     public class EncryptDecryptUtilities
     {
@@ -15,7 +14,7 @@ namespace back_end.Models
         {
             int keyBytesCount = 32; // 32 for 256 bits encryption
             int IVbytesCount = 16; // for 128 bits
-            byte[] aesKey = new byte[keyBytesCount]; 
+            byte[] aesKey = new byte[keyBytesCount];
             // IV is a cryptography concept
             byte[] aesIV = new byte[IVbytesCount];
             byte[] bin = new byte[10]; //This is intermediate storage for the dencryption.
@@ -64,7 +63,6 @@ namespace back_end.Models
             string plaintext = null;
             byte[] aesKey = new byte[32];
             byte[] aesIV = new byte[16];
-            byte[] encrypted;
             for (int i = 0; i < 32; i++)
             {
                 aesKey[i] = 3;

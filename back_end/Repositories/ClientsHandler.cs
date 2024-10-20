@@ -1,8 +1,8 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace back_end.Handlers
+namespace back_end.Repositories
 {
     public class ClientsHandler
     {
@@ -69,8 +69,7 @@ namespace back_end.Handlers
             return success;
         }
 
-        public List<ClientModel> Authenticate(string UserName, string UserPassword)
-        {
+        public List<ClientModel> Authenticate(string UserName, string UserPassword) {
             List<ClientModel> clients = new List<ClientModel>();
             string consulta = @"SELECT * FROM dbo.Clients WHERE UserName = '" + UserName + "' AND UserPassword = '" + UserPassword + "'";
             DataTable tablaResultado = CrearTablaConsulta(consulta);

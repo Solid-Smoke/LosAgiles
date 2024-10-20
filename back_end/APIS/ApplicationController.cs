@@ -1,14 +1,8 @@
-using Microsoft.AspNetCore.Http;
+using back_end.Domain;
+using back_end.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using back_end.Models;
-using back_end.Handlers;
-using System.Security.Cryptography;
-using System.Text;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 
-namespace back_end.Controllers
+namespace back_end.APIS
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +24,7 @@ namespace back_end.Controllers
             return handler.getUserCount();
         }
 
-        [HttpGet("[action]/details")]        
+        [HttpGet("[action]/details")]
         public async Task<ActionResult<string>> authSuperUser(string userName, string passwordHash)
         {
             try
@@ -56,7 +50,6 @@ namespace back_end.Controllers
                 {
                     return BadRequest();
                 }
-                bool isSuperUser = false;
                 try
                 {
                     return handler.verifySuperUserId(
@@ -72,7 +65,7 @@ namespace back_end.Controllers
                         "Bad userID or not found in super users list"
                     );
                 }
-}
+            }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status404NotFound, e.Message);
@@ -110,7 +103,7 @@ namespace back_end.Controllers
                                                     encryptorDecryptor.getRealId(encryptedId)
                                                     )
                                                 );
-                } 
+                }
                 catch
                 {
                     return StatusCode(
@@ -118,7 +111,7 @@ namespace back_end.Controllers
                         "Bad userID or not found in super users list"
                     );
                 }
-                
+
                 if (encryptedId == null)
                 {
                     return BadRequest();
@@ -136,7 +129,8 @@ namespace back_end.Controllers
                         handler.getAllUsersData(offset, maxRows)
                     );
                 }
-                else {
+                else
+                {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }

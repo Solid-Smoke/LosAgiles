@@ -1,9 +1,8 @@
-﻿using back_end.Handlers;
-using back_end.Models;
+﻿using back_end.Domain;
+using back_end.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace back_end.Controllers
+namespace back_end.APIS
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,9 +23,12 @@ namespace back_end.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> RegisterUser(ClientModel client) {
-            try {
-                if (client == null) {
+        public async Task<ActionResult<bool>> RegisterUser(ClientModel client)
+        {
+            try
+            {
+                if (client == null)
+                {
                     return BadRequest();
                 }
 
@@ -34,7 +36,8 @@ namespace back_end.Controllers
                 var result = clientsHandler.RegisterUser(client);
                 return new JsonResult(result);
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error creating user");
             }

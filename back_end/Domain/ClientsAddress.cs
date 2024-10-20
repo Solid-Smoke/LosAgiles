@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace back_end.Models;
+﻿namespace back_end.Domain;
 
 public partial class ClientsAddress
 {

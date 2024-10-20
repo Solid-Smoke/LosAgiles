@@ -1,8 +1,8 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace back_end.Handlers
+namespace back_end.Repositories
 {
     public class BusinessHandler
     {
@@ -72,7 +72,7 @@ namespace back_end.Handlers
         public List<BusinessAddressModel> getBusinessAddressByBusinessID(string businessID)
         {
             List<BusinessAddressModel> businessData = new List<BusinessAddressModel>();
-            string query = "SELECT * FROM BusinessesAddresses WHERE BusinessID = "+businessID;
+            string query = "SELECT * FROM BusinessesAddresses WHERE BusinessID = " + businessID;
             DataTable tableQueryResult = createTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {
