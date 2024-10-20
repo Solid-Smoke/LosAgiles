@@ -1,3 +1,6 @@
+USE LosAgilesDB;
+GO
+
 CREATE TABLE [ShoppingCarts] (
     [ClientID] int NOT NULL,
     [ProductID] int NOT NULL,
