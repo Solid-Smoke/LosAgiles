@@ -1,4 +1,4 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Application
