@@ -13,7 +13,7 @@
                     </b-nav-form>
 
                     <b-nav-item-dropdown text="Mi perfil" right>
-                        <b-dropdown-item href="#">Mis datos</b-dropdown-item>
+                        <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
                         <b-dropdown-item href="/VerCarrito">Carrito</b-dropdown-item>
                         <b-dropdown-item href="/direcciones">Direcciones de entrega</b-dropdown-item>
                     </b-nav-item-dropdown>
@@ -44,21 +44,25 @@
     </div>
     <RegisterBusinessModal ref="registerBusinessModal" />
     <AddProductView ref="addProductModal" />
+    <UserPersonalDetails ref="personalDetailsModal" />
 </template>
 
 <script>
     import RegisterBusinessModal from './RegisterBusinessModal.vue';
     import AddProductView from './AddProductView.vue';
+    import UserPersonalDetails from './UserPersonalDetails.vue';
 
     export default {
         components: {
             RegisterBusinessModal,
-            AddProductView
+            AddProductView,
+            UserPersonalDetails
         },
         data() {
             return {
                 registerBusinessModal: false,
                 addProductModal: false,
+                personalDetailsModal: false,
                 loginData: {
                     userID: "1",
                 }
@@ -70,6 +74,9 @@
             },
             openProductModal() {
                 this.$refs.addProductModal.openModal();
+            },
+            openPersonalDetailsModal() {
+                this.$refs.personalDetailsModal.openModal();
             }
         },
     };
