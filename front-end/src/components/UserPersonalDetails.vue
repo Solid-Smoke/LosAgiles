@@ -1,8 +1,13 @@
 <template>
     <b-modal v-model="personalDetailsModal" centered scrollable hide-footer title="Mis datos personales">
-        <h1>Usuario: {{ UserData.userName }}</h1>
-        <h2>Nombre completo: {{ UserData.name }} {{ UserData.lastNames }}</h2>
-        <h3>Correo registrado: {{ UserData.email }}</h3>
+        <template v-if="userMessage">
+            <h3>{{ userMessage }}</h3>
+        </template>
+        <template v-else>
+            <h4><em>Usuario:</em> {{ UserData.userName }}</h4>
+            <h4><em>Nombre completo:</em> {{ UserData.name }} {{ UserData.lastNames }}</h4>
+            <h4><em>Correo registrado:</em> {{ UserData.email }}</h4>
+        </template>
     </b-modal>
 </template>
 
@@ -17,6 +22,7 @@
                     lastNames: null,
                     email: null,
                 },
+                userMessage: "",
             };
         },
         methods: {
@@ -27,6 +33,9 @@
                     this.UserData.name = user[0].name;
                     this.UserData.lastNames = user[0].lastNames;
                     this.UserData.email = user[0].email;
+                    this.userMessage = "";
+                } else {
+                    this.userMessage = "Aún no ha iniciado sesión.";
                 }
             },
             openModal() {
