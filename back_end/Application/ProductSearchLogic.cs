@@ -1,12 +1,11 @@
-﻿using back_end.Handlers;
-using back_end.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using back_end.Repositories;
+using back_end.Domain;
 
 namespace back_end.Application
 {
     public interface IProductSearchLogic
     {
-        List<ProductModel> searchProducts(string searchText, int startIndex, int maxResults, string filterTypeString, string filter);
+        List<ProductsSearchModel> searchProducts(string searchText, int startIndex, int maxResults, string filterTypeString, string filter);
     }
 
     public class ProductSearchLogic : IProductSearchLogic
@@ -21,7 +20,7 @@ namespace back_end.Application
         }
 
 
-        public List<ProductModel> searchProducts(string searchText,
+        public List<ProductsSearchModel> searchProducts(string searchText,
             int startIndex, int maxResults, string filterTypeString, string filter)
         {
             return productHandler.searchProducts(searchText, startIndex,
