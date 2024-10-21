@@ -3,6 +3,9 @@
         <template v-if="userMessage">
             <h3>{{ userMessage }}</h3>
         </template>
+        <template v-if="!UserData.email">
+            <h3><em>Admin:</em> {{ UserData.userName }}</h3>
+        </template>
         <template v-else>
             <h4><em>Usuario:</em> {{ UserData.userName }}</h4>
             <h4><em>Nombre completo:</em> {{ UserData.name }} {{ UserData.lastNames }}</h4>
