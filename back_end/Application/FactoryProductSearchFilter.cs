@@ -8,6 +8,7 @@ namespace back_end.Application
         public object getFilterInput(string filter);
         public void appendParametersValues(string filter,ref DynamicParameters parametersValues);
         public string getQuery();
+        public string parseSearchText(string searchText);
     }
 
     public interface IFactoryProductSearchFilter
@@ -80,6 +81,10 @@ namespace back_end.Application
         public bool filterIsValid(string filter) {
             return _categories.Contains(filter);
         }
+        public string parseSearchText(string searchText)
+        {
+            return searchText;
+        }
     }
 
     internal class ProductBusinessNameSearchFilter : IProductSearchFilter
@@ -100,6 +105,10 @@ namespace back_end.Application
         public bool filterIsValid(string filter) {
             return filter != "";
         }
+        public string parseSearchText(string searchText)
+        {
+            return searchText;
+        }
     }
 
     internal class ProductNoFilterSearchFilter : IProductSearchFilter
@@ -115,10 +124,14 @@ namespace back_end.Application
         }
         public object getFilterInput(string filter)
         {
-            return filter;
+            return "";
         }
         public bool filterIsValid(string filter) {
             return true;
+        }
+        public string parseSearchText(string searchText)
+        {
+            return "";
         }
     }
 }
