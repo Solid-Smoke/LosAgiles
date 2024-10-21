@@ -38,8 +38,9 @@ namespace back_end.APIS
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            cartHandler.deleteCart(id);
         }
     }
 }

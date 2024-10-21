@@ -68,6 +68,30 @@ namespace back_end.Repositories
             }
             return cartData;
         }
+
+        public void deleteCart(string clientId)
+        {
+            string query = "DELETE FROM [ShoppingCarts] WHERE [ClientID] = @ClientId";
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+
+                    sqlConnection.Open();
+                    sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
     }
 
 }

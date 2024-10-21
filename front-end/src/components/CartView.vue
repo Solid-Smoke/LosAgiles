@@ -27,7 +27,7 @@
         </div>
         <div class="d-flex justify-content-center mt-4">
             <button v-on:click="checkout" class="btn btn-success mx-2">Realizar Compra</button>
-            <button v-on:click="clearCart" class="btn btn-danger mx-2">Descartar Todo</button>
+            <button v-on:click="confirmClearCart" class="btn btn-danger mx-2">Descartar Todo</button>
             <a href="/" class="btn btn-secondary mx-2">Cerrar Carrito</a>
         </div>
     </div>
@@ -74,8 +74,25 @@
             checkout() {
                 alert("Compra realizada con éxito!");
             },
+            confirmClearCart() {
+                const confirmed = window.confirm("¿Estás seguro de que deseas descartar todo el carrito? (Esta accion no es reversible)");
+                if (confirmed) {
+                    this.clearCart();
+                }
+            },
             clearCart() {
                 this.cartProducts = [];
+                try {
+
+                    axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`).then(
+                        (response) => {
+                            console.log(response);
+                        }
+                    );
+                } catch (error) {
+                    alert("Error al cargar el carrito");
+                    this.closeCart();
+                }  
             },
             closeCart() {
                 this.$router.push({ name: 'Home' });
