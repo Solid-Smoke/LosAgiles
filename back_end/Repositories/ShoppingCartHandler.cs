@@ -66,7 +66,6 @@ namespace back_end.Repositories
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-
             return cartData;
         }
     }

@@ -33,52 +33,69 @@
     </div>
 </template>
 
-<script>import MainNavbar from './MainNavbar.vue';
+<script>
+    import MainNavbar from './MainNavbar.vue';
+    import { BackendUrl } from '../main.js';
+    import axios from "axios";
 
-export default {
-    components: {
-        MainNavbar,
-    },
-    data() {
-        return {
-            cartProducts: [
-                {
-                    productID: 1,
-                    name: 'Producto 1',
-                    businessName: 'Emprendimiento A',
-                    quantity: 2,
-                    price: 1000,
-                    total: 2000,
-                },
-            ],
-            userID: 0,
-        };
-    },
-    methods: {
-        getUserCart() {
-
-        }
-        checkout() {
-            alert("Compra realizada con éxito!");
+    export default {
+        components: {
+            MainNavbar,
         },
-        clearCart() {
-            this.cartProducts = [];
+        data() {
+            return {
+                cartProducts: [
+                    {
+                        productID: 1,
+                        name: 'Producto 1',
+                        businessName: 'Emprendimiento A',
+                        quantity: 2,
+                        price: 1000,
+                        total: 2000,
+                    },
+                ],
+                userID: 0,
+            };
         },
-        closeCart() {
-            this.$router.push({ name: 'Home' });
+        methods: {
+            getUserCart() {
+                try {
+                    
+                    axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`).then(
+                        (response) => {
+                            this.cartProducts = response.data;
+                        }
+                    );
+                } catch (error) {
+                    alert("Error al cargar el carrito");
+                    this.closeCart();
+                }  
+            },
+            checkout() {
+                alert("Compra realizada con éxito!");
+            },
+            clearCart() {
+                this.cartProducts = [];
+            },
+            closeCart() {
+                this.$router.push({ name: 'Home' });
+            },
+            getUserId() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return Number(user[0].userID);
+            },
         },
-        getUserId() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            return Number(user[0].userID);
+        computed: {
+            totalPrice() {
+                return this.cartProducts.reduce((total, product) => total + product.quantity * product.price, 0);
+            },
         },
-    },
-    mounted() {
-        this.userID = this.getUserId();
-    },
-    created() {
-
-    }
-};</script>
+        mounted() {
+            this.userID = this.getUserId();
+            this.getUserCart();
+        },
+    };
+</script>
 
 <style scoped>
 </style>
