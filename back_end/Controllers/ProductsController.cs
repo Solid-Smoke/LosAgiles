@@ -18,7 +18,7 @@ namespace back_end.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CrearProducto([FromForm] ProductModel product)
+        public async Task<ActionResult<bool>> CreateProduct([FromForm] ProductModel product)
         {
             try
             {
@@ -39,19 +39,10 @@ namespace back_end.Controllers
                             product.ProductImage = memoryStream.ToArray();
                         }
 
-                        Console.WriteLine($"Imagen recibida: {file.FileName}, tamaño: {file.Length}");
                     }
-                    else
-                    {
-                        Console.WriteLine("No se recibió ninguna imagen válida.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("No se recibió ninguna imagen en la solicitud.");
                 }
 
-                var result = _productHandler.CrearProducto(product);
+                var result = _productHandler.CreateProduct(product);
 
                 return new JsonResult(result);
             }

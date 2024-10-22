@@ -6,55 +6,55 @@ namespace back_end.Handlers
 {
     public class ProductHandler
     {
-        private readonly SqlConnection _conexion;
-        private string? _rutaConexion;
+        private readonly SqlConnection _connection;
+        private string? _connectionRoute;
 
         public ProductHandler()
         {
             var builder = WebApplication.CreateBuilder();
-            _rutaConexion = builder.Configuration.GetConnectionString("ARQContext");
-            _conexion = new SqlConnection(_rutaConexion);
+            _connectionRoute = builder.Configuration.GetConnectionString("ARQContext");
+            _connection = new SqlConnection(_connectionRoute);
         }
 
-        private void EjecutarComando(SqlCommand comando)
+        private void RunCommand(SqlCommand command)
         {
-            _conexion.Open();
-            comando.ExecuteNonQuery();
-            _conexion.Close();
+            _connection.Open();
+            command.ExecuteNonQuery();
+            _connection.Close();
         }
 
         private DataTable createTableResult(string query)
         {
-            SqlCommand selectCommand = new SqlCommand(query, _conexion);
+            SqlCommand selectCommand = new SqlCommand(query, _connection);
             SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
             DataTable resultTable = new DataTable();
-            _conexion.Open();
+            _connection.Open();
             tableAdapter.Fill(resultTable);
-            _conexion.Close();
+            _connection.Close();
             return resultTable;
         }
 
-        public bool CrearProducto(ProductModel producto)
+        public bool CreateProduct(ProductModel product)
         {
-            string consultaProducto = @"
+            string querryProduct = @"
                 INSERT INTO Products (Name, Description, Price, Stock, Weight, IsPerishable, DailyAmount, DaysAvailable, BusinessID, ProductImage)
                 VALUES (@Name, @Description, @Price, @Stock, @Weight, @IsPerishable, @DailyAmount, @DaysAvailable, @BusinessID, @ProductImage);";
 
-            SqlCommand comandoProducto = new SqlCommand(consultaProducto, _conexion);
-            comandoProducto.Parameters.AddWithValue("@Name", producto.Name);
-            comandoProducto.Parameters.AddWithValue("@Description", producto.Description);
-            comandoProducto.Parameters.AddWithValue("@Price", producto.Price);
-            comandoProducto.Parameters.AddWithValue("@Stock", producto.Stock);
-            comandoProducto.Parameters.AddWithValue("@Weight", producto.Weight);
-            comandoProducto.Parameters.AddWithValue("@IsPerishable", producto.IsPerishable);
-            comandoProducto.Parameters.AddWithValue("@DailyAmount", (object)producto.DailyAmount ?? DBNull.Value);
-            comandoProducto.Parameters.AddWithValue("@DaysAvailable", (object)producto.DaysAvailable ?? DBNull.Value);
-            comandoProducto.Parameters.AddWithValue("@BusinessID", producto.BusinessID);
-            comandoProducto.Parameters.AddWithValue("@ProductImage", (object)producto.ProductImage ?? DBNull.Value);
+            SqlCommand comandoProducto = new SqlCommand(querryProduct, _connection);
+            comandoProducto.Parameters.AddWithValue("@Name", product.Name);
+            comandoProducto.Parameters.AddWithValue("@Description", product.Description);
+            comandoProducto.Parameters.AddWithValue("@Price", product.Price);
+            comandoProducto.Parameters.AddWithValue("@Stock", product.Stock);
+            comandoProducto.Parameters.AddWithValue("@Weight", product.Weight);
+            comandoProducto.Parameters.AddWithValue("@IsPerishable", product.IsPerishable);
+            comandoProducto.Parameters.AddWithValue("@DailyAmount", (object)product.DailyAmount ?? DBNull.Value);
+            comandoProducto.Parameters.AddWithValue("@DaysAvailable", (object)product.DaysAvailable ?? DBNull.Value);
+            comandoProducto.Parameters.AddWithValue("@BusinessID", product.BusinessID);
+            comandoProducto.Parameters.AddWithValue("@ProductImage", (object)product.ProductImage ?? DBNull.Value);
 
-            _conexion.Open();
+            _connection.Open();
             comandoProducto.ExecuteNonQuery();
-            _conexion.Close();
+            _connection.Close();
 
             return true;
         }
@@ -75,11 +75,11 @@ namespace back_end.Handlers
                         Price = Convert.ToInt32(column["Price"]),
                         Stock = Convert.ToInt32(column["Stock"]),
                         Weight = Convert.ToDecimal(column["Weight"]),
-                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]), // Cambiado de Perishable a IsPerishable
+                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]), 
                         DailyAmount = column["DailyAmount"] as int?,
                         DaysAvailable = Convert.ToString(column["DaysAvailable"]),
                         BusinessID = Convert.ToInt32(column["BusinessID"]),
-                        ProductImage = column["ProductImage"] as byte[] // Imagen binaria
+                        ProductImage = column["ProductImage"] as byte[] 
                     });
             }
             return products;
@@ -101,7 +101,7 @@ namespace back_end.Handlers
                         Price = Convert.ToInt32(column["Price"]),
                         Stock = Convert.ToInt32(column["Stock"]),
                         Weight = Convert.ToDecimal(column["Weight"]),
-                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]), // Cambiado de Perishable a IsPerishable
+                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]), 
                         DailyAmount = Convert.ToInt32(column["DailyAmount"]),
                         DaysAvailable = Convert.ToString(column["DaysAvailable"]),
                         BusinessID = Convert.ToInt32(column["BusinessID"]),
