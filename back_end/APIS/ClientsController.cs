@@ -23,9 +23,12 @@ namespace back_end.APIS
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> RegisterUser(ClientModel client) {
-            try {
-                if (client == null) {
+        public async Task<ActionResult<bool>> RegisterUser(ClientModel client)
+        {
+            try
+            {
+                if (client == null)
+                {
                     return BadRequest();
                 }
 
@@ -33,7 +36,8 @@ namespace back_end.APIS
                 var result = clientsHandler.RegisterUser(client);
                 return new JsonResult(result);
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error creating user");
             }

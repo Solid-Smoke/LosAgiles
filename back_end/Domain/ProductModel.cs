@@ -1,4 +1,4 @@
-﻿namespace back_end.Domain;
+namespace back_end.Domain;
 public class ProductModel
 {
     public int? ProductID { get; set; }

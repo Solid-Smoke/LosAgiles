@@ -72,7 +72,7 @@ namespace back_end.Repositories
         public List<BusinessAddressModel> getBusinessAddressByBusinessID(string businessID)
         {
             List<BusinessAddressModel> businessData = new List<BusinessAddressModel>();
-            string query = "SELECT * FROM BusinessesAddresses WHERE BusinessID = "+businessID;
+            string query = "SELECT * FROM BusinessesAddresses WHERE BusinessID = " + businessID;
             DataTable tableQueryResult = createTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {

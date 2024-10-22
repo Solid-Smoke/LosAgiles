@@ -24,7 +24,7 @@ namespace back_end.APIS
             return handler.getUserCount();
         }
 
-        [HttpGet("[action]/details")]        
+        [HttpGet("[action]/details")]
         public async Task<ActionResult<string>> authSuperUser(string userName, string passwordHash)
         {
             try
@@ -50,7 +50,6 @@ namespace back_end.APIS
                 {
                     return BadRequest();
                 }
-                bool isSuperUser = false;
                 try
                 {
                     return handler.verifySuperUserId(
@@ -66,7 +65,7 @@ namespace back_end.APIS
                         "Bad userID or not found in super users list"
                     );
                 }
-}
+            }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status404NotFound, e.Message);
@@ -104,7 +103,7 @@ namespace back_end.APIS
                                                     encryptorDecryptor.getRealId(encryptedId)
                                                     )
                                                 );
-                } 
+                }
                 catch
                 {
                     return StatusCode(
@@ -112,7 +111,7 @@ namespace back_end.APIS
                         "Bad userID or not found in super users list"
                     );
                 }
-                
+
                 if (encryptedId == null)
                 {
                     return BadRequest();
@@ -130,7 +129,8 @@ namespace back_end.APIS
                         handler.getAllUsersData(offset, maxRows)
                     );
                 }
-                else {
+                else
+                {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }

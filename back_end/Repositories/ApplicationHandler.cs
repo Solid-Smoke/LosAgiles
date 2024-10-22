@@ -38,7 +38,7 @@ namespace back_end.Repositories
                                      .ToList();
             sqlConnection.Close();
             return result;
-            
+
         }
 
         public int getUserCount()
@@ -61,7 +61,8 @@ namespace back_end.Repositories
             if (queryResult.Count > 0)
             {
                 superUserId = queryResult[0].SuperUserID;
-            } else
+            }
+            else
             {
                 throw new Exception("authSuperUser: Bad user or password");
             }
