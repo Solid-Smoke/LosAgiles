@@ -1,10 +1,8 @@
-﻿using back_end.Handlers;
-using back_end.Models;
-using Microsoft.AspNetCore.Http;
+﻿using back_end.Domain;
+using back_end.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
-namespace back_end.Controllers
+namespace back_end.APIS
 {
     [Route("api/[controller]")]
     [ApiController]

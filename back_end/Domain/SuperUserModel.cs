@@ -1,4 +1,5 @@
-﻿namespace back_end.Models {
+﻿namespace back_end.Domain
+{
     public class SuperUserModel {
         public int SuperUserID { get; set; }
         public string UserName { get; set; }

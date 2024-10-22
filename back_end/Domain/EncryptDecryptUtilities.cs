@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace back_end.Models
+namespace back_end.Domain
 {
     public class EncryptDecryptUtilities
     {

@@ -1,4 +1,5 @@
-﻿public class ProductModel
+﻿namespace back_end.Domain;
+public class ProductModel
 {
     public int? ProductID { get; set; }
     public string? Name { get; set; }

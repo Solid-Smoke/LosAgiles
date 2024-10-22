@@ -1,9 +1,8 @@
-﻿using back_end.Handlers;
-using back_end.Models;
+﻿using back_end.Domain;
+using back_end.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace back_end.Controllers
+namespace back_end.APIS
 {
     [Route("api/[controller]")]
     [ApiController]

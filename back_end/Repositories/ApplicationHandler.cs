@@ -1,8 +1,7 @@
-using back_end.Models;
+using back_end.Domain;
 using Dapper;
-using System.Data;
 using System.Data.SqlClient;
-namespace back_end.Handlers
+namespace back_end.Repositories
 {
     public class ApplicationHandler
     {
