@@ -6,7 +6,8 @@ namespace back_end.Application
 {
     public interface IProductQuery
     {
-        List<ProductsSearchModel> searchProducts(int startIndex, int maxResults, string searchText);
+        List<ProductsSearchModel> searchProducts(int startIndex, int maxResults,
+            string searchText);
     }
 
     public class ProductQuery : IProductQuery
