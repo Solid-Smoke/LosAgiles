@@ -74,7 +74,7 @@ export default {
                 productImage: null,
                 stock: 0,
                 weight: 0.0,
-                isPerishable: false, // Cambiado de perishable a isPerishable
+                isPerishable: false,
                 dailyAmount: 0,
                 daysAvailable: "",
                 businessId: 1
