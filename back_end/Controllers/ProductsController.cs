@@ -2,6 +2,7 @@
 using back_end.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace back_end.Controllers
 {
@@ -26,13 +27,60 @@ namespace back_end.Controllers
                     return BadRequest();
                 }
 
+                if (Request.Form.Files.Count > 0)
+                {
+                    var file = Request.Form.Files[0];
+
+                    if (file != null && file.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await file.CopyToAsync(memoryStream);
+                            product.ProductImage = memoryStream.ToArray();
+                        }
+
+                        Console.WriteLine($"Imagen recibida: {file.FileName}, tamaño: {file.Length}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No se recibió ninguna imagen válida.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No se recibió ninguna imagen en la solicitud.");
+                }
+
                 var result = _productHandler.CrearProducto(product);
 
                 return new JsonResult(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto");
+            }
+        }
+
+        [HttpGet("GetAllProducts")]
+        public ActionResult<List<ProductModel>> GetAllProducts()
+        {
+            try
+            {
+                var products = _productHandler.GetAllProducts();
+
+                foreach (var product in products)
+                {
+                    if (product.ProductImage != null)
+                    {
+                        product.ProductImageBase64 = Convert.ToBase64String(product.ProductImage);
+                    }
+                }
+
+                return new JsonResult(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos");
             }
         }
 
