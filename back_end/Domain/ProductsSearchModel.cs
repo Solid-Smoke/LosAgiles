@@ -15,5 +15,5 @@ public partial class ProductsSearchModel
 
     public string BusinessName { get; set; }
 
-    public string Image { get; set; }
+    public byte[] ProductImage { get; set; }
 }
