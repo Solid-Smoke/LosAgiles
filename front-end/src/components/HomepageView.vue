@@ -10,8 +10,6 @@
     <b-container fluid class="px-5">
         <b-row style>
             <b-col>
-                <div class="container mt-1"><h1 class="display-4 text-center">
-                    <strong>PRODUCTOS</strong></h1></div>
                 <div v-if="products.length == 0" class="container mt-1">
                     <h6 class="text-center">
                     <br><br><br><br>
@@ -105,6 +103,7 @@
         padding-right: 66%;
         padding-left: 10%;
         padding-bottom: 10px;
+        margin-bottom: 60px;
         background-color: #0DCAF0;
     }
 </style>
