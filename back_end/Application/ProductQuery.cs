@@ -25,8 +25,13 @@ namespace back_end.Application
         {
             if (searchText == null)
                 searchText = "";
-            return productHandler.searchProducts(searchText, startIndex,
+            var products = productHandler.searchProducts(searchText, startIndex,
                 maxResults);
+            foreach(var product in products)
+                if (product.ProductImage != null)
+                    product.ProductImageInBase64 = Convert.ToBase64String(
+                    product.ProductImage);
+            return products;
         }
     }
 }
