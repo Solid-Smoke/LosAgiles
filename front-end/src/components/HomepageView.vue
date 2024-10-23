@@ -30,7 +30,7 @@
 
                 <b-row>
                     <b-col lg="3" md="4" sm="6" v-for="(product, index) of products" :key="index">
-                        <b-card :title="product.name" :img-src="product.image" img-alt="Product Image" img-top class="mb-3">
+                        <b-card :title="product.name" :img-src="getProductImage(product.productImageInBase64)" img-alt="Product Image" img-top class="mb-3">
 
                         <b-card-text>{{product.description}}</b-card-text>
 
@@ -49,7 +49,6 @@
     import SearchBar from './SearchBar.vue';
     import axios from 'axios';
     import { BackendUrl } from '@/main';
-
     export default {
         components: {
             MainNavbar,
@@ -63,7 +62,8 @@
                         description: "",
                         price: 0,
                         bussinessName: "",
-                        image: ""
+                        productImage: "",
+                        productImageInBase64: ""
                     }
                 ],
                 maxSearchResultsPerPage: 15,
@@ -81,11 +81,19 @@
                 .then(
                     (response) => {
                         this.products = response.data;
+                        console.log(this.products);
                     })
                 .catch(function (error) {
                     console.log(error);
                 });
-            }
+            },
+            getProductImage(productImageBase64) {
+                if (!productImageBase64) {
+                    console.log("No image available , using placeholder")
+                    return "https://via.placeholder.com/250";
+                }
+                return `data:image/png;base64,${productImageBase64}`;
+            },
         },
         mounted() {
             this.searchProducts(0, this.maxSearchResultsPerPage);
