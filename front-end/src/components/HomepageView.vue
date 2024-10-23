@@ -41,8 +41,7 @@
     </b-container>
     <b-button-group style="float: right;">
         <span>
-            {{ actualResultsPage + 1 }}/{{ Math.trunc(this.searchResultsCount /
-                maxSearchResultsPerPage)}}
+            {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
         </span>
         <b-button @click="actualResultsPage = 0;">Inicio</b-button>
         <b-button @click="goPreviousPage">Anterior</b-button>
@@ -93,6 +92,15 @@
         computed: {
             startSearchIndex() {
                 return this.actualResultsPage * this.maxSearchResultsPerPage;
+            },
+            totalPagesBySearch() {
+                let totalPagesCalculation = Math.trunc(this.searchResultsCount /
+                this.maxSearchResultsPerPage);
+                if (totalPagesCalculation == 0) {
+                    return 1;
+                } else {
+                    return totalPagesCalculation;
+                }
             }
         },
     };
