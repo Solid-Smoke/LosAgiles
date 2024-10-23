@@ -7,8 +7,6 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-
-                    <slot></slot> 
                     
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
@@ -60,7 +58,9 @@
                 personalDetailsModal: false,
                 loginData: {
                     userID: "1",
-                }
+                },
+                searchProducts: () => {},
+                products: []
             }
         },
         methods: {

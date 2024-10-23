@@ -1,8 +1,8 @@
 <template>
-    <MainNavbar>
-        <SearchBar  :startSearchIndex="(actualResultsPage - 1) * this.maxSearchResultsPerPage"
-                    :maxResults="this.maxSearchResultsPerPage" />
-    </MainNavbar>
+    <MainNavbar />
+    <SearchBar :startSearchIndex="this.startSearchIndex" 
+        :maxResults="this.maxSearchResultsPerPage"
+        @products-retreived="(products) => this.products = products"/>
 
     <b-container fluid class="px-5">
         <b-row>
@@ -49,6 +49,7 @@
     import SearchBar from './SearchBar.vue';
     import axios from 'axios';
     import { BackendUrl } from '@/main';
+
     export default {
         components: {
             MainNavbar,
@@ -67,7 +68,7 @@
                     }
                 ],
                 maxSearchResultsPerPage: 15,
-                actualResultsPage: 1
+                actualResultsPage: 0
             };
         },
         methods: {
@@ -95,9 +96,11 @@
                 return `data:image/png;base64,${productImageBase64}`;
             },
         },
-        mounted() {
-            this.searchProducts(0, this.maxSearchResultsPerPage);
-        }
+        computed: {
+            startSearchIndex() {
+                return this.actualResultsPage * this.maxSearchResultsPerPage;
+            }
+        },
     };
 </script>
 

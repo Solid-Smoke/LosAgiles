@@ -15,33 +15,34 @@ import axios from 'axios';
             startSearchIndex: Number,
             maxResults: Number,
         },
+        expose: ['products'],
         data() {
             return {
-                searchText: ""
+                products: [],
+                searchText: "",
             };
         },
         methods: {
-            searchProducts(searchText, startIndex, maxResults) {
+            searchProducts(startIndex, maxResults, searchText) {
                 axios
-                    .get(
-                        BackendUrl + "/Products",
-                        {
-                            params: {
-                                searchText: searchText,
-                                startIndex: startIndex,
-                                maxResults: maxResults,
-                            }
-                        }
-                    )
-                    .then(
-                        (response) => {
-                            this.$emit('productSearchResultsObtained', response)
-                        }
-                    )
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
+                .get(BackendUrl +
+                    "/Products", {params: {
+                        startIndex,
+                        maxResults,
+                        searchText
+                    }})
+                .then(
+                    (response) => {
+                        this.products = response.data;
+                        this.$emit('productsRetreived', this.products);
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+        },
+        mounted() {
+            this.searchProducts(0, this.maxResults, "");
         }
     }
 </script>
