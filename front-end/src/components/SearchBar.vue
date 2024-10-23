@@ -30,6 +30,9 @@ import axios from 'axios';
             startSearchIndex: function() {
                 this.searchProducts(this.startSearchIndex,
                     this.maxResults, this.searchText)
+            },
+            searchText: function () {
+                this.$emit('searchMade');
             }
         },
         data() {

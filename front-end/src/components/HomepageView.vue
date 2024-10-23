@@ -2,8 +2,9 @@
     <MainNavbar />
     <SearchBar :startSearchIndex="this.startSearchIndex" 
         :maxResults="this.maxSearchResultsPerPage"
+        @search-made="actualResultsPage = 0;"
         @products-retreived="(products) => {this.products = products;
-            resetPageNumber();}"
+        }"
         @products-counted="(count) => this.searchResultsCount = count"
         id="searchbar"/>
 
@@ -95,7 +96,7 @@
             },
             totalPagesBySearch() {
                 let totalPagesCalculation = Math.trunc(this.searchResultsCount /
-                this.maxSearchResultsPerPage);
+                    this.maxSearchResultsPerPage);
                 if (totalPagesCalculation == 0) {
                     return 1;
                 } else {
