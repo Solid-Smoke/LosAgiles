@@ -2,12 +2,13 @@
     <MainNavbar />
     <div class="cart-container">
         <h1 class="display-4 text-center mb-4"><strong>Mi Carrito</strong></h1>
-
         <div class="table-responsive-sm">
             <table class="table table-striped table-hover table-cart">
                 <thead>
                     <tr>
-                        <th scope="col"> </th>
+                        <th scope="col">
+                            <input type="checkbox" @change="toggleSelectAll($event)" :checked="areAllSelected">
+                        </th>
                         <th scope="col">Producto</th>
                         <th scope="col">Emprendimiento</th>
                         <th scope="col">Cantidad</th>
@@ -16,9 +17,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="product in cartProducts" :key="product.productID">
+                    <tr v-for="product in cartProducts" :key="product.productID" @click="toggleSelect(product)">
                         <td>
-                            <input type="checkbox" v-model="selectedProducts" :value="{ productID: product.productID, total: product.total }">
+                            <input type="checkbox" v-model="selectedProducts" :value="{ productID: product.productID, quantity: product.quantity, total: product.total }">
                         </td>
                         <td>{{ product.name }}</td>
                         <td>{{ product.businessName }}</td>
@@ -30,35 +31,45 @@
             </table>
         </div>
 
-        <div class="cart-total">
+        <div v-if="selectedProducts.length === 0" class="cart-total">
             <h4><strong>Total: ₡ {{ totalPrice.toFixed(2) }}</strong></h4>
         </div>
 
-        <div class="cart-buttons">
+        <div v-if="selectedProducts.length === 0" class="cart-buttons">
             <button @click="checkout" class="btn btn-op1">Comprar Todo</button>
-            <button @click="confirmClearCart" class="btn btn-op2">Vaciar Carrito</button>
+            <button @click="openCleanCartWarningModal" class="btn btn-op2">Vaciar Carrito</button>
             <button @click="closeCart" class="btn btn-op-close">Cerrar Carrito</button>
         </div>
 
         <div v-if="selectedProducts.length > 0" class="selected-total">
-            <h4><strong>Total Seleccionado: ₡ {{ selectedTotal.toFixed(2) }}</strong></h4>
+            <h4><strong>Total: ₡ {{ selectedTotal.toFixed(2) }}</strong></h4>
         </div>
 
         <div v-if="selectedProducts.length > 0" class="cart-buttons">
-            <button @click="checkoutSelected" class="btn btn-op1">Comprar Seleccionado</button>
-            <button @click="clearSelected" class="btn btn-op2">Eliminar Seleccionado</button>
+            <button class="btn btn-op1">Comprar Todo</button>
+            <button class="btn btn-op2">Eliminar Seleccionado</button>
+            <button @click="closeCart" class="btn btn-op-close">Cerrar Carrito</button>
         </div>
     </div>
+    <ActionModalConfirm ref="confirmCleanCartModal"/>
+    <ActionModalWarning ref="warningCleanCartModal" @confirmed="clearCart" />
+    <ActionModalError ref="errorCleanCartModal"/>
 </template>
 
 <script>
     import MainNavbar from './MainNavbar.vue';
+    import ActionModalConfirm from './ActionModalConfirm.vue';
+    import ActionModalWarning from './ActionModalWarning.vue';
+    import ActionModalError from './ActionModalError.vue';
     import { BackendUrl } from '../main.js';
     import axios from "axios";
 
     export default {
         components: {
             MainNavbar,
+            ActionModalConfirm,
+            ActionModalWarning,
+            ActionModalError,
         },
         data() {
             return {
@@ -82,49 +93,64 @@
                 ],
                 selectedProducts: [],
                 userID: 0,
+                confirmCleanCartModal: false,
+                warningCleanCartModal: false,
+                errorCleanCartModal: false,
             };
         },
         methods: {
             getUserCart() {
-                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`).then(
-                    (response) => {
+                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`).then((response) => {
                         this.cartProducts = response.data;
-                    }
-                ).catch(() => {
-                    alert("Error al cargar el carrito");
-                    this.closeCart();
+                })
+                .catch((error) => {
+                    this.$refs.errorCleanCartModal.openModal("Error al cargar el carrito", error);
                 });
-            },
-            confirmClearCart() {
-                const confirmed = window.confirm("¿Estás seguro de que deseas vaciar el carrito?");
-                if (confirmed) {
-                    this.clearCart();
-                }
             },
             closeCart() {
                 this.$router.push({ name: 'Home' });
+            },
+            toggleSelect(product) {
+                const productIndex = this.selectedProducts.findIndex(selected => selected.productID === product.productID);
+                if (productIndex > -1) {
+                    this.selectedProducts.splice(productIndex, 1);
+                } else {
+                    this.selectedProducts.push({
+                        productID: product.productID,
+                        quantity: product.quantity,
+                        total: product.total,
+                    });
+                }
             },
             getUserId() {
                 const user = JSON.parse(localStorage.getItem('user'));
                 return Number(user[0].userID);
             },
             checkout() {
-                alert("¡Compra realizada con éxito!");
+                this.$refs.confirmCleanCartModal.openModal("Su compra se a completado");
             },
-            checkoutSelected() {
-                alert("¡Compra de productos seleccionados realizada con éxito!");
+            openCleanCartWarningModal() {
+                this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
             },
             clearCart() {
-                this.cartProducts = [];
-                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`).then(response => {
-                    console.log(response);
-                }).catch(() => {
-                    alert("Error al vaciar el carrito");
-                    this.closeCart();
+                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`).then(() => {
+                    this.$refs.confirmCleanCartModal.openModal("Carrito vaciado");
+                    this.cartProducts = [];
+                })
+                .catch((error) => {
+                    this.$refs.errorCleanCartModal.openModal("Error al eliminar el carrito", error);
                 });
             },
-            clearSelected() {
-                this.selectedProducts = [];
+            toggleSelectAll(event) {
+                if (event.target.checked) {
+                    this.selectedProducts = this.cartProducts.map(product => ({
+                        productID: product.productID,
+                        quantity: product.quantity,
+                        total: product.total,
+                    }));
+                } else {
+                    this.selectedProducts = [];
+                }
             },
         },
         computed: {
@@ -137,9 +163,13 @@
                 }
                 return 0;
             },
+            areAllSelected() {
+                return this.selectedProducts.length === this.cartProducts.length;
+            },
         },
         mounted() {
             this.userID = this.getUserId();
+            this.getUserCart();
         },
     };
 </script>

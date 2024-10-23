@@ -2,18 +2,22 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace back_end.Repositories {
-    public class SuperUsersHandler {
+namespace back_end.Infraestructure.Repositories
+{
+    public class SuperUsersHandler
+    {
         private SqlConnection _conexion;
         private string _rutaConexion;
 
-        public SuperUsersHandler() {
+        public SuperUsersHandler()
+        {
             var builder = WebApplication.CreateBuilder();
             _rutaConexion = builder.Configuration.GetConnectionString("ClientsContext");
             _conexion = new SqlConnection(_rutaConexion);
         }
 
-        private DataTable CrearTablaConsulta(string consulta) {
+        private DataTable CrearTablaConsulta(string consulta)
+        {
             SqlCommand comandoParaConsulta = new SqlCommand(consulta, _conexion);
             SqlDataAdapter adaptadorParaTabla = new SqlDataAdapter(comandoParaConsulta);
             DataTable consultaFormatoTabla = new DataTable();
@@ -23,13 +27,16 @@ namespace back_end.Repositories {
             return consultaFormatoTabla;
         }
 
-        public List<SuperUserModel> Authenticate(string UserName, string UserPassword) {
+        public List<SuperUserModel> Authenticate(string UserName, string UserPassword)
+        {
             List<SuperUserModel> superUsers = new List<SuperUserModel>();
             string consulta = @"SELECT * FROM dbo.SuperUsers WHERE UserName = '" + UserName + "' AND UserPassword = '" + UserPassword + "'";
             DataTable tablaResultado = CrearTablaConsulta(consulta);
 
-            foreach (DataRow columna in tablaResultado.Rows) {
-                superUsers.Add(new SuperUserModel {
+            foreach (DataRow columna in tablaResultado.Rows)
+            {
+                superUsers.Add(new SuperUserModel
+                {
                     SuperUserID = Convert.ToInt32(columna["SuperUserID"]),
                     UserName = Convert.ToString(columna["UserName"]),
                     UserPassword = Convert.ToString(columna["UserPassword"]),

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace back_end.Repositories
+namespace back_end.Infraestructure.Repositories
 {
     public class ProductHandler
     {
