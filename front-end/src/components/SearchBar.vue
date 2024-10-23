@@ -1,12 +1,21 @@
 <template>
     <b-nav-form>
-        <b-form-input size="sm"
+        <b-form-input
             placeholder="Buscar producto, categoría o empresa..."
-            v-model="searchText" :state="inputIsValid"/>
+            v-model="searchText" :state="inputIsValid"
+            aria-describedby="input-live-feedback"/>
         <b-button size="sm" class="my-2 my-sm-0" type="submit" 
             @click="searchProducts(this.startSearchIndex,
                 this.maxResults, this.searchText)">Buscar</b-button>
+    
+        <b-form-invalid-feedback id="input-live-feedback"
+        style="background-color: white;">
+            El texto tiene más de {{ maxLenghtSearchText }} caracteres
+            o se ingresó algún caracter especial no permitido. Caracteres especiales
+            permitidos: {{ allowedSpecialCharacters }}
+        </b-form-invalid-feedback>
     </b-nav-form>
+    
 </template>
 
 <script>
@@ -27,7 +36,8 @@ import axios from 'axios';
             return {
                 products: [],
                 searchText: "",
-                maxLenghtSearchText: 150
+                maxLenghtSearchText: 50,
+                allowedSpecialCharacters: "-+_$/&#"
             };
         },
         computed: {

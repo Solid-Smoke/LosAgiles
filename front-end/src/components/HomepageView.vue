@@ -100,7 +100,7 @@
 
 <style lang="css" scoped>
     #searchbar {
-        padding-right: 66%;
+        padding-right: 30%;
         padding-left: 10%;
         padding-bottom: 10px;
         margin-bottom: 60px;
