@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace back_end.Infraestructure.Repositories
+namespace back_end.Infrastructure.Repositories
 {
     public class BusinessHandler
     {

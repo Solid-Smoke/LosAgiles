@@ -1,5 +1,5 @@
 ﻿using back_end.Domain;
-using back_end.Infraestructure.Repositories;
+using back_end.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
