@@ -2,6 +2,7 @@
 
 public partial class ProductsSearchModel
 {
+    public int ProductId { get; set; }
     public string Name { get; set; }
 
     public string Description { get; set; }

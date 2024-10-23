@@ -119,7 +119,8 @@ namespace back_end.Repositories
         public List<ProductsSearchModel> searchProducts(string searchText,
                 int startIndex, int maxResults)
         {
-            string query = "SELECT Products.[Name], [Description], Price," +
+            string query = "SELECT Products.ProductID, " +
+                           "Products.[Name], [Description], Price," +
                            "Businesses.Name AS BusinessName, ProductImage\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n"+

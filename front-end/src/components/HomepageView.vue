@@ -23,7 +23,7 @@
                         <b-card :title="product.name"
                             :img-src="getProductImage(
                                 product.productImageInBase64)"
-                            img-alt="Product Image" img-top class="mb-3">
+                            img-alt="Imagen de producto" img-top class="mb-3">
 
                         <b-card-text>{{product.description}}</b-card-text>
 
