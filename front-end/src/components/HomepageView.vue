@@ -1,7 +1,7 @@
 <template>
     <MainNavbar>
-        <SearchBar  :startSearchIndex="(actualResultsPage - 1) * this.maxSearchResults"
-                    :maxResults="this.maxSearchResults" />
+        <SearchBar  :startSearchIndex="(actualResultsPage - 1) * this.maxSearchResultsPerPage"
+                    :maxResults="this.maxSearchResultsPerPage" />
     </MainNavbar>
 
     <b-container fluid class="px-5">
@@ -30,7 +30,7 @@
 
                 <b-row>
                     <b-col lg="3" md="4" sm="6" v-for="(product, index) of products" :key="index">
-                        <b-card :title="product.name" :img-src="product.imageFileName" img-alt="Product Image" img-top class="mb-3">
+                        <b-card :title="product.name" :img-src="product.image" img-alt="Product Image" img-top class="mb-3">
 
                         <b-card-text>{{product.description}}</b-card-text>
 
@@ -47,6 +47,8 @@
 <script>
     import MainNavbar from './MainNavbar.vue';
     import SearchBar from './SearchBar.vue';
+    import axios from 'axios';
+    import { BackendUrl } from '@/main';
 
     export default {
         components: {
@@ -61,12 +63,32 @@
                         description: "",
                         price: 0,
                         bussinessName: "",
-                        imageFileName: ""
+                        image: ""
                     }
                 ],
-                maxSearchResults: 12,
+                maxSearchResultsPerPage: 15,
                 actualResultsPage: 1
             };
+        },
+        methods: {
+            searchProducts(startIndex, maxResults) {
+                axios
+                .get(BackendUrl +
+                    "/Products", {params: {
+                        startIndex,
+                        maxResults
+                    }})
+                .then(
+                    (response) => {
+                        this.products = response.data;
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+        },
+        mounted() {
+            this.searchProducts(0, this.maxSearchResultsPerPage);
         }
     };
 </script>
