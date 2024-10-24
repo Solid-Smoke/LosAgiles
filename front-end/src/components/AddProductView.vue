@@ -56,7 +56,7 @@
 
                 <div class="form-group">
                     <label for="daysAvailable" class="form-label">Días Disponibles (Formato: L, K, M, J, V, S, D sin comas ni espacios)</label>
-                    <input v-model="formData.daysAvailable" type="text" class="form-control" id="daysAvailable" required pattern="[LKMJVS]{1,7}">
+                    <input v-model="formData.daysAvailable" type="text" class="form-control" id="daysAvailable" required pattern="[LKMJVSD]{1,7}">
                     <small class="text-muted">Ejemplo: LJ para Lunes y Jueves</small>
                 </div>
             </div>
