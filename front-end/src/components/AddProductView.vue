@@ -27,7 +27,7 @@
             <div class="form-group">
                 <label for="price" class="form-label">Precio por unidad</label>
                 <input v-model="formData.price" type="number" class="form-control" id="price" min="0" max="5000000" required>
-                <small class="text-muted">El precio no puede exceder 5 millones.</small>
+                <small class="text-muted">El precio debe ser mayor a cero y no puede exceder 5 millones.</small>
             </div>
 
             <div class="form-group">
@@ -65,7 +65,7 @@
             </div>
 
             <div class="form-group">
-                <label for="image" class="form-label">Imagen del Producto (Formato PNG)</label><br>
+                <label for="image" class="form-label">Imagen del Producto (Formato PNG, Máximo 2 MB)</label><br>
                 <input type="file" class="form-control-file" id="image" @change="onFileChange" accept=".png" required>
             </div><br>
 
@@ -108,12 +108,28 @@ export default {
         onFileChange(event) {
             const file = event.target.files[0];
 
-            if (file && file.type === 'image/png') {
+            if (file) {
+                if (file.type !== 'image/png') {
+                    alert("El archivo debe ser una imagen PNG.");
+                    event.target.value = null;
+                    return;
+                }
+
+                const maxSize = 2 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert("La imagen no debe exceder los 2 MB.");
+                    event.target.value = null;
+                    return;
+                }
+
                 this.formData.productImage = file;
-            } else {
-                alert("El archivo debe ser una imagen PNG.");
-                event.target.value = null;
             }
+        },
+        // Método para validar los días disponibles
+        validateDaysAvailable() {
+            const days = this.formData.daysAvailable.split('');
+            const uniqueDays = new Set(days);
+            return days.length === uniqueDays.size;
         },
         saveProductDetails() {
             if (this.formData.name.length < 1 || this.formData.name.length > 50) {
@@ -122,6 +138,16 @@ export default {
             }
             if (this.formData.description.length < 1 || this.formData.description.length > 512) {
                 alert("La descripción debe tener entre 1 y 512 caracteres.");
+                return;
+            }
+            if (this.formData.price <= 0) {
+                alert("El precio debe ser mayor a cero.");
+                return;
+            }
+
+            // Verificar que los días disponibles no se repitan
+            if (!this.validateDaysAvailable()) {
+                alert("Los días disponibles no deben repetirse.");
                 return;
             }
 
