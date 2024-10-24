@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="AddProductModal" centered scrollable hide-footer title="Add Product">
+    <b-modal v-model="AddProductModal" centered scrollable hide-footer title="Añadir Producto">
         <form @submit.prevent="saveProductDetails">
             <div class="form-group">
                 <label for="name" class="form-label">Nombre del Producto</label>
