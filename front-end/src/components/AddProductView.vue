@@ -125,7 +125,6 @@ export default {
                 this.formData.productImage = file;
             }
         },
-        // Método para validar los días disponibles
         validateDaysAvailable() {
             const days = this.formData.daysAvailable.split('');
             const uniqueDays = new Set(days);
@@ -145,7 +144,6 @@ export default {
                 return;
             }
 
-            // Verificar que los días disponibles no se repitan
             if (!this.validateDaysAvailable()) {
                 alert("Los días disponibles no deben repetirse.");
                 return;
