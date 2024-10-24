@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="AddProductModal" centered scrollable hide-footer title="Añadir Producto">
+    <b-modal v-model="AddProductModal" centered scrollable hide-footer title="Add Product">
         <form @submit.prevent="saveProductDetails">
             <div class="form-group">
                 <label for="name" class="form-label">Nombre del Producto</label>
@@ -14,7 +14,18 @@
             </div>
 
             <div class="form-group">
-                <label for="price" class="form-label">Precio por Unidad</label>
+                <label for="category" class="form-label">Categoría</label>
+                <select v-model="formData.category" class="form-control" id="category" required>
+                    <option value="">Seleccione una categoría</option>
+                    <option value="Hogar">Hogar</option>
+                    <option value="Electronicos">Electrónicos</option>
+                    <option value="Frutas">Frutas</option>
+                    <option value="Prendas">Prendas</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price" class="form-label">Precio por unidad</label>
                 <input v-model="formData.price" type="number" class="form-control" id="price" min="0" required>
             </div>
 
@@ -46,7 +57,7 @@
                 <div class="form-group">
                     <label for="daysAvailable" class="form-label">Días Disponibles (Formato: L, K, M, J, V, S, D sin comas ni espacios)</label>
                     <input v-model="formData.daysAvailable" type="text" class="form-control" id="daysAvailable" required pattern="[LKMJVS]{1,7}">
-                    <small class="text-muted">Ejemplo: LJ para lunes y jueves</small>
+                    <small class="text-muted">Ejemplo: LJ para Lunes y Jueves</small>
                 </div>
             </div>
 
@@ -70,6 +81,7 @@ export default {
             formData: {
                 name: "",
                 description: "",
+                category: "",
                 price: "",
                 productImage: null,
                 stock: 0,
@@ -113,10 +125,11 @@ export default {
             const formData = new FormData();
             formData.append("name", this.formData.name);
             formData.append("description", this.formData.description);
+            formData.append("category", this.formData.category);
             formData.append("price", this.formData.price);
             formData.append("stock", this.formData.stock);
             formData.append("weight", this.formData.weight);
-            formData.append("isPerishable", this.formData.isPerishable === 'true'); // Actualizado
+            formData.append("isPerishable", this.formData.isPerishable === 'true');
 
             if (this.formData.isPerishable === 'true') {
                 formData.append("dailyAmount", this.formData.dailyAmount);
@@ -143,6 +156,7 @@ export default {
         resetFormFields() {
             this.formData.name = "";
             this.formData.description = "";
+            this.formData.category = "";
             this.productImage = null;
             this.formData.stock = 0;
             this.formData.weight = 0.0;
