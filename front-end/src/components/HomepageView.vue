@@ -57,7 +57,6 @@ export default {
         getProducts() {
             axios.get('https://localhost:7168/api/Products/GetAllProducts')
                 .then(response => {
-                    console.log("Datos API: ", response.data);
                     this.products = response.data;
                 })
                 .catch(error => {
@@ -65,11 +64,8 @@ export default {
                 });
         },
         getProductImage(productImageBase64) {
-            console.log("Base64: ", productImageBase64);
-            console.log("Product:", productImageBase64 ? productImageBase64 : 'undifined');
 
             if (!productImageBase64) {
-                console.log("No image available , using placeholder")
                 return "https://via.placeholder.com/250";
             }
 
