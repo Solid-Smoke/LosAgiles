@@ -26,17 +26,19 @@
 
             <div class="form-group">
                 <label for="price" class="form-label">Precio por unidad</label>
-                <input v-model="formData.price" type="number" class="form-control" id="price" min="0" required>
+                <input v-model="formData.price" type="number" class="form-control" id="price" min="0" max="5000000" required>
+                <small class="text-muted">El precio no puede exceder 5 millones.</small>
             </div>
 
             <div class="form-group">
                 <label for="stock" class="form-label">Cantidad</label>
-                <input v-model="formData.stock" type="number" class="form-control" id="stock" min="0" required>
+                <input v-model="formData.stock" type="number" class="form-control" id="stock" min="1" max="100" required>
+                <small class="text-muted">Cantidad entre 1 y 100.</small>
             </div>
 
             <div class="form-group">
                 <label for="weight" class="form-label">Peso (En kilogramos, Ejemplo: 0.300 para 300 gramos)</label>
-                <input v-model="formData.weight" type="number" class="form-control" id="weight" min="0" step="0.001" required>
+                <input v-model="formData.weight" type="number" class="form-control" id="weight" min="0" max="500" step="0.001" required>
                 <small class="text-muted">Máximo 3 decimales</small>
             </div>
 
@@ -50,8 +52,9 @@
 
             <div v-if="formData.isPerishable === 'true'">
                 <div class="form-group">
-                    <label for="dailyAmount" class="form-label">Cantidad por Día</label>
-                    <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="0" required>
+                    <label for="dailyAmount" class="form-label">Cantidad diaria</label>
+                    <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="1" max="100" required>
+                    <small class="text-muted">Cantidad diaria entre 1 y 100.</small>
                 </div>
 
                 <div class="form-group">
