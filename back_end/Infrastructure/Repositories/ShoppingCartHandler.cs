@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace back_end.Repositories
+namespace back_end.Infrastructure.Repositories
 {
     public class ShoppingCartHandler
     {
@@ -14,17 +14,6 @@ namespace back_end.Repositories
             var builder = WebApplication.CreateBuilder();
             routeConnection = builder.Configuration.GetConnectionString("ClientsContext");
             sqlConnection = new SqlConnection(routeConnection);
-        }
-
-        private DataTable createTableResult(string query)
-        {
-            SqlCommand selectCommand = new SqlCommand(query, sqlConnection);
-            SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
-            DataTable resultTable = new DataTable();
-            sqlConnection.Open();
-            tableAdapter.Fill(resultTable);
-            sqlConnection.Close();
-            return resultTable;
         }
 
         public List<ShoppingCartItemModel> getCart(string clientId)
