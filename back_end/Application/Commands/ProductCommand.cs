@@ -2,7 +2,7 @@
 using back_end.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 
-namespace back_end.Application
+namespace back_end.Application.Commands
 {
     public class ProductCommand
     {

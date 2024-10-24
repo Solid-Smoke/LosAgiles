@@ -1,7 +1,7 @@
 ﻿using back_end.Domain;
 using back_end.Infrastructure.Repositories;
 
-namespace back_end.Application
+namespace back_end.Application.Queries
 {
     public class ProductQuery
     {
