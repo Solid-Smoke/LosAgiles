@@ -12,7 +12,7 @@ namespace back_end.Infrastructure.Repositories
         public ProductHandler()
         {
             var builder = WebApplication.CreateBuilder();
-            _rutaConexion = builder.Configuration.GetConnectionString("ARQContext");
+            _rutaConexion = builder.Configuration.GetConnectionString("ClientsContext");
             _conexion = new SqlConnection(_rutaConexion);
         }
 

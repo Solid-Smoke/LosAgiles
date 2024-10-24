@@ -129,16 +129,15 @@
                         this.cartProducts = response.data;
                 })
                 .catch((error) => {
-                    this.$refs.errorCleanCartModal.openModal
-                        ("Error al cargar el carrito", error);
+                    this.$refs.errorCleanCartModal.openModal("Error al cargar el carrito", error);
                 });
             },
             closeCart() {
                 this.$router.push({ name: 'Home' });
             },
             toggleSelect(product) {
-                const productIndex = this.selectedProducts.findIndex
-                    (selected => selected.productID === product.productID);
+                const productIndex =
+                    this.selectedProducts.findIndex(selected => selected.productID === product.productID);
                 if (productIndex > -1) {
                     this.selectedProducts.splice(productIndex, 1);
                 } else {
@@ -154,12 +153,10 @@
                 return Number(user[0].userID);
             },
             checkout() {
-                this.$refs.confirmCleanCartModal.openModal
-                    ("Su compra se a completado");
+                this.$refs.confirmCleanCartModal.openModal("Su compra se a completado");
             },
             openCleanCartWarningModal() {
-                this.$refs.warningCleanCartModal.openModal
-                    ("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
+                this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
             },
             clearCart() {
                 axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`)
@@ -168,8 +165,7 @@
                     this.cartProducts = [];
                 })
                 .catch((error) => {
-                    this.$refs.errorCleanCartModal.openModal
-                        ("Error al eliminar el carrito", error);
+                    this.$refs.errorCleanCartModal.openModal("Error al eliminar el carrito", error);
                 });
             },
             toggleSelectAll(event) {

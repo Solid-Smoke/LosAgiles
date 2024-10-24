@@ -1,10 +1,11 @@
 ﻿using back_end.Domain;
 using System.Data;
 using System.Data.SqlClient;
+using back_end.Application.Interfaces;
 
 namespace back_end.Infrastructure.Repositories
 {
-    public class ShoppingCartHandler
+    public class ShoppingCartHandler : IShoppingCartHandler
     {
         private SqlConnection sqlConnection;
         private string? routeConnection;
@@ -16,7 +17,7 @@ namespace back_end.Infrastructure.Repositories
             sqlConnection = new SqlConnection(routeConnection);
         }
 
-        public List<ShoppingCartItemModel> getCart(string clientId)
+        public List<ShoppingCartItemModel> GetCart(string clientId)
         {
             List<ShoppingCartItemModel> cartData = new List<ShoppingCartItemModel>();
             string query = "SELECT * FROM [udfSelectShoppingCart](@ClientId)";
@@ -58,7 +59,7 @@ namespace back_end.Infrastructure.Repositories
             return cartData;
         }
 
-        public void deleteCart(string clientId)
+        public bool DeleteCart(string clientId)
         {
             string query = "DELETE FROM [ShoppingCarts] WHERE [ClientID] = @ClientId";
             try
@@ -68,19 +69,17 @@ namespace back_end.Infrastructure.Repositories
                     sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
 
                     sqlConnection.Open();
-                    sqlCommand.ExecuteNonQuery();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
                     sqlConnection.Close();
+
+                    return rowsAffected > 0;
                 }
             }
             catch (SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
+                return false;
             }
         }
     }
-
 }

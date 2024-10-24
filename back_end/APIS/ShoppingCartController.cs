@@ -1,5 +1,6 @@
-﻿using back_end.Domain;
-using back_end.Infrastructure.Repositories;
+﻿using back_end.Application.Commands;
+using back_end.Application.Queries;
+using back_end.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -8,39 +9,33 @@ namespace back_end.APIS
     [ApiController]
     public class ShoppingCartController : ControllerBase
     {
-        private readonly ShoppingCartHandler cartHandler;
-
-        public ShoppingCartController()
-        {
-            cartHandler = new ShoppingCartHandler();
-        }
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public ShoppingCartController() { }
 
         [HttpGet("{id}")]
-        public List<ShoppingCartItemModel> Get(string id)
+        public ActionResult<List<ShoppingCartItemModel>> getUserCart(
+            string id,
+            [FromServices] GetUserShoppingCart getUserShoppingCartQuery)
         {
-            var businesses = cartHandler.getCart(id);
-            return businesses;
-        }
-
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
+            var cartItems = getUserShoppingCartQuery.Execute(id);
+            return Ok(cartItems);
         }
 
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public IActionResult Delete(
+            string id,
+            [FromServices] DeleteUserShoppingCart deleteUserShoppingCartCommand)
         {
-            cartHandler.deleteCart(id);
+            var wasDeleted = deleteUserShoppingCartCommand.Execute(id);
+
+            if (wasDeleted)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+
         }
     }
 }
