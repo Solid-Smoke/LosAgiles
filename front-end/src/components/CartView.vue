@@ -7,7 +7,9 @@
                 <thead>
                     <tr>
                         <th scope="col">
-                            <input type="checkbox" @change="toggleSelectAll($event)" :checked="areAllSelected">
+                            <input type="checkbox" 
+                                   @change="toggleSelectAll($event)" 
+                                   :checked="areAllSelected">
                         </th>
                         <th scope="col">Producto</th>
                         <th scope="col">Emprendimiento</th>
@@ -17,9 +19,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="product in cartProducts" :key="product.productID" @click="toggleSelect(product)">
+                    <tr v-for="product in cartProducts"
+                        :key="product.productID" 
+                        @click="toggleSelect(product)">
                         <td>
-                            <input type="checkbox" v-model="selectedProducts" :value="{ productID: product.productID, quantity: product.quantity, total: product.total }">
+                            <input type="checkbox" 
+                                   v-model="selectedProducts" 
+                                   :value="{ productID: product.productID, 
+                                             quantity: product.quantity,
+                                             total: product.total }">
                         </td>
                         <td>{{ product.name }}</td>
                         <td>{{ product.businessName }}</td>
@@ -36,9 +44,18 @@
         </div>
 
         <div v-if="selectedProducts.length === 0" class="cart-buttons">
-            <button @click="checkout" class="btn btn-op1">Comprar Todo</button>
-            <button @click="openCleanCartWarningModal" class="btn btn-op2">Vaciar Carrito</button>
-            <button @click="closeCart" class="btn btn-op-close">Cerrar Carrito</button>
+            <button @click="checkout"
+                    class="btn btn-op1">
+                    Comprar Todo
+            </button>
+            <button @click="openCleanCartWarningModal" 
+                    class="btn btn-op2">
+                    Vaciar Carrito
+            </button>
+            <button @click="closeCart" 
+                    class="btn btn-op-close">
+                    Cerrar Carrito
+            </button>
         </div>
 
         <div v-if="selectedProducts.length > 0" class="selected-total">
@@ -46,9 +63,16 @@
         </div>
 
         <div v-if="selectedProducts.length > 0" class="cart-buttons">
-            <button class="btn btn-op1">Comprar Todo</button>
-            <button class="btn btn-op2">Eliminar Seleccionado</button>
-            <button @click="closeCart" class="btn btn-op-close">Cerrar Carrito</button>
+            <button class="btn btn-op1">
+                Comprar Todo
+            </button>
+            <button class="btn btn-op2">
+                Eliminar Seleccionado
+            </button>
+            <button @click="closeCart" 
+                    class="btn btn-op-close">
+                Cerrar Carrito
+            </button>
         </div>
     </div>
     <ActionModalConfirm ref="confirmCleanCartModal"/>
@@ -100,18 +124,21 @@
         },
         methods: {
             getUserCart() {
-                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`).then((response) => {
+                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`)
+                .then((response) => {
                         this.cartProducts = response.data;
                 })
                 .catch((error) => {
-                    this.$refs.errorCleanCartModal.openModal("Error al cargar el carrito", error);
+                    this.$refs.errorCleanCartModal.openModal
+                        ("Error al cargar el carrito", error);
                 });
             },
             closeCart() {
                 this.$router.push({ name: 'Home' });
             },
             toggleSelect(product) {
-                const productIndex = this.selectedProducts.findIndex(selected => selected.productID === product.productID);
+                const productIndex = this.selectedProducts.findIndex
+                    (selected => selected.productID === product.productID);
                 if (productIndex > -1) {
                     this.selectedProducts.splice(productIndex, 1);
                 } else {
@@ -127,18 +154,22 @@
                 return Number(user[0].userID);
             },
             checkout() {
-                this.$refs.confirmCleanCartModal.openModal("Su compra se a completado");
+                this.$refs.confirmCleanCartModal.openModal
+                    ("Su compra se a completado");
             },
             openCleanCartWarningModal() {
-                this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
+                this.$refs.warningCleanCartModal.openModal
+                    ("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
             },
             clearCart() {
-                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`).then(() => {
+                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`)
+                .then(() => {
                     this.$refs.confirmCleanCartModal.openModal("Carrito vaciado");
                     this.cartProducts = [];
                 })
                 .catch((error) => {
-                    this.$refs.errorCleanCartModal.openModal("Error al eliminar el carrito", error);
+                    this.$refs.errorCleanCartModal.openModal
+                        ("Error al eliminar el carrito", error);
                 });
             },
             toggleSelectAll(event) {
