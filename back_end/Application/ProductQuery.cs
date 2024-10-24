@@ -1,5 +1,5 @@
 ﻿using back_end.Domain;
-using back_end.Repositories;
+using back_end.Infrastructure.Repositories;
 
 namespace back_end.Application
 {
