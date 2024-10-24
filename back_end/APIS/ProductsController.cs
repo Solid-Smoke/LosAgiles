@@ -1,5 +1,5 @@
-﻿using back_end.Domain;
-using back_end.Repositories;
+﻿using back_end.Application;
+using back_end.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -8,11 +8,13 @@ namespace back_end.APIS
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductHandler _productHandler;
+        private readonly ProductCommand _productCommand;
+        private readonly ProductQuery _productQuery;
 
         public ProductsController()
         {
-            _productHandler = new ProductHandler();
+            _productCommand = new ProductCommand();
+            _productQuery = new ProductQuery();
         }
 
         [HttpPost]
@@ -20,33 +22,12 @@ namespace back_end.APIS
         {
             try
             {
-                if (product == null)
-                {
-                    return BadRequest();
-                }
-
-                if (Request.Form.Files.Count > 0)
-                {
-                    var file = Request.Form.Files[0];
-
-                    if (file != null && file.Length > 0)
-                    {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await file.CopyToAsync(memoryStream);
-                            product.ProductImage = memoryStream.ToArray();
-                        }
-
-                    }
-                }
-
-                var result = _productHandler.CreateProduct(product);
-
+                var result = await _productCommand.CreateProduct(product, Request);
                 return new JsonResult(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto.");
             }
         }
 
@@ -55,29 +36,13 @@ namespace back_end.APIS
         {
             try
             {
-                var products = _productHandler.GetAllProducts();
-
-                foreach (var product in products)
-                {
-                    if (product.ProductImage != null)
-                    {
-                        product.ProductImageBase64 = Convert.ToBase64String(product.ProductImage);
-                    }
-                }
-
+                var products = _productQuery.GetAllProducts();
                 return new JsonResult(products);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
             }
-        }
-
-        [HttpGet("~/api/ProductsByBusinessID")]
-        public List<ProductModel> getProductsByBusinessID(int businessID)
-        {
-            var products = _productHandler.getProductsByBusinessID(Convert.ToString(businessID));
-            return products;
         }
     }
 }

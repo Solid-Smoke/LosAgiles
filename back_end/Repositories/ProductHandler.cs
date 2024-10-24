@@ -23,7 +23,7 @@ namespace back_end.Repositories
             _connection.Close();
         }
 
-        private DataTable createTableResult(string query)
+        private DataTable CreateTableResult(string query)
         {
             SqlCommand selectCommand = new SqlCommand(query, _connection);
             SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
@@ -36,26 +36,24 @@ namespace back_end.Repositories
 
         public bool CreateProduct(ProductModel product)
         {
-            string querryProduct = @"
-                INSERT INTO Products (Name, Description, Price, Stock, Weight, IsPerishable, DailyAmount, DaysAvailable, BusinessID, ProductImage)
-                VALUES (@Name, @Description, @Price, @Stock, @Weight, @IsPerishable, @DailyAmount, @DaysAvailable, @BusinessID, @ProductImage);";
+            string queryProduct = @"
+                INSERT INTO Products (Name, Description, Category, Price, Stock, Weight, IsPerishable, DailyAmount, DaysAvailable, BusinessID, ProductImage)
+                VALUES (@Name, @Description, @Category, @Price, @Stock, @Weight, @IsPerishable, @DailyAmount, @DaysAvailable, @BusinessID, @ProductImage);";
 
-            SqlCommand comandoProducto = new SqlCommand(querryProduct, _connection);
-            comandoProducto.Parameters.AddWithValue("@Name", product.Name);
-            comandoProducto.Parameters.AddWithValue("@Description", product.Description);
-            comandoProducto.Parameters.AddWithValue("@Price", product.Price);
-            comandoProducto.Parameters.AddWithValue("@Stock", product.Stock);
-            comandoProducto.Parameters.AddWithValue("@Weight", product.Weight);
-            comandoProducto.Parameters.AddWithValue("@IsPerishable", product.IsPerishable);
-            comandoProducto.Parameters.AddWithValue("@DailyAmount", (object)product.DailyAmount ?? DBNull.Value);
-            comandoProducto.Parameters.AddWithValue("@DaysAvailable", (object)product.DaysAvailable ?? DBNull.Value);
-            comandoProducto.Parameters.AddWithValue("@BusinessID", product.BusinessID);
-            comandoProducto.Parameters.AddWithValue("@ProductImage", (object)product.ProductImage ?? DBNull.Value);
+            SqlCommand commandProduct = new SqlCommand(queryProduct, _connection);
+            commandProduct.Parameters.AddWithValue("@Name", product.Name);
+            commandProduct.Parameters.AddWithValue("@Description", product.Description);
+            commandProduct.Parameters.AddWithValue("@Category", product.Category);
+            commandProduct.Parameters.AddWithValue("@Price", product.Price);
+            commandProduct.Parameters.AddWithValue("@Stock", product.Stock);
+            commandProduct.Parameters.AddWithValue("@Weight", product.Weight);
+            commandProduct.Parameters.AddWithValue("@IsPerishable", product.IsPerishable);
+            commandProduct.Parameters.AddWithValue("@DailyAmount", (object)product.DailyAmount ?? DBNull.Value);
+            commandProduct.Parameters.AddWithValue("@DaysAvailable", (object)product.DaysAvailable ?? DBNull.Value);
+            commandProduct.Parameters.AddWithValue("@BusinessID", product.BusinessID);
+            commandProduct.Parameters.AddWithValue("@ProductImage", (object)product.ProductImage ?? DBNull.Value);
 
-            _connection.Open();
-            comandoProducto.ExecuteNonQuery();
-            _connection.Close();
-
+            RunCommand(commandProduct);
             return true;
         }
 
@@ -63,7 +61,7 @@ namespace back_end.Repositories
         {
             List<ProductModel> products = new List<ProductModel>();
             string query = "SELECT * FROM Products";
-            DataTable tableQueryResult = createTableResult(query);
+            DataTable tableQueryResult = CreateTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {
                 products.Add(
@@ -72,43 +70,18 @@ namespace back_end.Repositories
                         ProductID = Convert.ToInt32(column["ProductID"]),
                         Name = Convert.ToString(column["Name"]),
                         Description = Convert.ToString(column["Description"]),
+                        Category = Convert.ToString(column["Category"]),
                         Price = Convert.ToInt32(column["Price"]),
                         Stock = Convert.ToInt32(column["Stock"]),
                         Weight = Convert.ToDecimal(column["Weight"]),
-                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]), 
+                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]),
                         DailyAmount = column["DailyAmount"] as int?,
                         DaysAvailable = Convert.ToString(column["DaysAvailable"]),
                         BusinessID = Convert.ToInt32(column["BusinessID"]),
-                        ProductImage = column["ProductImage"] as byte[] 
+                        ProductImage = column["ProductImage"] as byte[]
                     });
             }
             return products;
-        }
-
-        public List<ProductModel> getProductsByBusinessID(string businessID)
-        {
-            List<ProductModel> businessData = new List<ProductModel>();
-            string query = "SELECT * FROM PRODUCTS WHERE BusinessID = " + businessID;
-            DataTable tableQueryResult = createTableResult(query);
-            foreach (DataRow column in tableQueryResult.Rows)
-            {
-                businessData.Add(
-                    new ProductModel
-                    {
-                        ProductID = Convert.ToInt32(column["ProductID"]),
-                        Name = Convert.ToString(column["Name"]),
-                        Description = Convert.ToString(column["Description"]),
-                        Price = Convert.ToInt32(column["Price"]),
-                        Stock = Convert.ToInt32(column["Stock"]),
-                        Weight = Convert.ToDecimal(column["Weight"]),
-                        IsPerishable = Convert.ToBoolean(column["IsPerishable"]), 
-                        DailyAmount = Convert.ToInt32(column["DailyAmount"]),
-                        DaysAvailable = Convert.ToString(column["DaysAvailable"]),
-                        BusinessID = Convert.ToInt32(column["BusinessID"]),
-                        ProductImage = (byte[])column["ProductImage"]
-                    });
-            }
-            return businessData;
         }
     }
 }
