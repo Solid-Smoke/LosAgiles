@@ -6,31 +6,31 @@ namespace back_end.Infrastructure.Repositories
 {
     public class ProductHandler
     {
-        private readonly SqlConnection _conexion;
+        private readonly SqlConnection _connection;
         private string? _connectionRoute;
 
         public ProductHandler()
         {
             var builder = WebApplication.CreateBuilder();
             _connectionRoute = builder.Configuration.GetConnectionString("ClientsContext");
-            _conexion = new SqlConnection(_connectionRoute);
+            _connection = new SqlConnection(_connectionRoute);
         }
 
         private void EjecutarComando(SqlCommand comando)
         {
-            _conexion.Open();
+            _connection.Open();
             comando.ExecuteNonQuery();
-            _conexion.Close();
+            _connection.Close();
         }
 
         private DataTable createTableResult(string query)
         {
-            SqlCommand selectCommand = new SqlCommand(query, _conexion);
+            SqlCommand selectCommand = new SqlCommand(query, _connection);
             SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
             DataTable resultTable = new DataTable();
-            _conexion.Open();
+            _connection.Open();
             tableAdapter.Fill(resultTable);
-            _conexion.Close();
+            _connection.Close();
             return resultTable;
         }
 
@@ -42,7 +42,7 @@ namespace back_end.Infrastructure.Repositories
                 VALUES (@Name, @Description, @Price, @Stock, @Weight, @Perishable, @DailyAmount, @DaysAvailable, @BusinessID);
                 SELECT SCOPE_IDENTITY();";
 
-            SqlCommand comandoProducto = new SqlCommand(consultaProducto, _conexion);
+            SqlCommand comandoProducto = new SqlCommand(consultaProducto, _connection);
             comandoProducto.Parameters.AddWithValue("@Name", producto.Name);
             comandoProducto.Parameters.AddWithValue("@Description", producto.Description);
             comandoProducto.Parameters.AddWithValue("@Price", producto.Price);
@@ -53,9 +53,9 @@ namespace back_end.Infrastructure.Repositories
             comandoProducto.Parameters.AddWithValue("@DaysAvailable", producto.DaysAvailable);
             comandoProducto.Parameters.AddWithValue("@BusinessID", producto.BusinessID);
 
-            _conexion.Open();
+            _connection.Open();
             int productId = Convert.ToInt32(comandoProducto.ExecuteScalar());
-            _conexion.Close();
+            _connection.Close();
 
             // Insertar imagen
             if (producto.ProductImage != null)
@@ -64,7 +64,7 @@ namespace back_end.Infrastructure.Repositories
                     INSERT INTO Images (Image, ProductID)
                     VALUES (@Image, @ProductID);";
 
-                SqlCommand comandoImagen = new SqlCommand(consultaImagen, _conexion);
+                SqlCommand comandoImagen = new SqlCommand(consultaImagen, _connection);
                 comandoImagen.Parameters.AddWithValue("@Image", producto.ProductImage);
                 comandoImagen.Parameters.AddWithValue("@ProductID", productId);
 
