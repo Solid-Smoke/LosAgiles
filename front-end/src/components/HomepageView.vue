@@ -79,7 +79,7 @@
             goNextPage() {
                 if(this.actualResultsPage + 1 < (
                     Math.trunc(this.searchResultsCount /
-                    this.maxSearchResultsPerPage)))
+                    this.maxSearchResultsPerPage) + 1))
                 {
                     this.actualResultsPage += 1;
                 }
@@ -96,7 +96,7 @@
             },
             totalPagesBySearch() {
                 let totalPagesCalculation = Math.trunc(this.searchResultsCount /
-                    this.maxSearchResultsPerPage);
+                    this.maxSearchResultsPerPage) + 1;
                 if (totalPagesCalculation == 0) {
                     return 1;
                 } else {
