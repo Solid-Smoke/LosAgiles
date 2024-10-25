@@ -1,0 +1,17 @@
+USE LosAgilesDB;
+GO
+
+CREATE TABLE OrderProducts (
+	OrderID INT NOT NULL FOREIGN KEY REFERENCES Orders(OrderID),
+	ProductID INT NOT NULL FOREIGN KEY REFERENCES [Products](ProductID),
+	Amount INT NOT NULL
+	PRIMARY KEY (OrderID, ProductID),
+);
+GO
+
+CREATE TABLE BusinessOrders (
+	OrderID INT NOT NULL FOREIGN KEY REFERENCES Orders(OrderID),
+	ProductID INT NOT NULL FOREIGN KEY REFERENCES [Products](ProductID),
+	PRIMARY KEY (OrderID, ProductID),
+);
+GO
