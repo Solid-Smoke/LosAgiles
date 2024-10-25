@@ -35,7 +35,41 @@
 </template>
 
 <script>
+import MainNavbar from './MainNavbar.vue';
+import axios from 'axios';
+
 export default {
+    components: {
+        MainNavbar,
+    },
+    data() {
+        return {
+        product: {},
+        quantity: 1,
+        };
+    },
+    methods: {
+        getProductImage(productImageBase64) {
+        if (!productImageBase64) {
+            return 'https://via.placeholder.com/500';
+        }
+        return `data:image/png;base64,${productImageBase64}`;
+        },
+        getProductDetails(productId) {
+        axios
+            .get(`https://localhost:7168/api/Products/${productId}`)
+            .then((response) => {
+            this.product = response.data;
+            })
+            .catch((error) => {
+            console.error('Error obteniendo detalles del producto:', error);
+            });
+        },
+    },
+    mounted() {
+        const productId = this.$route.params.id;
+        this.getProductDetails(productId);
+    },
 
 };
 </script>
