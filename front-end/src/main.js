@@ -20,6 +20,7 @@ import MyBusinessView from './components/MyBusinessView.vue';
 import MyBusinessInventoryView from './components/MyBusinessInventoryView.vue';
 import AdminViewAllBusiness from './components/AdminViewAllBusiness.vue';
 import CartView from './components/CartView.vue';
+import IndividualProductPage from './components/IndividualProductPage.vue';
 
 
 export const BackendUrl = "https://localhost:7168/api";
@@ -41,6 +42,7 @@ const router = createRouter({
         { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
         { path: "/AdminViewAllBusiness", name: "adminViewAllBusiness", component: AdminViewAllBusiness },
         { path: "/VerCarrito", name: "cartView.vue", component: CartView },
+        { path: "/product/:id", name: "IndividualProductPage", component: IndividualProductPage }
     ],
 });
 
