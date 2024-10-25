@@ -21,11 +21,13 @@ namespace back_end.Application
 
 
         public List<ProductsSearchModel> searchProducts(string searchText,
-            int startIndex, int maxResults, string filterTypeString, string filter)
+            int startIndex, int maxResults, string? filterTypeString, string? filter)
         {
-            return productHandler.searchProducts(searchText, startIndex,
-                maxResults,
-                factoryProductSearchFilter.getFilterType(filterTypeString), filter);
+            if (filterTypeString == null)
+                return productHandler.searchProducts(searchText, startIndex, maxResults);
+            else
+                return productHandler.searchProductsByFilter(searchText, startIndex,
+                    maxResults, factoryProductSearchFilter.getFilterType(filterTypeString), filter);
         }
     }
 }

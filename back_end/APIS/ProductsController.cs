@@ -45,5 +45,15 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ProductModel>>> searchProducts(
+            string searchText, int startIndex, int maxResults,
+            string? filterTypeString, string? filterInput)
+        {
+            return productHttpLogic.
+                searchProducts(searchText, startIndex, maxResults,
+                filterTypeString, filterInput);
+        }
     }
 }

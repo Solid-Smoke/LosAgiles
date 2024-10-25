@@ -8,13 +8,12 @@ namespace back_end.Repositories
 {
     public interface IProductHandler
     {
-        public bool CrearProducto(ProductModel producto);
-        public List<ProductModel> getProductsByBusinessID(string businessID);
-        public List<ProductsSearchModel> searchProducts(string searchText,
-            int startIndex, int maxResults, IProductSearchFilter filterType,
-            string filter);
+        bool CrearProducto(ProductModel producto);
+        List<ProductModel> getProductsByBusinessID(string businessID);
+        List<ProductsSearchModel> searchProducts(string searchText, int startIndex, int maxResults);
+        List<ProductsSearchModel> searchProductsByFilter(string searchText, int startIndex, int maxResults, IProductSearchFilter filterType, string filter);
     }
-    public class ProductHandler: IProductHandler
+    public class ProductHandler : IProductHandler
     {
         private readonly SqlConnection sqlConnection;
 
@@ -110,24 +109,34 @@ namespace back_end.Repositories
         private List<T> dapperSelectQuery<T>(string query, object parameters)
         {
             sqlConnection.Open();
-            sqlConnection.InfoMessage += connection_InfoMessage;
             List<T> result = sqlConnection.Query<T>(query, parameters)
                              .ToList();
             sqlConnection.Close();
             return result;
         }
 
-        static void connection_InfoMessage(object sender, SqlInfoMessageEventArgs sqlEvent)
+        public List<ProductsSearchModel> searchProducts(string searchText,
+                int startIndex, int maxResults)
         {
-            var outputFromStoredProcedure = sqlEvent.Message;
-            Console.WriteLine(sqlEvent.Message);
+            string query = "SELECT Products.[Name], [Description], Price," +
+                           "Businesses.Name AS BusinessName, [Image]\r\n" +
+                           "FROM Products LEFT JOIN Businesses\r\n" +
+                           "ON Businesses.BusinessID = Products.BusinessID\r\n" +
+                           "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "ORDER BY Products.ProductID\r\n" +
+                           "OFFSET @startIndex ROWS\r\n" +
+                           "FETCH NEXT @maxResults ROWS ONLY";
+
+            return dapperSelectQuery<ProductsSearchModel>(query,
+                new { searchText = "%" + searchText + "%",
+                    startIndex, maxResults });
         }
 
-        public List<ProductsSearchModel> searchProducts(string searchText,
+        public List<ProductsSearchModel> searchProductsByFilter(string searchText,
                 int startIndex, int maxResults, IProductSearchFilter filterType,
                 string filter)
         {
-            string query = ellaborateSearchProductsQuery(filterType);
+            string query = ellaborateSearchProductsByFilterQuery(filterType);
 
             var parametersValues = new DynamicParameters();
             parametersValues.Add("@searchText", "%" + filterType.parseSearchText(searchText) + "%");
@@ -137,20 +146,19 @@ namespace back_end.Repositories
             return dapperSelectQuery<ProductsSearchModel>(query, parametersValues);
         }
 
-        private string ellaborateSearchProductsQuery(IProductSearchFilter filterType)
+        private string ellaborateSearchProductsByFilterQuery(IProductSearchFilter filterType)
         {
-            string query = "select Products.[Name], [Description], Price," +
-                           "Businesses.Name, [Image]\r\n" +
-                           "from Products left join Businesses\r\n" +
-                           "on Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "where Products.[Name] like @searchText ";
+            string query = "SELECT Products.[Name], [Description], Price," +
+                           "Businesses.Name AS BusinessName, [Image]\r\n" +
+                           "FROM Products LEFT JOIN Businesses\r\n" +
+                           "ON Businesses.BusinessID = Products.BusinessID\r\n" +
+                           "WHERE Products.[Name] LIKE @searchText ";
 
             query += filterType.getQuery();
 
-            query += " order by Products.ProductID\r\n" +
+            query += " ORDER BY Products.ProductID\r\n" +
                      "OFFSET @startIndex ROWS\r\n" +
                      "FETCH NEXT @maxResults ROWS ONLY";
-            query += " print @searchText print @startIndex print @maxResults";
             return query;
         }
     }

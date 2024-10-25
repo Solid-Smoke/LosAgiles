@@ -5,7 +5,7 @@ namespace back_end.Application
 {
     public interface IProductSearchHttpLogic
     {
-        ActionResult<List<ProductModel>> searchProducts(string searchText, int startIndex, int maxResults, string filterType, string filterInput);
+        ActionResult<List<ProductModel>> searchProducts(string searchText, int startIndex, int maxResults, string? filterType, string? filterInput);
     }
    
     public class ProductSearchHttpLogic : ControllerBase,
@@ -27,7 +27,7 @@ namespace back_end.Application
 
         public ActionResult<List<ProductModel>> searchProducts(
            string searchText, int startIndex, int maxResults,
-           string filterType, string filterInput)
+           string? filterType, string? filterInput)
         {
             try
             {

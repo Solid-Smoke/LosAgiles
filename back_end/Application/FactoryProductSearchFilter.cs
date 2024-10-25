@@ -23,13 +23,11 @@ namespace back_end.Application
 
         public IProductSearchFilter getFilterType(string filterTypeString)
         {
-            switch (filterTypeString)
+            switch (filterTypeString.ToLower())
             {
-                case "No filter":
-                    return new ProductNoFilterSearchFilter();
-                case "Business name":
+                case "business name":
                     return new ProductBusinessNameSearchFilter();
-                case "Category":
+                case "category":
                     return new ProductCategorySearchFilter();
                 default:
                     throw new Exception("Invalid filterType");
@@ -63,7 +61,7 @@ namespace back_end.Application
         private readonly List<string> _categories;
         public ProductCategorySearchFilter()
         {
-            _categories = new List<string>(["Not perishables", "Perishables"]);
+            _categories = new List<string>(["not perishables", "perishables"]);
         }
         public void appendParametersValues(string filter,
             ref DynamicParameters parametersValues)
@@ -79,7 +77,7 @@ namespace back_end.Application
             return _categories.IndexOf(filter);
         }
         public bool filterIsValid(string filter) {
-            return _categories.Contains(filter);
+            return _categories.Contains(filter.ToLower());
         }
         public string parseSearchText(string searchText)
         {
@@ -108,30 +106,6 @@ namespace back_end.Application
         public string parseSearchText(string searchText)
         {
             return searchText;
-        }
-    }
-
-    internal class ProductNoFilterSearchFilter : IProductSearchFilter
-    {
-        public void appendParametersValues(string filter,
-            ref DynamicParameters parametersValues)
-        {
-
-        }
-        public string getQuery()
-        {
-            return "";
-        }
-        public object getFilterInput(string filter)
-        {
-            return "";
-        }
-        public bool filterIsValid(string filter) {
-            return true;
-        }
-        public string parseSearchText(string searchText)
-        {
-            return "";
         }
     }
 }

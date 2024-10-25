@@ -2,7 +2,7 @@
 {
     public interface IProductSearchHttpRequestParameterValidator
     {
-        void checkSearchProductsParameters(string searchText, int startIndex, int maxResults, string filterTypeString, string filter);
+        void checkSearchProductsParameters(string searchText, int startIndex, int maxResults, string? filterTypeString, string? filter);
     }
 
     public class ProductSearchHttpRequestParameterValidator : IProductSearchHttpRequestParameterValidator
@@ -17,12 +17,9 @@
 
 
         public void checkSearchProductsParameters(string searchText, int startIndex,
-            int maxResults, string filterTypeString, string filter)
+            int maxResults, string? filterTypeString, string? filter)
         {
-            if (searchText == null)
-                throw new ArgumentNullException("seachText parameter is null");
-
-            else if (startIndex < 1)
+            if (startIndex < 0)
                 throw new ArgumentOutOfRangeException(
                     $"Invalid parameter startIndex:" +
                     $"{startIndex}, should be greather than 1");
@@ -32,17 +29,18 @@
                     $"Invalid parameter maxResults: {maxResults}," +
                     $"should be greather than 1");
 
-            else if (filterTypeString == null)
-                throw new ArgumentNullException("filterTypeString is null");
+            else if (filter != null && filterTypeString == null)
+                throw new ArgumentNullException("Filter type not specified");
 
-            else if (filter == null)
-                throw new ArgumentNullException("filter is null");
+            else if (filterTypeString != null && filter == null)
+                throw new ArgumentNullException("Filter not specified");
 
-            else if (factoryProductSearchFilter.isFilterType(filterTypeString) == false)
-                throw new ArgumentException($"Invalid filter type:" +
+            else if (filterTypeString != null &&
+                    factoryProductSearchFilter.isFilterType(filterTypeString) == false)
+                throw new ArgumentException($"Unexisting filter type:" +
                     $"{filterTypeString}");
 
-            else if (factoryProductSearchFilter
+            else if (filterTypeString != null && factoryProductSearchFilter
                 .filterIsValid(filterTypeString, filter) == false)
                 throw new ArgumentException(
                     $"Invalid filter for filter type {filterTypeString}:" +
