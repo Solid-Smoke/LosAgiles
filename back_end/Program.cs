@@ -1,4 +1,8 @@
-﻿var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+using back_end.Application;
+using back_end.Handlers;
+using System.Data.SqlClient;
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -13,8 +17,14 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+builder.Services.AddScoped<SqlConnection>(a => new SqlConnection(builder.Configuration.GetConnectionString("ARQContext")));
+builder.Services.AddSingleton<IFactoryProductSearchFilter, FactoryProductSearchFilter>();
+builder.Services.AddScoped<IProductHandler, ProductHandler>();
+builder.Services.AddScoped<IProductSearchHttpRequestParameterValidator, ProductSearchHttpRequestParameterValidator>();
+builder.Services.AddScoped<IProductSearchLogic, ProductSearchLogic>();
+builder.Services.AddScoped<IProductSearchHttpLogic, ProductSearchHttpLogic>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
