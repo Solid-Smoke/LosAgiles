@@ -1,5 +1,8 @@
 <template>
-    <MainNavbar />
+    <MainNavbar>
+        <SearchBar  :startSearchIndex="(actualResultsPage - 1) * this.maxSearchResults"
+                    :maxResults="this.maxSearchResults" />
+    </MainNavbar>
 
     <b-container fluid class="px-5">
         <b-row>
@@ -26,13 +29,14 @@
                 </div>
 
                 <b-row>
-                    <b-col lg="3" md="4" sm="6" v-for="product in products" :key="product.productID">
-                        <b-card :title="product.name" img-alt="Product Image" img-top class="mb-3">
-                            <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto" style="width: 250px; height: 250px;">
-                            <b-card-text>{{ truncateDescription(product.description, 100) }}</b-card-text>
-                            <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
-                            <b-button variant="primary">Añadir al Carrito</b-button>
-                        </b-card>
+                    <b-col lg="3" md="4" sm="6" v-for="(product, index) of products" :key="index">
+                        <b-card :title="product.name" :img-src="product.imageFileName" img-alt="Product Image" img-top class="mb-3">
+
+                        <b-card-text>{{product.description}}</b-card-text>
+
+                        <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong>
+
+                        </b-card-text><b-button variant="primary">Añadir al Carrito</b-button></b-card>
                     </b-col>
                 </b-row>
             </b-col>
@@ -41,47 +45,30 @@
 </template>
 
 <script>
-import MainNavbar from './MainNavbar.vue';
-import axios from 'axios';
+    import MainNavbar from './MainNavbar.vue';
+    import SearchBar from './SearchBar.vue';
 
-export default {
-    components: {
-        MainNavbar
-    },
-    data() {
-        return {
-            products: []
-        };
-    },
-    methods: {
-        getProducts() {
-            axios.get('https://localhost:7168/api/Products/GetAllProducts')
-                .then(response => {
-                    this.products = response.data;
-                })
-                .catch(error => {
-                    console.error("Error obteniendo productos:", error);
-                });
+    export default {
+        components: {
+            MainNavbar,
+            SearchBar
         },
-        getProductImage(productImageBase64) {
-
-            if (!productImageBase64) {
-                return "https://via.placeholder.com/250";
-            }
-
-            return `data:image/png;base64,${productImageBase64}`;
-        },
-        truncateDescription(text, maxLength) {
-            if (text.length > maxLength) {
-                return text.substring(0, maxLength) + '...';
-            }
-            return text;
+        data() {
+            return {
+                products: [
+                    {
+                        name: "",
+                        description: "",
+                        price: 0,
+                        bussinessName: "",
+                        imageFileName: ""
+                    }
+                ],
+                maxSearchResults: 12,
+                actualResultsPage: 1
+            };
         }
-    },
-    mounted() {
-        this.getProducts();
-    }
-};
+    };
 </script>
 
 <style lang="scss" scoped>
