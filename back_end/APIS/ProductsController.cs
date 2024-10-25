@@ -1,6 +1,9 @@
 using back_end.Application.Commands;
 using back_end.Application.Queries;
+﻿using back_end.Application;
 using back_end.Domain;
+using back_end.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -12,10 +15,13 @@ namespace back_end.APIS
         private readonly ProductCommand _productCommand;
         private readonly ProductQuery _productQuery;
 
-        public ProductsController()
+        private readonly IProductQuery productQuery;
+
+        public ProductsController(IProductHandler productHandler,
+            IProductQuery productQuery)
         {
-            _productCommand = new ProductCommand();
-            _productQuery = new ProductQuery();
+            this._productHandler = productHandler;
+            this.productQuery = productQuery;
         }
 
         [HttpPost]
@@ -45,15 +51,13 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
             }
         }
-
         [HttpGet]
-        public async Task<ActionResult<List<ProductModel>>> searchProducts(
-            string searchText, int startIndex, int maxResults,
-            string? filterTypeString, string? filterInput)
+        public async
+            Task<ActionResult<List<ProductsSearchModel>>> searchProducts(
+            int startIndex, int maxResults, string? searchText)
         {
-            return productHttpLogic.
-                searchProducts(searchText, startIndex, maxResults,
-                filterTypeString, filterInput);
+            return productQuery.
+                searchProducts(startIndex, maxResults, searchText);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using back_end.Application;
-using back_end.Domain;
+﻿using back_end.Domain;
 using System.Data;
 using System.Data.SqlClient;
 using Dapper;
@@ -10,8 +9,8 @@ namespace back_end.Repositories
     {
         bool CrearProducto(ProductModel producto);
         List<ProductModel> getProductsByBusinessID(string businessID);
-        List<ProductsSearchModel> searchProducts(string searchText, int startIndex, int maxResults);
-        List<ProductsSearchModel> searchProductsByFilter(string searchText, int startIndex, int maxResults, IProductSearchFilter filterType, string filter);
+        List<ProductsSearchModel> searchProducts(string searchText,
+            int startIndex, int maxResults);
     }
     public class ProductHandler : IProductHandler
     {
@@ -119,10 +118,12 @@ namespace back_end.Repositories
                 int startIndex, int maxResults)
         {
             string query = "SELECT Products.[Name], [Description], Price," +
-                           "Businesses.Name AS BusinessName, [Image]\r\n" +
+                           "Businesses.Name AS BusinessName, ProductImage\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
-                           "ON Businesses.BusinessID = Products.BusinessID\r\n" +
+                           "ON Businesses.BusinessID = Products.BusinessID\r\n"+
                            "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "OR Businesses.[Name] LIKE @searchText\r\n" +
+                           "OR Products.Category LIKE @searchText\r\n" +
                            "ORDER BY Products.ProductID\r\n" +
                            "OFFSET @startIndex ROWS\r\n" +
                            "FETCH NEXT @maxResults ROWS ONLY";
@@ -130,36 +131,6 @@ namespace back_end.Repositories
             return dapperSelectQuery<ProductsSearchModel>(query,
                 new { searchText = "%" + searchText + "%",
                     startIndex, maxResults });
-        }
-
-        public List<ProductsSearchModel> searchProductsByFilter(string searchText,
-                int startIndex, int maxResults, IProductSearchFilter filterType,
-                string filter)
-        {
-            string query = ellaborateSearchProductsByFilterQuery(filterType);
-
-            var parametersValues = new DynamicParameters();
-            parametersValues.Add("@searchText", "%" + filterType.parseSearchText(searchText) + "%");
-            parametersValues.Add("@startIndex", startIndex);
-            parametersValues.Add("@maxResults", maxResults);
-
-            return dapperSelectQuery<ProductsSearchModel>(query, parametersValues);
-        }
-
-        private string ellaborateSearchProductsByFilterQuery(IProductSearchFilter filterType)
-        {
-            string query = "SELECT Products.[Name], [Description], Price," +
-                           "Businesses.Name AS BusinessName, [Image]\r\n" +
-                           "FROM Products LEFT JOIN Businesses\r\n" +
-                           "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE Products.[Name] LIKE @searchText ";
-
-            query += filterType.getQuery();
-
-            query += " ORDER BY Products.ProductID\r\n" +
-                     "OFFSET @startIndex ROWS\r\n" +
-                     "FETCH NEXT @maxResults ROWS ONLY";
-            return query;
         }
     }
 }
