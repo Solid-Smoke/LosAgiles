@@ -59,5 +59,11 @@ namespace back_end.APIS
             return productQuery.
                 searchProducts(startIndex, maxResults, searchText);
         }
+        [HttpGet("CountProductsBySearch")]
+        public async
+            Task<ActionResult<int>> countProductsBySearch(string? searchText)
+        {
+            return productQuery.countProductsBySearch(searchText);
+        }
     }
 }

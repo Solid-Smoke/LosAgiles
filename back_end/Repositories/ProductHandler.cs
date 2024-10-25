@@ -5,13 +5,6 @@ using Dapper;
 
 namespace back_end.Repositories
 {
-    public interface IProductHandler
-    {
-        bool CrearProducto(ProductModel producto);
-        List<ProductModel> getProductsByBusinessID(string businessID);
-        List<ProductsSearchModel> searchProducts(string searchText,
-            int startIndex, int maxResults);
-    }
     public class ProductHandler : IProductHandler
     {
         private readonly SqlConnection sqlConnection;
@@ -114,6 +107,15 @@ namespace back_end.Repositories
             return result;
         }
 
+        private int dapperCountQuery(string query, object parameters)
+        {
+            sqlConnection.Open();
+            int result = sqlConnection.Query<int>(query, parameters)
+                             .ToList()[0];
+            sqlConnection.Close();
+            return result;
+        }
+
         public List<ProductsSearchModel> searchProducts(string searchText,
                 int startIndex, int maxResults)
         {
@@ -129,8 +131,24 @@ namespace back_end.Repositories
                            "FETCH NEXT @maxResults ROWS ONLY";
 
             return dapperSelectQuery<ProductsSearchModel>(query,
-                new { searchText = "%" + searchText + "%",
-                    startIndex, maxResults });
+                new
+                {
+                    searchText = "%" + searchText + "%",
+                    startIndex,
+                    maxResults
+                });
+        }
+
+        public int countProductsBySearch(string searchText)
+        {
+            string query = "SELECT count(*)\r\n" +
+                           "FROM Products LEFT JOIN Businesses\r\n" +
+                           "ON Businesses.BusinessID = Products.BusinessID\r\n"+
+                           "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "OR Businesses.[Name] LIKE @searchText\r\n" +
+                           "OR Products.Category LIKE @searchText\r\n";
+            return dapperCountQuery(query,
+                new { searchText = "%" + searchText + "%", });
         }
     }
 }

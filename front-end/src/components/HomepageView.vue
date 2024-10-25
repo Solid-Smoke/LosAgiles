@@ -2,53 +2,58 @@
     <MainNavbar />
     <SearchBar :startSearchIndex="this.startSearchIndex" 
         :maxResults="this.maxSearchResultsPerPage"
-        @products-retreived="(products) => this.products = products"/>
+        @products-retreived="(products) => this.products = products"
+        @products-counted="(count) => this.searchResultsCount = count"/>
 
     <b-container fluid class="px-5">
-        <b-row>
-            <b-col lg="2" md="3" class="d-none d-md-block category-sidebar">
-                <h4 class="mb-4" style="margin-top: 20px;">Ordenar por Categoria</h4>
-
-                <b-list-group flush>
-                    <b-list-group-item class="category-item">Categoria 1</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 2</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 3</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 4</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 5</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 6</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 7</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 8</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 9</b-list-group-item>
-                    <b-list-group-item class="category-item">Categoria 10</b-list-group-item>
-                </b-list-group>
-            </b-col>
-        
+        <b-row style>
             <b-col lg="10" md="9">
-                <div class="container mt-1">
-                    <h1 class="display-4 text-center"><strong>PRODUCTOS</strong></h1>
+                <div class="container mt-1"><h1 class="display-4 text-center">
+                    <strong>PRODUCTOS</strong></h1></div>
+                <div v-if="products.length == 0" class="container mt-1">
+                    <h6 class="text-center">
+                    <br><br><br><br>
+                    <strong>No se encontraron productos</strong>
+                    </h6>
                 </div>
-
                 <b-row>
-                    <b-col lg="3" md="4" sm="6" v-for="(product, index) of products" :key="index">
-                        <b-card :title="product.name" :img-src="getProductImage(product.productImageInBase64)" img-alt="Product Image" img-top class="mb-3">
+                    <b-col lg="3" md="4" sm="6"
+                    v-for="(product, index) of products" :key="index">
+                        <b-card :title="product.name"
+                            :img-src="getProductImage(
+                                product.productImageInBase64)"
+                            img-alt="Product Image" img-top class="mb-3">
 
                         <b-card-text>{{product.description}}</b-card-text>
 
-                        <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong>
+                        <b-card-text>
+                            <strong>Precio: &#x20a1;{{ product.price }}</strong>
 
-                        </b-card-text><b-button variant="primary">Añadir al Carrito</b-button></b-card>
+                        </b-card-text>
+                            <b-button variant="primary">
+                                Añadir al Carrito
+                            </b-button>
+                        </b-card>
                     </b-col>
                 </b-row>
             </b-col>
         </b-row>
     </b-container>
+    <b-button-group style="float: right">
+        <br>
+        <span>
+            {{ actualResultsPage + 1 }}/{{ Math.trunc(this.searchResultsCount /
+                maxSearchResultsPerPage)}}
+        </span>
+        <b-button @click="actualResultsPage = 0;">Inicio</b-button>
+        <b-button @click="goPreviousPage">Anterior</b-button>
+        <b-button @click="goNextPage">Siguiente</b-button>
+    </b-button-group>
 </template>
 
 <script>
     import MainNavbar from './MainNavbar.vue';
     import SearchBar from './SearchBar.vue';
-    import axios from 'axios';
-    import { BackendUrl } from '@/main';
 
     export default {
         components: {
@@ -57,44 +62,33 @@
         },
         data() {
             return {
-                products: [
-                    {
-                        name: "",
-                        description: "",
-                        price: 0,
-                        bussinessName: "",
-                        productImage: "",
-                        productImageInBase64: ""
-                    }
-                ],
-                maxSearchResultsPerPage: 15,
-                actualResultsPage: 0
+                products: [],
+                maxSearchResultsPerPage: 8,
+                actualResultsPage: 0,
+                searchResultsCount: 0
             };
         },
         methods: {
-            searchProducts(startIndex, maxResults) {
-                axios
-                .get(BackendUrl +
-                    "/Products", {params: {
-                        startIndex,
-                        maxResults
-                    }})
-                .then(
-                    (response) => {
-                        this.products = response.data;
-                        console.log(this.products);
-                    })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             getProductImage(productImageBase64) {
                 if (!productImageBase64) {
-                    console.log("No image available , using placeholder")
                     return "https://via.placeholder.com/250";
+                } else {
+                    return `data:image/png;base64,${productImageBase64}`;
                 }
-                return `data:image/png;base64,${productImageBase64}`;
             },
+            goNextPage() {
+                if(this.actualResultsPage + 1 < (
+                    Math.trunc(this.searchResultsCount /
+                    this.maxSearchResultsPerPage)))
+                {
+                    this.actualResultsPage += 1;
+                }
+            },
+            goPreviousPage() {
+                if(this.actualResultsPage > 0) {
+                    this.actualResultsPage -= 1;
+                }
+            }
         },
         computed: {
             startSearchIndex() {
@@ -104,5 +98,6 @@
     };
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
+
 </style>

@@ -2,8 +2,8 @@
     <b-nav-form>
         <b-form-input size="sm" placeholder="Search" v-model="searchText" />
         <b-button size="sm" class="my-2 my-sm-0" type="submit" 
-            @click="searchProducts(this.searchText, this.startSearchIndex,
-                this.maxResults)">Search</b-button>
+            @click="searchProducts(this.startSearchIndex,
+                this.maxResults, this.searchText)">Search</b-button>
     </b-nav-form>
 </template>
 
@@ -15,7 +15,12 @@ import axios from 'axios';
             startSearchIndex: Number,
             maxResults: Number,
         },
-        expose: ['products'],
+        watch: {
+            startSearchIndex: function() {
+                this.searchProducts(this.startSearchIndex,
+                    this.maxResults, this.searchText)
+            }
+        },
         data() {
             return {
                 products: [],
@@ -33,6 +38,7 @@ import axios from 'axios';
                     }})
                 .then(
                     (response) => {
+                        this.countProductsBySearch(this.searchText);
                         this.products = response.data;
                         this.$emit('productsRetreived', this.products);
                     })
@@ -40,6 +46,19 @@ import axios from 'axios';
                     console.log(error);
                 });
             },
+            countProductsBySearch(searchText) {
+                axios
+                .get(BackendUrl +
+                    "/Products/CountProductsBySearch",
+                    {params: {searchText}})
+                .then(
+                    (response) => {
+                        this.$emit('productsCounted', response.data);
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
         },
         mounted() {
             this.searchProducts(0, this.maxResults, "");
