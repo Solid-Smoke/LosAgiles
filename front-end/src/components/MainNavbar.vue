@@ -13,7 +13,7 @@
                     </b-nav-form>
 
                     <b-nav-item-dropdown text="Mi perfil" right>
-                        <b-dropdown-item href="#">Mis datos</b-dropdown-item>
+                        <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
                         <b-dropdown-item href="/VerCarrito">Carrito</b-dropdown-item>
                         <b-dropdown-item href="/direcciones">Direcciones de entrega</b-dropdown-item>
                     </b-nav-item-dropdown>
@@ -21,15 +21,12 @@
                     <b-nav-item-dropdown text="Mis empresas">
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
                         <b-dropdown-item href="/MyBusiness">Ver empresa</b-dropdown-item>
+                        <b-dropdown-item @click="openProductModal">Añadir Producto</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Admin">
                         <b-dropdown-item href="/AdminViewAllBusiness">Ver todas las empresas registradas</b-dropdown-item>
                     </b-nav-item-dropdown>
-                </b-navbar-nav>
-
-                <b-navbar-nav>
-                    <b-nav-item @click="openProductModal">A&ntilde;adir Producto</b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ms-auto">
@@ -44,21 +41,25 @@
     </div>
     <RegisterBusinessModal ref="registerBusinessModal" />
     <AddProductView ref="addProductModal" />
+    <UserPersonalDetails ref="personalDetailsModal" />
 </template>
 
 <script>
     import RegisterBusinessModal from './RegisterBusinessModal.vue';
     import AddProductView from './AddProductView.vue';
+    import UserPersonalDetails from './UserPersonalDetails.vue';
 
     export default {
         components: {
             RegisterBusinessModal,
-            AddProductView
+            AddProductView,
+            UserPersonalDetails
         },
         data() {
             return {
                 registerBusinessModal: false,
                 addProductModal: false,
+                personalDetailsModal: false,
                 loginData: {
                     userID: "1",
                 }
@@ -70,6 +71,9 @@
             },
             openProductModal() {
                 this.$refs.addProductModal.openModal();
+            },
+            openPersonalDetailsModal() {
+                this.$refs.personalDetailsModal.openModal();
             }
         },
     };
