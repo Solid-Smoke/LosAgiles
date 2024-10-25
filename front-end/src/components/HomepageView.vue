@@ -78,8 +78,8 @@
             },
             goNextPage() {
                 if(this.actualResultsPage + 1 < (
-                    Math.trunc(this.searchResultsCount /
-                    this.maxSearchResultsPerPage) + 1))
+                    Math.ceil(this.searchResultsCount /
+                    this.maxSearchResultsPerPage)))
                 {
                     this.actualResultsPage += 1;
                 }
@@ -95,8 +95,8 @@
                 return this.actualResultsPage * this.maxSearchResultsPerPage;
             },
             totalPagesBySearch() {
-                let totalPagesCalculation = Math.trunc(this.searchResultsCount /
-                    this.maxSearchResultsPerPage) + 1;
+                let totalPagesCalculation = Math.ceil(this.searchResultsCount /
+                    this.maxSearchResultsPerPage);
                 if (totalPagesCalculation == 0) {
                     return 1;
                 } else {
