@@ -1,9 +1,11 @@
 <template>
     <b-nav-form>
-        <b-form-input size="sm" placeholder="Search" v-model="searchText" />
+        <b-form-input size="sm"
+            placeholder="Buscar producto, categoría o empresa..."
+            v-model="searchText" />
         <b-button size="sm" class="my-2 my-sm-0" type="submit" 
             @click="searchProducts(this.startSearchIndex,
-                this.maxResults, this.searchText)">Search</b-button>
+                this.maxResults, this.searchText)">Buscar</b-button>
     </b-nav-form>
 </template>
 

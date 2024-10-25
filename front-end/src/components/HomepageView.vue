@@ -2,12 +2,14 @@
     <MainNavbar />
     <SearchBar :startSearchIndex="this.startSearchIndex" 
         :maxResults="this.maxSearchResultsPerPage"
-        @products-retreived="(products) => this.products = products"
-        @products-counted="(count) => this.searchResultsCount = count"/>
+        @products-retreived="(products) => {this.products = products;
+            resetPageNumber();}"
+        @products-counted="(count) => this.searchResultsCount = count"
+        id="searchbar"/>
 
     <b-container fluid class="px-5">
         <b-row style>
-            <b-col lg="10" md="9">
+            <b-col>
                 <div class="container mt-1"><h1 class="display-4 text-center">
                     <strong>PRODUCTOS</strong></h1></div>
                 <div v-if="products.length == 0" class="container mt-1">
@@ -39,8 +41,7 @@
             </b-col>
         </b-row>
     </b-container>
-    <b-button-group style="float: right">
-        <br>
+    <b-button-group style="float: right;">
         <span>
             {{ actualResultsPage + 1 }}/{{ Math.trunc(this.searchResultsCount /
                 maxSearchResultsPerPage)}}
@@ -71,7 +72,8 @@
         methods: {
             getProductImage(productImageBase64) {
                 if (!productImageBase64) {
-                    return "https://via.placeholder.com/250";
+                    return "https://imporpec.com.bo/images/" +
+                        "image_not_available.gif";
                 } else {
                     return `data:image/png;base64,${productImageBase64}`;
                 }
@@ -99,5 +101,10 @@
 </script>
 
 <style lang="css" scoped>
-
+    #searchbar {
+        padding-right: 66%;
+        padding-left: 10%;
+        padding-bottom: 10px;
+        background-color: #0DCAF0;
+    }
 </style>
