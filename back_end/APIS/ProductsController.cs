@@ -1,6 +1,5 @@
-using back_end.Application.Commands;
-using back_end.Application.Queries;
-using back_end.Domain;
+﻿using back_end.Domain;
+using back_end.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -9,41 +8,38 @@ namespace back_end.APIS
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductCommand _productCommand;
-        private readonly ProductQuery _productQuery;
+        private readonly ProductHandler _productHandler;
 
         public ProductsController()
         {
-            _productCommand = new ProductCommand();
-            _productQuery = new ProductQuery();
+            _productHandler = new ProductHandler();
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateProduct([FromForm] ProductModel product)
+        public async Task<ActionResult<bool>> CrearProducto([FromForm] ProductModel product)
         {
             try
             {
-                var result = await _productCommand.CreateProduct(product, Request);
+                if (product == null)
+                {
+                    return BadRequest();
+                }
+
+                var result = _productHandler.CrearProducto(product);
+
                 return new JsonResult(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto");
             }
         }
 
-        [HttpGet("GetAllProducts")]
-        public ActionResult<List<ProductModel>> GetAllProducts()
+        [HttpGet("~/api/ProductsByBusinessID")]
+        public List<ProductModel> getProductsByBusinessID(int businessID)
         {
-            try
-            {
-                var products = _productQuery.GetAllProducts();
-                return new JsonResult(products);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
-            }
+            var products = _productHandler.getProductsByBusinessID(Convert.ToString(businessID));
+            return products;
         }
     }
 }
