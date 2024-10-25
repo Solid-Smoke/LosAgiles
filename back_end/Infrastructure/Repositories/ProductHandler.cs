@@ -7,13 +7,13 @@ namespace back_end.Infrastructure.Repositories
     public class ProductHandler
     {
         private readonly SqlConnection _conexion;
-        private string? _rutaConexion;
+        private string? _connectionRoute;
 
         public ProductHandler()
         {
             var builder = WebApplication.CreateBuilder();
-            _rutaConexion = builder.Configuration.GetConnectionString("ClientsContext");
-            _conexion = new SqlConnection(_rutaConexion);
+            _connectionRoute = builder.Configuration.GetConnectionString("ClientsContext");
+            _conexion = new SqlConnection(_connectionRoute);
         }
 
         private void EjecutarComando(SqlCommand comando)
