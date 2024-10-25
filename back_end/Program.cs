@@ -1,5 +1,6 @@
-using back_end.Application;
-using back_end.Repositories;
+using back_end.Application.Queries;
+using back_end.Application.Interfaces;
+using back_end.Infrastructure.Repositories;
 using System.Data.SqlClient;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -19,7 +20,7 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<SqlConnection>(a =>
-    new SqlConnection(builder.Configuration.GetConnectionString("ARQContext")));
+    new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 builder.Services.AddScoped<IProductHandler, ProductHandler>();
 builder.Services.AddScoped<IProductQuery, ProductQuery>();
 

@@ -1,9 +1,7 @@
 using back_end.Application.Commands;
 using back_end.Application.Queries;
-﻿using back_end.Application;
 using back_end.Domain;
-using back_end.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Http;
+using back_end.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -13,15 +11,12 @@ namespace back_end.APIS
     public class ProductsController : ControllerBase
     {
         private readonly ProductCommand _productCommand;
-        private readonly ProductQuery _productQuery;
-
         private readonly IProductQuery productQuery;
 
-        public ProductsController(IProductHandler productHandler,
-            IProductQuery productQuery)
+        public ProductsController(IProductQuery productQuery, IProductHandler productHandler)
         {
-            this._productHandler = productHandler;
             this.productQuery = productQuery;
+            this._productCommand = new ProductCommand(productHandler);
         }
 
         [HttpPost]
@@ -29,7 +24,7 @@ namespace back_end.APIS
         {
             try
             {
-                var result = await _productCommand.CreateProduct(product, Request);
+                var result = await _productCommand.createProduct(product, Request);
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -43,7 +38,7 @@ namespace back_end.APIS
         {
             try
             {
-                var products = _productQuery.GetAllProducts();
+                var products = productQuery.getAllProducts();
                 return new JsonResult(products);
             }
             catch (Exception ex)

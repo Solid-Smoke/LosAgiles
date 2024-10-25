@@ -1,20 +1,27 @@
 ﻿using back_end.Domain;
-using back_end.Infrastructure.Repositories;
+using back_end.Application.Interfaces;
 
 namespace back_end.Application.Queries
 {
-    public class ProductQuery
+    public interface IProductQuery
     {
-        private readonly ProductHandler _productHandler;
+        int countProductsBySearch(string? searchText);
+        List<ProductModel> getAllProducts();
+        List<ProductsSearchModel> searchProducts(int startIndex, int maxResults, string? searchText);
+    }
 
-        public ProductQuery()
+    public class ProductQuery : IProductQuery
+    {
+        private readonly IProductHandler productHandler;
+
+        public ProductQuery(IProductHandler productHandler)
         {
-            _productHandler = new ProductHandler();
+            this.productHandler = productHandler;
         }
 
-        public List<ProductModel> GetAllProducts()
+        public List<ProductModel> getAllProducts()
         {
-            var products = _productHandler.GetAllProducts();
+            var products = productHandler.GetAllProducts();
 
             foreach (var product in products)
             {
@@ -25,6 +32,27 @@ namespace back_end.Application.Queries
             }
 
             return products;
+        }
+
+        public List<ProductsSearchModel> searchProducts(
+            int startIndex, int maxResults, string? searchText)
+        {
+            if (searchText == null)
+                searchText = "";
+            var products = productHandler.searchProducts(searchText, startIndex,
+                maxResults);
+            foreach (var product in products)
+                if (product.ProductImage != null)
+                    product.ProductImageInBase64 = Convert.ToBase64String(
+                    product.ProductImage);
+            return products;
+        }
+
+        public int countProductsBySearch(string? searchText)
+        {
+            if (searchText == null)
+                searchText = "";
+            return productHandler.countProductsBySearch(searchText);
         }
     }
 }
