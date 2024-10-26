@@ -26,8 +26,8 @@
                             <input type="checkbox" 
                                    v-model="selectedProducts" 
                                    :value="{ productID: product.productID, 
-                                             quantity: product.amount,
-                                             total: product.totalSales }">
+                                             amount: product.amount,
+                                             totalSales: product.totalSales }">
                         </td>
                         <td>{{ product.productName }}</td>
                         <td>{{ product.businessName }}</td>
