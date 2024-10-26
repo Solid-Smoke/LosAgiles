@@ -31,7 +31,7 @@
                             <strong>Precio: &#x20a1;{{ product.price }}</strong>
 
                         </b-card-text>
-                            <b-button variant="primary">
+                            <b-button variant="primary" @click="openProductPage(product.productId);">
                                 Añadir al Carrito
                             </b-button>
                         </b-card>
@@ -88,7 +88,10 @@
                 if(this.actualResultsPage > 0) {
                     this.actualResultsPage -= 1;
                 }
-            }
+            },
+            openProductPage(productID) {
+                this.$router.push({ name: 'IndividualProductPage', params: { id: productID } });
+            },
         },
         computed: {
             startSearchIndex() {
