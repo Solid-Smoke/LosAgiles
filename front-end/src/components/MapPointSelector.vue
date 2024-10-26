@@ -1,17 +1,20 @@
 <template>
-    <form @submit.prevent="emitCoordinates" style="align-items: center;">
-        <div id="mapContainer" :style="mapVisibilizationStyle">
-            <div id="map"></div>
+    <div style="align-items: center;">
+        <div style="display: flex;
+            flex-direction: column; align-items: center;">
+            <div id="mapContainer" :style="mapVisibilizationStyle">
+                <div id="map"></div>
+            </div>
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <button type="submit" class="btn btn-success btn-block" v-if="mapIsShown" @click="emitCoordinates">
+                    Confirmar ubicación de entrega
+                </button>
+                <button v-if="!mapIsShown" @click="showMap" class="btn btn-success btn-block">
+                    Elegir ubicación de entrega
+                </button>
+            </div>
         </div>
-        <div style="display: flex; justify-content: center; margin-top: 10px;">
-            <button type="submit" class="btn btn-success btn-block" v-if="mapIsShown" @click="hideMap">
-                Confirmar ubicación de entrega
-            </button>
-            <button v-if="!mapIsShown" @click="showMap" class="btn btn-success btn-block">
-                Elegir ubicación de entrega
-            </button>
-        </div>
-    </form>
+    </div>
 </template>
 <script>
 import { LosAgilesMapsApiKey } from '@/main';
@@ -60,6 +63,7 @@ function loadGoogleMapsApiKey() {
             },
             emitCoordinates() {
                 this.$emit('selectedCoordinates', this.coordinates);
+                this.hideMap();
             },
             showMap() {
                 this.mapVisibilizationStyle = this.mapIsShownStyle;
