@@ -1,5 +1,4 @@
 <template>
-    <MainNavbar />
     <div class="container mt-5">
       <h2 class="text-center">Seleccione su forma de pago</h2>
 
@@ -72,19 +71,17 @@
       </b-modal>
 
       <b-modal v-model="showSuccessModal" title="Pago Realizado" hide-footer centered>
-        <p class="my-2">¡Su pago se ha procesado correctamente!</p>
-        <b-button variant="success" @click="showSuccessModal = false">Aceptar</b-button>
+        <p class="my-2">¡Su pago se ha procesado correctamente y la compra ha sido realizada!</p>
+        <b-button variant="success" @click="showSuccessModal = false; this.$router.push({ name: 'Home' });">
+          Volver a página principal
+        </b-button>
       </b-modal>
     </div>
 </template>
 
 <script>
-import MainNavbar from './MainNavbar.vue';
 
 export default {
-  components: {
-    MainNavbar,
-  },
   data() {
     return {
       paymentMethod: null,
