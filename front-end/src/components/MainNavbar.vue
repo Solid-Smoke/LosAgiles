@@ -26,6 +26,7 @@
 
                     <b-nav-item-dropdown text="Admin">
                         <b-dropdown-item href="/AdminViewAllBusiness">Ver todas las empresas registradas</b-dropdown-item>
+                        <b-dropdown-item href="/UserList">Ver todos los usuarios</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
 
