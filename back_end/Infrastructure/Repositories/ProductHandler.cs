@@ -86,7 +86,12 @@ namespace back_end.Infrastructure.Repositories
 
         public ProductModel GetProductById(int id)
         {
-            string query = $"SELECT * FROM Products WHERE ProductID = {id}";
+            string query = $@"
+        SELECT p.*, b.Name AS BusinessName 
+        FROM Products p
+        INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
+        WHERE ProductID = {id}";
+
             DataTable tableQueryResult = CreateTableResult(query);
 
             if (tableQueryResult.Rows.Count == 0)
@@ -109,8 +114,10 @@ namespace back_end.Infrastructure.Repositories
                 DailyAmount = column["DailyAmount"] as int?,
                 DaysAvailable = Convert.ToString(column["DaysAvailable"]),
                 BusinessID = Convert.ToInt32(column["BusinessID"]),
+                BusinessName = Convert.ToString(column["BusinessName"]),
                 ProductImage = column["ProductImage"] as byte[]
             };
         }
+
     }
 }
