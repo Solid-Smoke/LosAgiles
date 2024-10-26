@@ -1,5 +1,4 @@
 ﻿namespace back_end.Domain;
-
 public partial class ClientsAddress
 {
     public int AddressID { get; set; }

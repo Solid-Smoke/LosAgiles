@@ -45,7 +45,11 @@
         {
           "invalid-first-character-of-tag-name": false
         }
-      ]
+      ],
+      "no-async-promise-executor": 1,
+      "no-unused-vars": 1,
+      "no-unexpected-multiline": 1,
+      "no-undef": 1
     }
   },
   "browserslist": [

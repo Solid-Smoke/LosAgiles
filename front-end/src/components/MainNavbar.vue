@@ -21,16 +21,13 @@
                     <b-nav-item-dropdown text="Mis empresas">
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
                         <b-dropdown-item href="/MyBusiness">Ver empresa</b-dropdown-item>
+                        <b-dropdown-item @click="openProductModal">Añadir Producto</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Admin">
                         <b-dropdown-item href="/AdminViewAllBusiness">Ver todas las empresas registradas</b-dropdown-item>
                         <b-dropdown-item href="/confirmarOrdenes">Revisar ordenes entrantes</b-dropdown-item>
                     </b-nav-item-dropdown>
-                </b-navbar-nav>
-
-                <b-navbar-nav>
-                    <b-nav-item @click="openProductModal">A&ntilde;adir Producto</b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ms-auto">
