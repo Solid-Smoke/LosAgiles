@@ -7,7 +7,9 @@
                 <thead>
                     <tr>
                         <th scope="col">
-                            <input type="checkbox" @change="toggleSelectAll($event)" :checked="areAllSelected">
+                            <input type="checkbox" 
+                                   @change="toggleSelectAll($event)" 
+                                   :checked="areAllSelected">
                         </th>
                         <th scope="col">Producto</th>
                         <th scope="col">Emprendimiento</th>
@@ -17,15 +19,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="product in cartProducts" :key="product.productID" @click="toggleSelect(product)">
+                    <tr v-for="product in cartProducts"
+                        :key="product.productID" 
+                        @click="toggleSelect(product)">
                         <td>
-                            <input type="checkbox" v-model="selectedProducts" :value="{ productID: product.productID, quantity: product.quantity, total: product.total }">
+                            <input type="checkbox" 
+                                   v-model="selectedProducts" 
+                                   :value="{ productID: product.productID, 
+                                             quantity: product.amount,
+                                             total: product.totalSales }">
                         </td>
-                        <td>{{ product.name }}</td>
+                        <td>{{ product.productName }}</td>
                         <td>{{ product.businessName }}</td>
-                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.amount }}</td>
                         <td>₡ {{ product.price }}</td>
-                        <td>₡ {{ product.total }}</td>
+                        <td>₡ {{ product.totalSales }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -36,9 +44,18 @@
         </div>
 
         <div v-if="selectedProducts.length === 0" class="cart-buttons">
-            <button @click="checkout" class="btn btn-op1">Comprar Todo</button>
-            <button @click="openCleanCartWarningModal" class="btn btn-op2">Vaciar Carrito</button>
-            <button @click="closeCart" class="btn btn-op-close">Cerrar Carrito</button>
+            <button @click="checkout"
+                    class="btn btn-op1">
+                    Comprar Todo
+            </button>
+            <button @click="openCleanCartWarningModal" 
+                    class="btn btn-op2">
+                    Vaciar Carrito
+            </button>
+            <button @click="closeCart" 
+                    class="btn btn-op-close">
+                    Cerrar Carrito
+            </button>
         </div>
 
         <div v-if="selectedProducts.length > 0" class="selected-total">
@@ -46,9 +63,16 @@
         </div>
 
         <div v-if="selectedProducts.length > 0" class="cart-buttons">
-            <button class="btn btn-op1">Comprar Todo</button>
-            <button class="btn btn-op2">Eliminar Seleccionado</button>
-            <button @click="closeCart" class="btn btn-op-close">Cerrar Carrito</button>
+            <button class="btn btn-op1">
+                Comprar Todo
+            </button>
+            <button class="btn btn-op2">
+                Eliminar Seleccionado
+            </button>
+            <button @click="closeCart" 
+                    class="btn btn-op-close">
+                Cerrar Carrito
+            </button>
         </div>
     </div>
     <ActionModalConfirm ref="confirmCleanCartModal"/>
@@ -76,19 +100,19 @@
                 cartProducts: [
                     {
                         productID: 1,
-                        name: 'Producto 1',
+                        productName: 'Producto 1',
                         businessName: 'Emprendimiento A',
-                        quantity: 2,
+                        amount: 2,
                         price: 1000,
-                        total: 2000,
+                        totalSales: 2000,
                     },
                     {
                         productID: 2,
-                        name: 'Producto 2',
+                        productName: 'Producto 2',
                         businessName: 'Emprendimiento A',
-                        quantity: 2,
+                        amount: 2,
                         price: 1000,
-                        total: 2000,
+                        totalSales: 2000,
                     },
                 ],
                 selectedProducts: [],
@@ -100,8 +124,10 @@
         },
         methods: {
             getUserCart() {
-                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`).then((response) => {
-                        this.cartProducts = response.data;
+                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`)
+                .then((response) => {
+                    this.cartProducts = response.data;
+                    console.log(this.cartProducts);
                 })
                 .catch((error) => {
                     this.$refs.errorCleanCartModal.openModal("Error al cargar el carrito", error);
@@ -111,7 +137,8 @@
                 this.$router.push({ name: 'Home' });
             },
             toggleSelect(product) {
-                const productIndex = this.selectedProducts.findIndex(selected => selected.productID === product.productID);
+                const productIndex =
+                    this.selectedProducts.findIndex(selected => selected.productID === product.productID);
                 if (productIndex > -1) {
                     this.selectedProducts.splice(productIndex, 1);
                 } else {
@@ -133,7 +160,8 @@
                 this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
             },
             clearCart() {
-                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`).then(() => {
+                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`)
+                .then(() => {
                     this.$refs.confirmCleanCartModal.openModal("Carrito vaciado");
                     this.cartProducts = [];
                 })
@@ -155,7 +183,7 @@
         },
         computed: {
             totalPrice() {
-                return this.cartProducts.reduce((total, product) => total + product.total, 0);
+                return this.cartProducts.reduce((total, product) => total + product.totalSales, 0);
             },
             selectedTotal() {
                 if (this.selectedProducts.length > 0) {
