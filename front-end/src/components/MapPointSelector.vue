@@ -5,12 +5,18 @@
             <div id="mapContainer" :style="mapVisibilizationStyle">
                 <div id="map"></div>
             </div>
-            <div style="display: flex; justify-content: center; margin-top: 10px;">
-                <button type="submit" class="btn btn-success btn-block" v-if="mapIsShown" @click="emitCoordinates">
-                    Confirmar ubicación de entrega
-                </button>
-                <button v-if="!mapIsShown" @click="showMap" class="btn btn-success btn-block">
-                    Elegir ubicación de entrega
+            <b-dropdown id="dropdown-dropleft" dropleft text="Seleccionar una de mis direcciones de entrega"
+                variant="primary" class="m-2">
+                <b-dropdown-item href="#" v-for="(address, index) of addresses" :key="index">
+                    {{ address.province }},
+                    {{ address.canton }},
+                    {{ address.district }},
+                    <p>{{ address.otherSigns }}</p>
+                </b-dropdown-item>
+            </b-dropdown>
+            <div style="display: flex; justify-content: center; margin-top: 0px;">
+                <button type="submit" class="btn btn-op-close btn-block" v-if="mapIsShown" @click="emitCoordinates">
+                    Confirmar ubicación exacta de entrega
                 </button>
             </div>
         </div>
@@ -44,8 +50,32 @@ function loadGoogleMapsApiKey() {
     export default {
         data() {
             return {
+                addresses: [
+                    {
+                        province: "San José",
+                        canton: "Tibás",
+                        district: "Distrito Tibás",
+                        otherSigns: "De la terminal de buses de distrito tibás, 400 metros norte, 200 oeste, casa blanca"
+                    },
+                    {
+                        province: "San José",
+                        canton: "Central",
+                        district: "Distrito Central",
+                        otherSigns: "De la terminal de buses de distrito Central, 400 metros norte, 200 oeste, casa blancaDe la terminal de buses de"+
+                            "distrito Central, 400 metros norte, 200 oeste, casa blancaDe la terminal de buses de distrito Central, 400 metros norte,"+
+                                "200 oeste, casa blancaDe la terminal de buses de distrito Central, 400 metros norte, 200 oeste,"+
+                                "casa blancaDe la terminal de buses de distrito Central, 400 metros norte, 200 oeste, casa blancaDe la"+
+                                "terminal de buses de distrito Central, 400 metros norte, 200 oeste, casa blanca 1"
+                    },
+                    {
+                        province: "San José",
+                        canton: "Escazú",
+                        district: "Distrito Escazú",
+                        otherSigns: "De la terminal de buses de distrito Escazú, 400 metros norte, 200 oeste, casa blanca"
+                    }
+                ],
                 coordinates: [],
-                mapIsShown: false,
+                mapIsShown: true,
                 mapIsShownStyle: {
                     display: 'flex',
                     flexDirection: 'column',
@@ -54,7 +84,7 @@ function loadGoogleMapsApiKey() {
                 mapIsHideStyle: {
                     display: 'none'
                 },
-                mapVisibilizationStyle: this.mapIsHideStyle,
+                mapVisibilizationStyle: this.mapIsShownStyle,
             }
         },
         methods: {
@@ -78,7 +108,7 @@ function loadGoogleMapsApiKey() {
                 const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
                 const myLatlng = { lat: 9.934257476114691, lng: -84.08158663635609 };
                 const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 4,
+                    zoom: 14,
                     center: myLatlng,
                     mapId: "DEMO_MAP_ID",
                 });
@@ -98,7 +128,7 @@ function loadGoogleMapsApiKey() {
         mounted() {
             loadGoogleMapsApiKey();
             this.initMap();
-            this.mapVisibilizationStyle = this.mapIsHideStyle;
+            this.mapVisibilizationStyle = this.mapIsShownStyle;
         } 
     }
 </script>
@@ -109,5 +139,11 @@ function loadGoogleMapsApiKey() {
       height: 300px;
       margin-top: 20px;
       border: 1px solid #ccc;
+    }
+    .dropdown-item-limited {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>

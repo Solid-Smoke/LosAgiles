@@ -11,6 +11,7 @@
                                 <th scope="col">Producto</th>
                                 <th scope="col">Emprendimiento</th>
                                 <th scope="col">Cantidad</th>
+                                <th scope="col">Peso</th>
                                 <th scope="col">Precio Unitario</th>
                                 <th scope="col">Precio Total</th>
                             </tr>
@@ -21,6 +22,7 @@
                                 <td>{{ product.productName }}</td>
                                 <td>{{ product.businessName }}</td>
                                 <td>{{ product.amount }}</td>
+                                <td>{{ product.weight }} Kg</td>
                                 <td>₡ {{ product.price }}</td>
                                 <td>₡ {{ product.totalSales }}</td>
                             </tr>
@@ -33,6 +35,25 @@
             <div class="cart-container">
                 <h2 class="display-4 text-center mb-4"><strong>Detalles orden</strong></h2>
                 <MapPointSelector />
+                <strong>Subtotal: ₡4000</strong>
+                <br>
+                <strong>Costo de envío: ₡2350</strong>
+                <br>
+                <strong>Total: ₡</strong>
+                <br>
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <button class="btn btn-op-close">
+                        Seleccionar forma de pago
+                    </button>
+                </div>
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <button type="submit" class="btn btn-success btn-block">
+                        Comprar
+                    </button>
+                    <button type="submit" class="btn btn-op2">
+                        Cancelar
+                    </button>
+                </div>
             </div>
         </b-col>
     </b-row>
@@ -51,17 +72,19 @@
                 cartProducts: [
                     {
                         productID: 1,
-                        productName: 'Producto 1',
-                        businessName: 'Emprendimiento A',
+                        productName: 'Manzana',
+                        businessName: 'Finca feliz',
                         amount: 2,
+                        weight: 0.5,
                         price: 1000,
                         totalSales: 2000,
                     },
                     {
                         productID: 2,
-                        productName: 'Producto 2',
-                        businessName: 'Emprendimiento A',
+                        productName: 'Adaptador sata',
+                        businessName: 'Tech solutions',
                         amount: 2,
+                        weight: 0.5,
                         price: 1000,
                         totalSales: 2000,
                     },
