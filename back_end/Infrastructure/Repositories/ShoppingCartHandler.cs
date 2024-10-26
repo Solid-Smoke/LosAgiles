@@ -59,6 +59,30 @@ namespace back_end.Infrastructure.Repositories
             return cartData;
         }
 
+        public bool DeleteItemFromCart(string clientId, int productId)
+        {
+            string query = "DELETE FROM [ShoppingCarts] WHERE [ClientID] = @ClientId AND [ProductID] = @ProductId";
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+                    sqlCommand.Parameters.AddWithValue("@ProductId", productId);
+
+                    sqlConnection.Open();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
+        }
+
         public bool DeleteCart(string clientId)
         {
             string query = "DELETE FROM [ShoppingCarts] WHERE [ClientID] = @ClientId";
