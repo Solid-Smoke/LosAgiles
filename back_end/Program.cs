@@ -28,6 +28,11 @@ builder.Services.AddScoped<IProductQuery, ProductQuery>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Shopping Cart Dependencies
+builder.Services.AddScoped<DeleteUserShoppingCart>();
+builder.Services.AddScoped<GetUserShoppingCart>();
+builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
