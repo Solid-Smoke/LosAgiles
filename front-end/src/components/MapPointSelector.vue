@@ -64,7 +64,7 @@
             },
             submitDeliveryCoordinates() {
                 this.$emit('selectedCoordinates', this.coordinates);
-                this.$emit('deliveryCost', this.calculateDeliveryCost(this.coordinates, DeliveryStationCoordinates));
+                this.$emit('deliveryDistanceKilometers', this.calculateDeliveryDistanceKilometers(this.coordinates, DeliveryStationCoordinates));
                 this.hideMap();
             },
             showMap() {
@@ -96,9 +96,10 @@
                         lng: event.latLng.lng()};
                 });
             },
-            calculateDeliveryCost(deliveryCoordinates, deliveryCentralCoordinates) {
+            calculateDeliveryDistanceKilometers(deliveryCoordinates, deliveryCentralCoordinates) {
+                let kilometer = Math.sqrt(12910961929) / 13000000;
                 return Math.sqrt((deliveryCoordinates[0] - deliveryCentralCoordinates[0])**2
-                    + (deliveryCoordinates[1] - deliveryCentralCoordinates[1])**2);
+                    + (deliveryCoordinates[1] - deliveryCentralCoordinates[1])**2) / kilometer;
             }
         },
         mounted() {
