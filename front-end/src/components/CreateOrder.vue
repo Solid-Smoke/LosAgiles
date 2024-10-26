@@ -42,8 +42,11 @@
                 <strong>Total: ₡</strong>
                 <br>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
-                    <button class="btn btn-op-close">
+                    <button @click="showPaymentModal = true" v-if="showPaymentModal == false" class="btn btn-op-close">
                         Seleccionar forma de pago
+                    </button>
+                    <button @click="showPaymentModal = true" v-else class="btn btn-success">
+                        Confirmar forma de pago
                     </button>
                 </div>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
@@ -54,6 +57,12 @@
                         Cancelar
                     </button>
                 </div>
+                <b-modal 
+                    v-model="showPaymentModal" 
+                    centered scrollable hide-footer
+                    title="Registrar Empresa">
+                    <MetodoPago />
+                </b-modal>
             </div>
         </b-col>
     </b-row>
@@ -62,10 +71,14 @@
 <script>
     import MainNavbar from './MainNavbar.vue';
     import MapPointSelector from './MapPointSelector.vue';
+    import axios from 'axios';
+    import { BackendUrl } from '@/main';
+    import MetodoPago from './MetodoPago.vue';
     export default {
         components: {
             MainNavbar,
-            MapPointSelector
+            MapPointSelector,
+            MetodoPago
         },
         data() {    
             return {
@@ -90,6 +103,7 @@
                     },
                 ],
                 userID: 0,
+                showPaymentModal: false
             }
         },
         methods: {
