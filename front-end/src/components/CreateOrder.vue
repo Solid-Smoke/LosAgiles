@@ -42,11 +42,8 @@
                 <strong>Total: ₡</strong>
                 <br>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
-                    <button @click="showPaymentModal = true" v-if="showPaymentModal == false" class="btn btn-op-close">
+                    <button @click="showPaymentModal = true" class="btn btn-op-close">
                         Seleccionar forma de pago
-                    </button>
-                    <button @click="showPaymentModal = true" v-else class="btn btn-success">
-                        Confirmar forma de pago
                     </button>
                 </div>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
@@ -59,8 +56,7 @@
                 </div>
                 <b-modal 
                     v-model="showPaymentModal" 
-                    centered scrollable hide-footer
-                    title="Registrar Empresa">
+                    centered scrollable hide-footer>
                     <MetodoPago />
                 </b-modal>
             </div>
