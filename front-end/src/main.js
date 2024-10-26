@@ -23,6 +23,7 @@ import CartView from './components/CartView.vue';
 
 
 export const BackendUrl = "https://localhost:7168/api";
+export const LosAgilesMapsApiKey = "key"
 
 // Configurar el enrutador
 const router = createRouter({
