@@ -1,5 +1,5 @@
 <template>
-    <template v-if="!isAdmin">
+    <template v-if="isAdmin">
         <MainNavbar />
         <h1 class="display-4 text-center mb-4"><strong>Revisión de ordenes</strong></h1>
         <div class="table-responsive-sm">
