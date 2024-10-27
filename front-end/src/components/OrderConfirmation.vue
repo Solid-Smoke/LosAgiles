@@ -1,5 +1,5 @@
 <template>
-    <template v-if="isAdmin">
+    <template v-if="!isAdmin">
         <MainNavbar />
         <h1 class="display-4 text-center mb-4"><strong>Revisión de ordenes</strong></h1>
         <div class="table-responsive-sm">
@@ -18,14 +18,16 @@
                 <tbody>
                     <tr v-for="order in orders" :key="order.orderID">
                         <td>{{ order.orderID }}</td>
-                        <td>{{ order.userName }} {{ order.userLastName }}</td>
-                        <td>{{ order.createdDate }}</td>
-                        <td>{{ order.total }}</td>
+                        <td>{{ order.buyer }}</td>
+                        <td>{{ formatDate(order.createdDate) }}</td>
+                        <td>{{ order.totalAmount }}</td>
                         <td>
                             <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
                         </td>
                         <td>
-                            <button v-on:click="showProducts(order)" class="btn btn-info">Ver productos</button>
+                            <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                                Ver productos
+                            </button>
                         </td>
                         <td>
                             <button v-on:click="approveOrder(order)" class="btn btn-success">Aprobar</button> <span />
@@ -37,10 +39,10 @@
         </div>
 
         <b-modal v-model="ProductsModal" centered scrollable hide-footer title="Productos de la orden">
-            <template v-if="selectedProducts.length">
+            <template v-if="selectedProducts && selectedProducts.length">
                 <ul>
-                    <li v-for="product in selectedProducts" :key="product.productID">
-                        {{ product.name }} - Cantidad: {{ product.amount }}
+                    <li v-for="product in selectedProducts" :key="product.name">
+                        {{ product.productName }} - Cantidad: {{ product.amount }}
                     </li>
                 </ul>
             </template>
@@ -48,7 +50,7 @@
 
         <b-modal v-model="AddressModal" centered scrollable hide-footer title="Dirección de la orden">
             <template v-if="true">
-                <p>Dirección aquí</p>
+                <p>{{ selectedAddress }}</p>
             </template>
         </b-modal>
     </template>
@@ -60,7 +62,8 @@
 
 <script>
     import MainNavbar from './MainNavbar.vue';
-    //import axios from "axios";
+    import { BackendUrl } from '../main.js';
+    import axios from "axios";
 
     export default {
         components: {
@@ -74,48 +77,61 @@
                 selectedAddress: null,
                 orders: [
                     {
-                        orderID: 1000,
-                        userName: 'Maria', //La idea es recibir el nombre, no el id, se encarga un metodo
-                        userLastName: 'Rodriguez',
-                        createdDate: '23/10/2024', //Se va a usar para tener un trigger 
-                        total: 35,
-                        state: 'Pendiente',
-                        selectedAction: null,
-                        products: [ //Se saca del join entre orders > OrderProducts > Products
-                            { productID: 1, name: 'Producto A', amount: 2 },
-                            { productID: 3, name: 'Producto C', amount: 1 },
-                        ],
-                        address: '',
-                    },
-                    {
-                        orderID: 1001,
-                        userName: 'Jose', //La idea es recibir el nombre, no el id, se encarga un metodo
-                        userLastName: 'Arias',
-                        createdDate: '23/10/2024', //Se va a usar para tener un trigger 
-                        state: 'Pendiente',
-                        total: 25,
+                        orderID: 0,
+                        buyer: '',
+                        createdDate: '',
+                        totalAmount: 0,
+                        Address: '',
+                        state: '',
                         selectedAction: null,
                         products: [
-                            { productID: 2, name: 'Producto B', amount: 5 },
+                            { productName: '', amount: 0 }
                         ],
-                        address: '',
                     },
                 ],
             };
         },
         methods: {
-            showProducts(order) {
-                this.selectedProducts = order.products;
-                this.ProductsModal = true;
-            },
             showAddress(order) {
                 this.selectedAddress = order.address;
                 this.AddressModal = true;
+            },
+            GetPendingOrders() {
+                axios.get(`${BackendUrl}/Order/GetPendingOrders`)
+                .then((response) => {
+                    this.orders = response.data;
+                    console.log(this.orders);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            },
+            GetProductsByOrderID(order) {
+                axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
+                .then((response) => {
+                    order.products = response.data;
+                    this.selectedProducts = order.products;
+                    console.log(order.products);
+                    this.ProductsModal = true;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             },
             //approveOrder(order) {
             //},
             //rejectOrder(order) {
             //},
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${day}/${month}/${year}`;
+            }
+        },
+        mounted() {
+            this.GetPendingOrders();
         },
         props: {
             isAdmin: {
