@@ -71,7 +71,7 @@
       </b-modal>
 
       <b-modal v-model="showSuccessModal" title="Pago Realizado" hide-footer centered>
-        <p class="my-2">¡Su pago se ha procesado correctamente y la compra ha sido realizada!</p>
+        <p class="my-2">¡Su pago se ha procesado correctamente!. Su orden ha sido colocada.</p>
         <b-button variant="success" @click="showSuccessModal = false; this.$router.push({ name: 'Home' });">
           Volver a página principal
         </b-button>
@@ -124,6 +124,9 @@ export default {
     };
   },
   methods: {
+    emitPaymentConfirmation() {
+      this.$emit('paymentCompleted');
+    },
     onFileChange(event) {
       const file = event.target.files[0];
       if (file) {
@@ -145,7 +148,7 @@ export default {
         this.showSinpeModal = true;
         return;
       }
-      emitPaymentConfirmation();
+      this.emitPaymentConfirmation();
       this.showSuccessModal = true;
     },
     validateCreditCardPayment() {
@@ -175,11 +178,8 @@ export default {
         this.showCreditCardModal = true;
         return;
       }
-      emitPaymentConfirmation();
+      this.emitPaymentConfirmation();
       this.showSuccessModal = true;
-    },
-    emitPaymentConfirmation() {
-      this.$emit('paymentCompleted');
     }
   },
 };
