@@ -28,7 +28,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
 builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
-
+builder.Services.AddScoped<GetPendingOrders>();
+builder.Services.AddScoped<GetProductsByOrderID>();
+builder.Services.AddScoped<ApproveOrder>();
+builder.Services.AddScoped<RejectOrder>();
+builder.Services.AddScoped<IOrderHandler, OrderHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
