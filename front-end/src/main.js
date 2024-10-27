@@ -22,7 +22,7 @@ import AdminViewAllBusiness from './components/AdminViewAllBusiness.vue';
 import CartView from './components/CartView.vue';
 import IndividualProductPage from './components/IndividualProductPage.vue';
 import MetodoPago from './components/MetodoPago.vue';
-
+import OrderConfirmation from './components/OrderConfirmation.vue';
 
 export const BackendUrl = "https://localhost:7168/api";
 export const LosAgilesMapsApiKey = "AIzaSyAJrdPkYVkZfamzm2DvyuvHyaJDAd0rOP4";
@@ -45,7 +45,8 @@ const router = createRouter({
         { path: "/AdminViewAllBusiness", name: "adminViewAllBusiness", component: AdminViewAllBusiness },
         { path: "/VerCarrito", name: "cartView.vue", component: CartView },
         { path: "/product/:id", name: "IndividualProductPage", component: IndividualProductPage },
-        { path: "/MetodoPago", name: "MetodoPago", component: MetodoPago }
+        { path: "/MetodoPago", name: "MetodoPago", component: MetodoPago },
+        { path: "/ConfirmarOrdenes", name: "Confirmacion de ordenes", component: OrderConfirmation },
     ],
 });
 
