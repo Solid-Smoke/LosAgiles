@@ -7,8 +7,8 @@
                 <thead>
                     <tr>
                         <th scope="col">
-                            <input type="checkbox" 
-                                   @change="toggleSelectAll($event)" 
+                            <input type="checkbox"
+                                   @change="toggleSelectAll($event)"
                                    :checked="areAllSelected">
                         </th>
                         <th scope="col">Producto</th>
@@ -20,12 +20,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="product in cartProducts"
-                        :key="product.productID" 
+                        :key="product.productID"
                         @click="toggleSelect(product)">
                         <td>
-                            <input type="checkbox" 
-                                   v-model="selectedProducts" 
-                                   :value="{ productID: product.productID, 
+                            <input type="checkbox"
+                                   v-model="selectedProducts"
+                                   :value="{ productID: product.productID,
                                              quantity: product.quantity,
                                              total: product.total }">
                         </td>
@@ -46,15 +46,15 @@
         <div v-if="selectedProducts.length === 0" class="cart-buttons">
             <button @click="checkout"
                     class="btn btn-op1">
-                    Comprar Todo
+                Comprar Todo
             </button>
-            <button @click="openCleanCartWarningModal" 
+            <button @click="openCleanCartWarningModal"
                     class="btn btn-op2">
-                    Vaciar Carrito
+                Vaciar Carrito
             </button>
-            <button @click="closeCart" 
+            <button @click="closeCart"
                     class="btn btn-op-close">
-                    Cerrar Carrito
+                Cerrar Carrito
             </button>
         </div>
 
@@ -69,15 +69,16 @@
             <button class="btn btn-op2">
                 Eliminar Seleccionado
             </button>
-            <button @click="closeCart" 
+            <button @click="closeCart"
                     class="btn btn-op-close">
                 Cerrar Carrito
             </button>
         </div>
     </div>
-    <ActionModalConfirm ref="confirmCleanCartModal"/>
+    <ActionModalConfirm ref="confirmCartModal" />
     <ActionModalWarning ref="warningCleanCartModal" @confirmed="clearCart" />
-    <ActionModalError ref="errorCleanCartModal"/>
+    <ActionModalWarning ref="warningInvalidCartModal" @confirmed="deleteInvalidItems" />
+    <ActionModalError ref="errorCartModal" />
 </template>
 
 <script>
@@ -116,21 +117,23 @@
                     },
                 ],
                 selectedProducts: [],
+                invalidProducts: [],
                 userID: 0,
-                confirmCleanCartModal: false,
+                confirmCartModal: false,
                 warningCleanCartModal: false,
-                errorCleanCartModal: false,
+                warningInvalidCartModal: false,
+                errorCartModal: false,
             };
         },
         methods: {
             getUserCart() {
                 axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`)
-                .then((response) => {
+                    .then((response) => {
                         this.cartProducts = response.data;
-                })
-                .catch((error) => {
-                    this.$refs.errorCleanCartModal.openModal("Error al cargar el carrito", error);
-                });
+                    })
+                    .catch((error) => {
+                        this.$refs.errorCartModal.openModal("Error al cargar el carrito", error);
+                    });
             },
             closeCart() {
                 this.$router.push({ name: 'Home' });
@@ -153,20 +156,21 @@
                 return Number(user[0].userID);
             },
             checkout() {
-                this.$refs.confirmCleanCartModal.openModal("Su compra se a completado");
+                this.VerifyCartItems();
+                this.$refs.confirmCartModal.openModal("Su compra se a completado");
             },
             openCleanCartWarningModal() {
                 this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
             },
             clearCart() {
                 axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`)
-                .then(() => {
-                    this.$refs.confirmCleanCartModal.openModal("Carrito vaciado");
-                    this.cartProducts = [];
-                })
-                .catch((error) => {
-                    this.$refs.errorCleanCartModal.openModal("Error al eliminar el carrito", error);
-                });
+                    .then(() => {
+                        this.$refs.confirmCartModal.openModal("Carrito vaciado");
+                        this.cartProducts = [];
+                    })
+                    .catch((error) => {
+                        this.$refs.errorCartModal.openModal("Error al eliminar el carrito", error);
+                    });
             },
             toggleSelectAll(event) {
                 if (event.target.checked) {
@@ -179,6 +183,32 @@
                     this.selectedProducts = [];
                 }
             },
+            VerifyCartItems() {
+                axios.get(`${BackendUrl}/ShoppingCart/${this.clientId}/Verify`)
+                .then((response) => {
+                    this.invalidItems = response.data;
+                    if (this.invalidItems.length > 0) {
+                        this.$refs.warningInvalidCartModal.openModal("Se han detectado items invalidos (Exceden el stock disponible) \n ¿Desea eliminarlos del carrito?");
+                    } else {
+                        this.$refs.confirmCartModal.openModal("Su carrito es valido, se puede procesar la compra");
+                    }
+                })
+                .catch((error) => {
+                    this.$refs.errorCartModal.openModal("Error al verificar los productos del carrito", error);
+                });
+
+                
+            },
+            deleteInvalidItems() {
+                axios.delete(`/api/ShoppingCart/${this.clientId}/delete-items`, this.invalidItems)
+                    .then(() => {
+                        this.$refs.confirmCartModal.openModal("Se han eliminado los elementos invalidos del carrito");
+                        this.getUserCart();
+                    })
+                    .catch((error) => {
+                        this.$refs.errorCartModal.openModal("Error al eliminar los elementos invalidos del carrito", error);
+                    });
+            }
         },
         computed: {
             totalPrice() {
