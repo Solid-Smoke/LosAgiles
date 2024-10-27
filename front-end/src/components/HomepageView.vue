@@ -2,11 +2,12 @@
   <MainNavbar />
   
   <b-container fluid class="px-5">
+    <div class="container mt-1">
+      <h1 class="display-4 text-center"><strong>PRODUCTOS</strong></h1>
+    </div>
+
     <b-row>
       <b-col lg="10" md="9">
-        <div class="container mt-1">
-          <h1 class="display-4 text-center"><strong>PRODUCTOS</strong></h1>
-        </div>
 
         <b-row>
           <b-col lg="3" md="4" sm="6" v-for="product in products" :key="product.productID">
