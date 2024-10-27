@@ -1,19 +1,19 @@
 <template>
   <MainNavbar />
-  
-  <b-container fluid class="px-5">
-    <div class="container mt-1">
-      <h1 class="display-4 text-center"><strong>PRODUCTOS</strong></h1>
-    </div>
 
-    <b-row>
+  <div class="container mt-1">
+      <h1 class="display-4 text-center"><strong>PRODUCTOS</strong></h1>
+  </div>
+  
+  <b-container fluid class="px-5 d-flex justify-content-center">
+    <b-row class="justify-content-center">
       <b-col lg="10" md="9">
 
         <b-row>
           <b-col lg="3" md="4" sm="6" v-for="product in products" :key="product.productID">
             <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
               <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto" style="width: 250px; height: 250px;" />
-              <b-card-text class="product-description">{{ truncateDescription(product.description, 127) }}</b-card-text>
+              <b-card-text class="product-description">{{ truncateDescription(product.description, 165) }}</b-card-text>
               <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
               <b-button variant="primary">Añadir al Carrito</b-button>
             </b-card>
