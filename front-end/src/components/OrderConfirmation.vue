@@ -30,8 +30,8 @@
                             </button>
                         </td>
                         <td>
-                            <button v-on:click="approveOrder(order)" class="btn btn-success">Aprobar</button> <span />
-                            <button v-on:click="rejectOrder(order)" class="btn btn-danger">Rechazar</button>
+                            <button v-on:click="ApproveOrder(order)" class="btn btn-success">Aprobar</button> <span />
+                            <button v-on:click="RejectOrder(order)" class="btn btn-danger">Rechazar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -100,7 +100,7 @@
                 axios.get(`${BackendUrl}/Order/GetPendingOrders`)
                 .then((response) => {
                     this.orders = response.data;
-                    console.log(this.orders);
+                    //console.log(this.orders);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -111,17 +111,33 @@
                 .then((response) => {
                     order.products = response.data;
                     this.selectedProducts = order.products;
-                    console.log(order.products);
+                    //console.log(order.products);
                     this.ProductsModal = true;
                 })
                 .catch((error) => {
                     console.log(error);
                 });
             },
-            //approveOrder(order) {
-            //},
-            //rejectOrder(order) {
-            //},
+            ApproveOrder(order) {
+                axios.put(`${BackendUrl}/Order/ApproveOrder/${order.orderID}`)
+                .then(() => {
+                    //console.log('Orden exitosamente aprobada');
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            },
+            RejectOrder(order) {
+                axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
+                    .then(() => {
+                        //console.log('Orden exitosamente rechazada');
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
             formatDate(dateString) {
                 const date = new Date(dateString);
                 const year = date.getFullYear();
