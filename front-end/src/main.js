@@ -23,7 +23,6 @@ import CartView from './components/CartView.vue';
 import MetodoPago from './components/MetodoPago.vue';
 import OrderConfirmation from './components/OrderConfirmation.vue';
 
-
 export const BackendUrl = "https://localhost:7168/api";
 export const LosAgilesMapsApiKey = "AIzaSyAJrdPkYVkZfamzm2DvyuvHyaJDAd0rOP4";
 
