@@ -154,7 +154,7 @@
                 return Number(user[0].userID);
             },
             checkout() {
-                this.$refs.confirmCleanCartModal.openModal("Su compra se a completado");
+                this.$router.push({ name: 'Orden' });
             },
             openCleanCartWarningModal() {
                 this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
