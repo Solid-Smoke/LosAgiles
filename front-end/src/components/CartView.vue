@@ -25,9 +25,12 @@
                         <td>
                             <input type="checkbox" 
                                    v-model="selectedProducts" 
-                                   :value="{ productID: product.productID, 
-                                             quantity: product.amount,
-                                             total: product.totalSales }">
+                                   :value="{ productID: product.productID,
+                                             productName: product.productName,
+                                             businessName: product.businessName,
+                                             amount: product.amount,
+                                             price: product.price,
+                                             totalSales: product.totalSales }">
                         </td>
                         <td>{{ product.productName }}</td>
                         <td>{{ product.businessName }}</td>
@@ -119,10 +122,6 @@
                 selectedProducts: [],
                 invalidProducts: [],
                 userID: 0,
-                confirmCartModal: false,
-                warningCleanCartModal: false,
-                warningInvalidCartModal: false,
-                errorCartModal: false,
             };
         },
         methods: {
@@ -146,8 +145,11 @@
                 } else {
                     this.selectedProducts.push({
                         productID: product.productID,
-                        quantity: product.quantity,
-                        total: product.total,
+                        productName: product.productName,
+                        businessName: product.businessName,
+                        amount: product.amount,
+                        price: product.price,
+                        totalSales: product.totalSales
                     });
                 }
             },
@@ -157,7 +159,6 @@
             },
             checkout() {
                 this.VerifyCartItems();
-                this.$refs.confirmCartModal.openModal("Su compra se a completado");
             },
             openCleanCartWarningModal() {
                 this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");
@@ -184,7 +185,7 @@
                 }
             },
             VerifyCartItems() {
-                axios.get(`${BackendUrl}/ShoppingCart/${this.clientId}/Verify`)
+                axios.get(`${BackendUrl}/ShoppingCart/${this.userID}/Verify`)
                 .then((response) => {
                     this.invalidItems = response.data;
                     if (this.invalidItems.length > 0) {
@@ -200,8 +201,10 @@
                 
             },
             deleteInvalidItems() {
-                axios.delete(`/api/ShoppingCart/${this.clientId}/delete-items`, this.invalidItems)
-                    .then(() => {
+                console.log(this.invalidItems);
+                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}/DeleteInvalidProducts`, {
+                        data: this.invalidItems
+                    }).then(() => {
                         this.$refs.confirmCartModal.openModal("Se han eliminado los elementos invalidos del carrito");
                         this.getUserCart();
                     })
@@ -216,7 +219,7 @@
             },
             selectedTotal() {
                 if (this.selectedProducts.length > 0) {
-                    return this.selectedProducts.reduce((total, product) => total + product.total, 0);
+                    return this.selectedProducts.reduce((total, product) => total + product.totalSales, 0);
                 }
                 return 0;
             },
@@ -225,7 +228,7 @@
             },
         },
         mounted() {
-            this.userID = this.getUserId();
+            this.userID = "1";
             this.getUserCart();
         },
     };
