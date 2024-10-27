@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { BackendUrl } from '@/main';
 import MainNavbar from './MainNavbar.vue';
 import axios from 'axios';
 
@@ -56,7 +57,7 @@ export default {
   methods: {
     getProducts() {
       axios
-        .get('https://localhost:7168/api/Products/GetAllProducts')
+        .get(`${BackendUrl}/Products/GetAllProducts`)
         .then((response) => {
           console.log('Datos API: ', response.data);
           this.products = response.data;

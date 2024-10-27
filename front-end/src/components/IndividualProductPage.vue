@@ -37,7 +37,8 @@
   </template>
   
   <script>
-  import MainNavbar from './MainNavbar.vue';
+  import { BackendUrl } from '@/main';
+import MainNavbar from './MainNavbar.vue';
   import axios from 'axios';
   
   export default {
@@ -59,7 +60,7 @@
       },
       getProductDetails(productId) {
         axios
-          .get(`https://localhost:7168/api/Products/${productId}`)
+          .get(`${BackendUrl}/Products/${productId}`)
           .then((response) => {
             this.product = response.data;
           })
