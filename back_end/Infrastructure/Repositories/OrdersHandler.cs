@@ -14,7 +14,7 @@ namespace back_end.Infrastructure.Repositories
             this.sqlConnection = sqlConnection;
         }
 
-        public bool createOrder(OrderModel orderData)
+        public bool createOrder(CreateOrderModel orderData)
         {
             sqlConnection.Open();
             sqlConnection.Execute("BEGIN TRAN");

@@ -16,7 +16,7 @@ namespace back_end.APIS
         }   
 
         [HttpPost]
-        public async Task<ActionResult<bool>> createOrder(OrderModel orderData)
+        public async Task<ActionResult<bool>> createOrder(CreateOrderModel orderData)
         {
             return orderCommand.createOrder(orderData);
         }

@@ -5,7 +5,7 @@ namespace back_end.Application.Commands
 {
     public interface IOrderCommand
     {
-        bool createOrder(OrderModel orderData);
+        bool createOrder(CreateOrderModel orderData);
     }
 
     public class OrderCommand : IOrderCommand
@@ -17,7 +17,7 @@ namespace back_end.Application.Commands
             _ordersHandler = ordersHandler;
         }
 
-        public bool createOrder(OrderModel orderData)
+        public bool createOrder(CreateOrderModel orderData)
         {
             try
             {

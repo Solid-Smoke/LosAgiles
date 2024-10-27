@@ -4,6 +4,6 @@ namespace back_end.Application.Interfaces
 {
     public interface IOrdersHandler
     {
-        bool createOrder(OrderModel orderData);
+        bool createOrder(CreateOrderModel orderData);
     }
 }
