@@ -3,23 +3,6 @@
   
   <b-container fluid class="px-5">
     <b-row>
-      <b-col lg="2" md="3" class="d-none d-md-block category-sidebar">
-        <h4 class="mb-4" style="margin-top: 20px;">Ordenar por Categoría</h4>
-
-        <b-list-group flush>
-          <b-list-group-item class="category-item">Categoría 1</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 2</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 3</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 4</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 5</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 6</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 7</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 8</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 9</b-list-group-item>
-          <b-list-group-item class="category-item">Categoría 10</b-list-group-item>
-        </b-list-group>
-      </b-col>
-
       <b-col lg="10" md="9">
         <div class="container mt-1">
           <h1 class="display-4 text-center"><strong>PRODUCTOS</strong></h1>
