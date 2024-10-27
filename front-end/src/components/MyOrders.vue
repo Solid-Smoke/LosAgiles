@@ -110,7 +110,6 @@
                     if (this.orders[0]) {
                         this.hasOrders = true;
                     }
-                    console.log(this.orders);
                 })
                 .catch((error) => {
                     console.log(error);
