@@ -41,7 +41,8 @@ namespace back_end.Infrastructure.Repositories
                                     BusinessName = reader["BusinessName"].ToString(),
                                     Amount = Convert.ToInt32(reader["Amount"]),
                                     Price = Convert.ToDecimal(reader["Price"]),
-                                    TotalSales = Convert.ToDecimal(reader["TotalSales"])
+                                    TotalSales = Convert.ToDecimal(reader["TotalSales"]),
+                                    Weight = Convert.ToDecimal(reader["Weight"])
                                 });
                         }
                     }
