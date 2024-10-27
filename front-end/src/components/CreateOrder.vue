@@ -41,12 +41,7 @@
                 <br>
                 <strong>Total: ₡</strong>
                 <br>
-                <div style="display: flex; justify-content: center; margin-top: 10px;">
-                    <button @click="showPaymentModal = true" class="btn btn-op-close">
-                        Seleccionar forma de pago
-                    </button>
-                </div>
-                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <div @click="showPaymentModal = true" style="display: flex; justify-content: center; margin-top: 10px;">
                     <button type="submit" class="btn btn-success btn-block">
                         Comprar
                     </button>
