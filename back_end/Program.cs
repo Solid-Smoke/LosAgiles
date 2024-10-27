@@ -1,6 +1,7 @@
 using back_end.Application.Queries;
 using back_end.Application.Interfaces;
 using back_end.Infrastructure.Repositories;
+using back_end.Application.Commands;
 using System.Data.SqlClient;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
