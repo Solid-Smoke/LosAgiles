@@ -44,8 +44,8 @@ const router = createRouter({
         { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
         { path: "/AdminViewAllBusiness", name: "adminViewAllBusiness", component: AdminViewAllBusiness },
         { path: "/VerCarrito", name: "cartView.vue", component: CartView },
-        { path: "/product/:id", name: "IndividualProductPage", component: IndividualProductPage }
-        {  path: "/MetodoPago", name: "MetodoPago", component: MetodoPago}
+        { path: "/product/:id", name: "IndividualProductPage", component: IndividualProductPage },
+        { path: "/MetodoPago", name: "MetodoPago", component: MetodoPago }
     ],
 });
 
