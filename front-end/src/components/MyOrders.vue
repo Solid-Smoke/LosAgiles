@@ -2,38 +2,43 @@
     <template v-if="isClient">
         <MainNavbar />
         <h1 class="display-4 text-center mb-4"><strong>Mis ordenes</strong></h1>
-        <div class="table-responsive-sm">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col"># de orden</th>
-                        <th scope="col">Fecha de creación</th>
-                        <th scope="col">Fecha de entrega</th>
-                        <th scope="col">Monto total</th>
-                        <th scope="col">Estado de la orden</th>
-                        <th scope="col">Dirección de entrega</th>
-                        <th scope="col">Productos</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="order in orders" :key="order.orderID">
-                        <td>{{ order.orderID }}</td>
-                        <td>{{ formatDate(order.createdDate) }}</td>
-                        <td>{{ formatDate(order.deliveryDate) }}</td>
-                        <td>{{ order.totalAmount }}</td>
-                        <td>{{ order.status }}</td>
-                        <td>
-                            <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
-                        </td>
-                        <td>
-                            <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
-                                Ver productos
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <template v-if="hasOrders">
+            <div class="table-responsive-sm">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col"># de orden</th>
+                            <th scope="col">Fecha de creación</th>
+                            <th scope="col">Fecha de entrega</th>
+                            <th scope="col">Monto total</th>
+                            <th scope="col">Estado de la orden</th>
+                            <th scope="col">Dirección de entrega</th>
+                            <th scope="col">Productos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="order in orders" :key="order.orderID">
+                            <td>{{ order.orderID }}</td>
+                            <td>{{ formatDate(order.createdDate) }}</td>
+                            <td>{{ order.deliveryDate ? formatDate(order.deliveryDate) : '-' }}</td>
+                            <td>{{ order.totalAmount }}</td>
+                            <td>{{ order.status }}</td>
+                            <td>
+                                <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
+                            </td>
+                            <td>
+                                <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                                    Ver productos
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+        <template v-else>
+            <h3 class="text-center mb-4">Actualmente no tiene ordenes registradas</h3>
+        </template>
 
         <b-modal v-model="ProductsModal" centered scrollable hide-footer title="Productos de la orden">
             <template v-if="selectedProducts && selectedProducts.length">
@@ -73,9 +78,10 @@
                 AddressModal: false,
                 selectedProducts: [],
                 selectedAddress: null,
+                hasOrders: false,
                 orders: [
                     {
-                        orderID: 1,
+                        orderID: 0,
                         createdDate: '',
                         deliveryDate: '',
                         totalAmount: 0,
@@ -97,11 +103,14 @@
                 this.selectedAddress = order.address;
                 this.AddressModal = true;
             },
-            GetPendingOrders() {
-                axios.get(`${BackendUrl}/Order/GetPendingOrders`)
+            GetUserOrders(userID) {
+                axios.get(`${BackendUrl}/Order/GetOrdersByClientID/${userID}`)
                 .then((response) => {
                     this.orders = response.data;
-                    //console.log(this.orders);
+                    if (this.orders[0]) {
+                        this.hasOrders = true;
+                    }
+                    console.log(this.orders);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -112,7 +121,6 @@
                 .then((response) => {
                     order.products = response.data;
                     this.selectedProducts = order.products;
-                    //console.log(order.products);
                     this.ProductsModal = true;
                 })
                 .catch((error) => {
@@ -129,7 +137,7 @@
         },
         mounted() {
             this.userID = this.getUserId();
-            this.GetPendingOrders();
+            this.GetUserOrders(this.userID);
         },
         props: {
             isAdmin: {
