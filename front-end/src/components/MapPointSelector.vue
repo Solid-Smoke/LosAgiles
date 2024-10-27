@@ -7,7 +7,7 @@
             </div>
             <b-dropdown id="dropdown-dropleft" dropleft text="Seleccionar una de mis direcciones de entrega"
                 variant="primary" class="m-2">
-                <b-dropdown-item href="#" v-for="(address, index) of addresses" :key="index">
+                <b-dropdown-item href="#" @click="selectAddress(address);"  v-for="(address, index) of addresses" :key="index">
                     {{ address.province }},
                     {{ address.canton }},
                     {{ address.district }},
@@ -24,6 +24,8 @@
 </template>
 <script>
 import { LosAgilesMapsApiKey } from '@/main';
+import { BackendAPIAddress } from '@/main';
+import axios from 'axios';
 
 function loadGoogleMapsApiKey() {
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",
@@ -50,30 +52,7 @@ function loadGoogleMapsApiKey() {
     export default {
         data() {
             return {
-                addresses: [
-                    {
-                        province: "San José",
-                        canton: "Tibás",
-                        district: "Distrito Tibás",
-                        otherSigns: "De la terminal de buses de distrito tibás, 400 metros norte, 200 oeste, casa blanca"
-                    },
-                    {
-                        province: "San José",
-                        canton: "Central",
-                        district: "Distrito Central",
-                        otherSigns: "De la terminal de buses de distrito Central, 400 metros norte, 200 oeste, casa blancaDe la terminal de buses de"+
-                            "distrito Central, 400 metros norte, 200 oeste, casa blancaDe la terminal de buses de distrito Central, 400 metros norte,"+
-                                "200 oeste, casa blancaDe la terminal de buses de distrito Central, 400 metros norte, 200 oeste,"+
-                                "casa blancaDe la terminal de buses de distrito Central, 400 metros norte, 200 oeste, casa blancaDe la"+
-                                "terminal de buses de distrito Central, 400 metros norte, 200 oeste, casa blanca 1"
-                    },
-                    {
-                        province: "San José",
-                        canton: "Escazú",
-                        district: "Distrito Escazú",
-                        otherSigns: "De la terminal de buses de distrito Escazú, 400 metros norte, 200 oeste, casa blanca"
-                    }
-                ],
+                addresses: [],
                 coordinates: [],
                 mapIsShown: true,
                 mapIsShownStyle: {
@@ -88,6 +67,10 @@ function loadGoogleMapsApiKey() {
             }
         },
         methods: {
+            selectAddress(address) {
+                console.log(address.district);
+                this.$emit('selectedAddress', address);
+            },
             assignCoordinates(coordinatesToAssign) {
                 this.coordinates = coordinatesToAssign;
             },
@@ -123,9 +106,28 @@ function loadGoogleMapsApiKey() {
                     marker.position = {lat: event.latLng.lat(),
                         lng: event.latLng.lng()};
                 });
+            },
+            getUserId() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return Number(user[0].userID);
+            },
+            getUserAddressList() {
+                axios
+                .get(BackendAPIAddress +
+                    "/getAllClientAddresses/details?userId=" +
+                    this.userId)
+                .then(
+                    (response) => {
+                        this.addresses = response.data;
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                });
             }
         },
         mounted() {
+            this.userId = this.getUserId();
+            this.getUserAddressList();
             loadGoogleMapsApiKey();
             this.initMap();
             this.mapVisibilizationStyle = this.mapIsShownStyle;
