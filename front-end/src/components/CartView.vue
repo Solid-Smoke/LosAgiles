@@ -23,17 +23,17 @@
                         :key="product.productID"
                         @click="toggleSelect(product)">
                         <td>
-                            <input type="checkbox"
-                                   v-model="selectedProducts"
-                                   :value="{ productID: product.productID,
-                                             quantity: product.quantity,
-                                             total: product.total }">
+                            <input type="checkbox" 
+                                   v-model="selectedProducts" 
+                                   :value="{ productID: product.productID, 
+                                             quantity: product.amount,
+                                             total: product.totalSales }">
                         </td>
-                        <td>{{ product.name }}</td>
+                        <td>{{ product.productName }}</td>
                         <td>{{ product.businessName }}</td>
-                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.amount }}</td>
                         <td>₡ {{ product.price }}</td>
-                        <td>₡ {{ product.total }}</td>
+                        <td>₡ {{ product.totalSales }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -101,19 +101,19 @@
                 cartProducts: [
                     {
                         productID: 1,
-                        name: 'Producto 1',
+                        productName: 'Producto 1',
                         businessName: 'Emprendimiento A',
-                        quantity: 2,
+                        amount: 2,
                         price: 1000,
-                        total: 2000,
+                        totalSales: 2000,
                     },
                     {
                         productID: 2,
-                        name: 'Producto 2',
+                        productName: 'Producto 2',
                         businessName: 'Emprendimiento A',
-                        quantity: 2,
+                        amount: 2,
                         price: 1000,
-                        total: 2000,
+                        totalSales: 2000,
                     },
                 ],
                 selectedProducts: [],
@@ -212,7 +212,7 @@
         },
         computed: {
             totalPrice() {
-                return this.cartProducts.reduce((total, product) => total + product.total, 0);
+                return this.cartProducts.reduce((total, product) => total + product.totalSales, 0);
             },
             selectedTotal() {
                 if (this.selectedProducts.length > 0) {

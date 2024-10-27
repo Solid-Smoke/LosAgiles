@@ -20,9 +20,11 @@ import MyBusinessView from './components/MyBusinessView.vue';
 import MyBusinessInventoryView from './components/MyBusinessInventoryView.vue';
 import AdminViewAllBusiness from './components/AdminViewAllBusiness.vue';
 import CartView from './components/CartView.vue';
+import MetodoPago from './components/MetodoPago.vue';
 
 
 export const BackendUrl = "https://localhost:7168/api";
+export const LosAgilesMapsApiKey = "AIzaSyAJrdPkYVkZfamzm2DvyuvHyaJDAd0rOP4";
 
 // Configurar el enrutador
 const router = createRouter({
@@ -41,6 +43,7 @@ const router = createRouter({
         { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
         { path: "/AdminViewAllBusiness", name: "adminViewAllBusiness", component: AdminViewAllBusiness },
         { path: "/VerCarrito", name: "cartView.vue", component: CartView },
+        {  path: "/MetodoPago", name: "MetodoPago", component: MetodoPago}
     ],
 });
 
