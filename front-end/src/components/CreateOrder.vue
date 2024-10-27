@@ -129,7 +129,7 @@
         },
         mounted() {
             this.userID = this.getUserId();
-            // this.getUserCart();
+            this.getUserCart();
         },
     }
     
