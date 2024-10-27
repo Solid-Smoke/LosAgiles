@@ -1,13 +1,20 @@
-﻿using back_end.Application.Commands;
-using back_end.Application.Queries;
+﻿using Microsoft.AspNetCore.Mvc;
 using back_end.Domain;
-using Microsoft.AspNetCore.Mvc;
+using back_end.Application.Commands;
+using back_end.Application.Queries;
 
-namespace back_end.APIS {
+namespace back_end.APIS
+{
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase {
-        public OrderController() { }
+    public class OrderController : ControllerBase
+    {
+        private readonly ISubmitOrder orderCommand;
+
+        public OrderController(ISubmitOrder orderCommand)
+        {
+            this.orderCommand = orderCommand;
+        }   
 
         [HttpGet("GetPendingOrders")]
         public ActionResult<List<OrderModel>> GetPendingOrders(
@@ -43,6 +50,12 @@ namespace back_end.APIS {
             } else {
                 return NotFound();
             }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<bool>> createOrder(CreateOrderModel orderData)
+        {
+            return orderCommand.createOrder(orderData);
         }
     }
 }

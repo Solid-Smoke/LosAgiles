@@ -29,11 +29,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
 builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
+
+//Orders dependencies
 builder.Services.AddScoped<GetPendingOrders>();
 builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();
 builder.Services.AddScoped<RejectOrder>();
 builder.Services.AddScoped<IOrderHandler, OrderHandler>();
+builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
+builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

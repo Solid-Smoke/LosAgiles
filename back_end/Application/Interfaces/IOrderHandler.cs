@@ -6,5 +6,6 @@ namespace back_end.Application.Interfaces {
         List<OrderProductsModel> GetProductsByOrderID(string OrderID);
         bool ApproveOrder(string OrderID);
         bool RejectOrder(string OrderID);
+        bool createOrder(CreateOrderModel orderData);
     }
 }
