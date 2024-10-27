@@ -189,7 +189,7 @@
                 .then((response) => {
                     this.invalidItems = response.data;
                     if (this.invalidItems.length > 0) {
-                        this.$refs.warningInvalidCartModal.openModal("Se han detectado items invalidos (Exceden el stock disponible) \n ¿Desea eliminarlos del carrito?");
+                        this.$refs.warningInvalidCartModal.openModal("Se han detectado items invalidos (Exceden el stock disponible) ¿Desea eliminarlos del carrito?");
                     } else {
                         this.$refs.confirmCartModal.openModal("Su carrito es valido, se puede procesar la compra");
                     }
@@ -201,7 +201,6 @@
                 
             },
             deleteInvalidItems() {
-                console.log(this.invalidItems);
                 axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}/DeleteInvalidProducts`, {
                         data: this.invalidItems
                     }).then(() => {
@@ -228,7 +227,7 @@
             },
         },
         mounted() {
-            this.userID = "1";
+            this.userID = this.getUserId();
             this.getUserCart();
         },
     };
