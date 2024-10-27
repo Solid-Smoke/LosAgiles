@@ -1,0 +1,147 @@
+<template>
+    <template v-if="isClient">
+        <MainNavbar />
+        <h1 class="display-4 text-center mb-4"><strong>Mis ordenes</strong></h1>
+        <div class="table-responsive-sm">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"># de orden</th>
+                        <th scope="col">Fecha de creación</th>
+                        <th scope="col">Fecha de entrega</th>
+                        <th scope="col">Monto total</th>
+                        <th scope="col">Estado de la orden</th>
+                        <th scope="col">Dirección de entrega</th>
+                        <th scope="col">Productos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="order in orders" :key="order.orderID">
+                        <td>{{ order.orderID }}</td>
+                        <td>{{ formatDate(order.createdDate) }}</td>
+                        <td>{{ formatDate(order.deliveryDate) }}</td>
+                        <td>{{ order.totalAmount }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>
+                            <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
+                        </td>
+                        <td>
+                            <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                                Ver productos
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <b-modal v-model="ProductsModal" centered scrollable hide-footer title="Productos de la orden">
+            <template v-if="selectedProducts && selectedProducts.length">
+                <ul>
+                    <li v-for="product in selectedProducts" :key="product.name">
+                        {{ product.productName }} - Cantidad: {{ product.amount }}
+                    </li>
+                </ul>
+            </template>
+        </b-modal>
+
+        <b-modal v-model="AddressModal" centered scrollable hide-footer title="Dirección de la orden">
+            <template v-if="true">
+                <p>{{ selectedAddress }}</p>
+            </template>
+        </b-modal>
+    </template>
+    <template v-else>
+        <h1 class="display-4 text-center mb-4"><strong>403 Forbidden</strong></h1>
+        <h3 class="text-center mb-4">No es un usuario registrado <br /><a href="/">Regresar</a></h3>
+    </template>
+</template>
+
+<script>
+    import MainNavbar from './MainNavbar.vue';
+    import { BackendUrl } from '../main.js';
+    import axios from "axios";
+
+    export default {
+        components: {
+            MainNavbar,
+        },
+        data() {
+            return {
+                userID: 0,
+                ProductsModal: false,
+                AddressModal: false,
+                selectedProducts: [],
+                selectedAddress: null,
+                orders: [
+                    {
+                        orderID: 1,
+                        createdDate: '',
+                        deliveryDate: '',
+                        totalAmount: 0,
+                        Address: '',
+                        status: '',
+                        products: [
+                            { productName: '', amount: 0 }
+                        ],
+                    },
+                ],
+            };
+        },
+        methods: {
+            getUserId() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return Number(user[0].userID);
+            },
+            showAddress(order) {
+                this.selectedAddress = order.address;
+                this.AddressModal = true;
+            },
+            GetPendingOrders() {
+                axios.get(`${BackendUrl}/Order/GetPendingOrders`)
+                .then((response) => {
+                    this.orders = response.data;
+                    //console.log(this.orders);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            },
+            GetProductsByOrderID(order) {
+                axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
+                .then((response) => {
+                    order.products = response.data;
+                    this.selectedProducts = order.products;
+                    //console.log(order.products);
+                    this.ProductsModal = true;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            },
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${day}/${month}/${year}`;
+            }
+        },
+        mounted() {
+            this.userID = this.getUserId();
+            this.GetPendingOrders();
+        },
+        props: {
+            isAdmin: {
+                type: Boolean,
+                required: true,
+            },
+            isClient: {
+                type: Boolean,
+                required: true,
+            },
+        },
+    }
+</script>
+
+<style></style>
