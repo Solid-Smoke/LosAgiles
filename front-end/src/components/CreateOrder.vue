@@ -34,12 +34,14 @@
         <b-col>
             <div class="cart-container">
                 <h2 class="display-4 text-center mb-4"><strong>Detalles orden</strong></h2>
-                <MapPointSelector />
-                <strong>Subtotal: ₡4000</strong>
+                <MapPointSelector @selected-address="(address) => selectAddress(address)"/>
+                <strong>Subtotal: ₡{{ totalPrice }}</strong>
                 <br>
-                <strong>Costo de envío: ₡2350</strong>
+                <strong>Costo de envío: ₡{{deliveryCost}}</strong>
                 <br>
-                <strong>Total: ₡</strong>
+                <strong>IVA: ₡{{IVATaxAmmount}}</strong>
+                <br>
+                <strong>Total: ₡{{ totalOrderAmmount }}</strong>
                 <br>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
                     <button @click="showPaymentModal = true" type="submit" class="btn btn-success btn-block">
@@ -52,7 +54,7 @@
                 <b-modal 
                     v-model="showPaymentModal" 
                     centered scrollable hide-footer>
-                    <MetodoPago />
+                    <MetodoPago @payment-completed="submitOrder" />
                 </b-modal>
             </div>
         </b-col>
@@ -65,6 +67,9 @@
     import axios from 'axios';
     import { BackendUrl } from '@/main';
     import MetodoPago from './MetodoPago.vue';
+
+    const IVATax = 0.13;
+
     export default {
         components: {
             MainNavbar,
@@ -75,7 +80,6 @@
             return {
                 cartProducts: [
                     {
-                        productID: 1,
                         productName: 'Manzana',
                         businessName: 'Finca feliz',
                         amount: 2,
@@ -84,7 +88,6 @@
                         totalSales: 2000,
                     },
                     {
-                        productID: 2,
                         productName: 'Adaptador sata',
                         businessName: 'Tech solutions',
                         amount: 2,
@@ -94,10 +97,15 @@
                     },
                 ],
                 userID: 0,
+                orderAddressSelected: {},
+                deliveryDistanceKilometers: 0,
                 showPaymentModal: false
             }
         },
         methods: {
+            selectAddress(address) {
+                this.orderAddressSelected = address;
+            },
             returnToShoppingCart() {
                 this.$router.push({ name: 'cartView.vue' });
             },
@@ -115,8 +123,36 @@
                 const user = JSON.parse(localStorage.getItem('user'));
                 return Number(user[0].userID);
             },
+            submitOrder() {
+                axios
+                    .post(BackendURL + "/Orders", {
+                        clientID: this.userID,
+                        deliveryAddress: this.orderAddressSelected,
+                        products: this.cartProducts
+                    })
+                    .then()
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
         },
         computed: {
+            totalOrderAmmount() {
+                return this.totalPrice + this.IVATaxAmmount;
+            },
+            IVATaxAmmount() {
+                return this.totalPrice * IVATax;
+            },
+            totalOrderWeight() {
+                let totalWeight = 0;
+                for(let i = 0; i < this.cartProducts.length; i++) {
+                    totalWeight += this.cartProducts[i].weight; 
+                }
+                return totalWeight;
+            },
+            deliveryCost() {
+                return 0;
+            },
             totalPrice() {
                 return this.cartProducts.reduce((total, product) => total + product.totalSales, 0);
             },
