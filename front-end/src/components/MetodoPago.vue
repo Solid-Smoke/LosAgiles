@@ -145,6 +145,7 @@ export default {
         this.showSinpeModal = true;
         return;
       }
+      emitPaymentConfirmation();
       this.showSuccessModal = true;
     },
     validateCreditCardPayment() {
@@ -174,9 +175,12 @@ export default {
         this.showCreditCardModal = true;
         return;
       }
-
+      emitPaymentConfirmation();
       this.showSuccessModal = true;
     },
+    emitPaymentConfirmation() {
+      this.$emit('paymentCompleted');
+    }
   },
 };
 </script>
