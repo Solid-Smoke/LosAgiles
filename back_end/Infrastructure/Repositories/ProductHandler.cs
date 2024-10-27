@@ -164,5 +164,40 @@ namespace back_end.Infrastructure.Repositories
             return dapperCountQuery(query,
                 new { searchText = "%" + searchText + "%", });
         }
+        public ProductModel GetProductById(int id)
+        {
+            string query = $@"
+        SELECT p.*, b.Name AS BusinessName 
+        FROM Products p
+        INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
+        WHERE ProductID = {id}";
+
+            DataTable tableQueryResult = CreateTableResult(query);
+
+            if (tableQueryResult.Rows.Count == 0)
+            {
+                return null;
+            }
+
+            DataRow column = tableQueryResult.Rows[0];
+
+            return new ProductModel
+            {
+                ProductID = Convert.ToInt32(column["ProductID"]),
+                Name = Convert.ToString(column["Name"]),
+                Description = Convert.ToString(column["Description"]),
+                Category = Convert.ToString(column["Category"]),
+                Price = Convert.ToInt32(column["Price"]),
+                Stock = Convert.ToInt32(column["Stock"]),
+                Weight = Convert.ToDecimal(column["Weight"]),
+                IsPerishable = Convert.ToBoolean(column["IsPerishable"]),
+                DailyAmount = column["DailyAmount"] as int?,
+                DaysAvailable = Convert.ToString(column["DaysAvailable"]),
+                BusinessID = Convert.ToInt32(column["BusinessID"]),
+                BusinessName = Convert.ToString(column["BusinessName"]),
+                ProductImage = column["ProductImage"] as byte[]
+            };
+        }
+
     }
 }

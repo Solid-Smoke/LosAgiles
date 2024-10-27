@@ -46,6 +46,7 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
             }
         }
+
         [HttpGet]
         public async
             Task<ActionResult<List<ProductsSearchModel>>> searchProducts(
@@ -54,11 +55,31 @@ namespace back_end.APIS
             return productQuery.
                 searchProducts(startIndex, maxResults, searchText);
         }
+
         [HttpGet("CountProductsBySearch")]
         public async
             Task<ActionResult<int>> countProductsBySearch(string? searchText)
         {
             return productQuery.countProductsBySearch(searchText);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ProductModel> GetProductById(int id)
+        {
+            try
+            {
+                var product = _productQuery.GetProductById(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return new JsonResult(product);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo producto.");
+            }
         }
     }
 }
