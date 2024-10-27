@@ -46,7 +46,7 @@ namespace back_end.Infrastructure.Repositories {
 
         public List<OrderModel> GetOrdersByClientID(string clientID) {
             List<OrderModel> OrderData = new List<OrderModel>();
-            string query = ""; // missing will be put in a bit
+            string query = "SELECT * FROM udfOrdersByClientID(@ClientID);";
             try {
                 using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
                     sqlCommand.Parameters.AddWithValue("@ClientID", clientID);
@@ -56,10 +56,12 @@ namespace back_end.Infrastructure.Repositories {
                         while (reader.Read()) {
                             OrderData.Add(
                                 new OrderModel {
-                                    OrderID = Convert.ToInt32(reader["OrderID"]), //These have to change
-                                    Buyer = reader["Buyer"].ToString(),
+                                    OrderID = Convert.ToInt32(reader["OrderID"]),
                                     CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                                    DeliveryDate = reader["DeliveryDate"] != DBNull.Value
+                                    ? Convert.ToDateTime(reader["DeliveryDate"]) : (DateTime?)null,
                                     TotalAmount = Convert.ToInt32(reader["TotalAmount"]),
+                                    Status = reader["Status"].ToString(),
                                     Address = reader["Address"].ToString()
                                 });
                         }
