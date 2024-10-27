@@ -54,7 +54,7 @@ import MainNavbar from './MainNavbar.vue';
     methods: {
       getProductImage(productImageBase64) {
         if (!productImageBase64) {
-          return 'https://via.placeholder.com/500';
+          return "https://imporpec.com.bo/images/" + "image_not_available.gif";
         }
         return `data:image/png;base64,${productImageBase64}`;
       },
