@@ -11,7 +11,7 @@ GO
 
 CREATE TABLE BusinessOrders (
 	OrderID INT NOT NULL FOREIGN KEY REFERENCES Orders(OrderID),
-	ProductID INT NOT NULL FOREIGN KEY REFERENCES [Products](ProductID),
-	PRIMARY KEY (OrderID, ProductID),
+	BusinessID INT NOT NULL FOREIGN KEY REFERENCES [Businesses](BusinessID),
+	PRIMARY KEY (OrderID, BusinessID),
 );
 GO
