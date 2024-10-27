@@ -1,6 +1,5 @@
 ﻿using back_end.Application.Interfaces;
 using back_end.Domain;
-using back_end.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 
 namespace back_end.Application.Commands

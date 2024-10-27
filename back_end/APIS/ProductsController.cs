@@ -68,7 +68,7 @@ namespace back_end.APIS
         {
             try
             {
-                var product = _productQuery.GetProductById(id);
+                var product = productQuery.GetProductById(id);
                 if (product == null)
                 {
                     return NotFound();

@@ -7,6 +7,7 @@ namespace back_end.Application.Queries
     {
         int countProductsBySearch(string? searchText);
         List<ProductModel> getAllProducts();
+        ProductModel GetProductById(int id);
         List<ProductsSearchModel> searchProducts(int startIndex, int maxResults, string? searchText);
     }
 
@@ -56,7 +57,7 @@ namespace back_end.Application.Queries
         }
         public ProductModel GetProductById(int id)
         {
-            var product = _productHandler.GetProductById(id);
+            var product = productHandler.GetProductById(id);
 
             if (product.ProductImage != null)
             {

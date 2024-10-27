@@ -172,7 +172,7 @@ namespace back_end.Infrastructure.Repositories
         INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
         WHERE ProductID = {id}";
 
-            DataTable tableQueryResult = CreateTableResult(query);
+            DataTable tableQueryResult = createTableResult(query);
 
             if (tableQueryResult.Rows.Count == 0)
             {
