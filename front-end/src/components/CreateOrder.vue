@@ -135,7 +135,7 @@
                     );
                 }
                 axios
-                    .post(BackendUrl + "/Orders", {
+                    .post(BackendUrl + "/Order", {
                         clientID: this.userID,
                         deliveryAddress: this.orderAddressSelected,
                         products: orderProducts

@@ -37,7 +37,7 @@ namespace back_end.Infrastructure.Repositories {
             }
         }
 
-        private bool insertInBusinessOrders(int orderID, List<OrderProductsModel> products)
+        private bool insertInBusinessOrders(int orderID, List<CreateOrderProductsModel> products)
         {
             var insertList = new List<object>();
             foreach (var product in products)
@@ -46,7 +46,7 @@ namespace back_end.Infrastructure.Repositories {
             return sqlConnection.Execute("INSERT INTO BusinessOrders (OrderID, BusinessID) VALUES (@orderID, @BusinessID)", insertList) > 0;
         }
 
-        private bool insertInOrderProducts(int orderID, List<OrderProductsModel> products)
+        private bool insertInOrderProducts(int orderID, List<CreateOrderProductsModel> products)
         {
             var insertList = new List<object>();
             foreach (var product in products)
