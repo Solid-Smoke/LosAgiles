@@ -2,6 +2,7 @@
 using back_end.Application.Interfaces;
 using back_end.Application.Queries;
 using back_end.Infrastructure.Repositories;
+using System.Data.SqlClient;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
 builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
+
+//Orders Dependencies
+builder.Services.AddScoped<IOrderCommand, OrderCommand>();
+builder.Services.AddScoped<IOrdersHandler, OrdersHandler>();
+builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
 var app = builder.Build();
 

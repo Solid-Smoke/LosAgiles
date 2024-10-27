@@ -124,11 +124,21 @@
                 return Number(user[0].userID);
             },
             submitOrder() {
+                let orderProducts = [];
+                for (let i = 0; i < this.cartProducts.length; i++) {
+                    orderProducts.push(
+                        {
+                            productID: this.cartProducts[i].productID,
+                            businessID: this.cartProducts[i].businessID,
+                            ammount: this.cartProducts[i].amount
+                        }
+                    );
+                }
                 axios
-                    .post(BackendURL + "/Orders", {
+                    .post(BackendUrl + "/Orders", {
                         clientID: this.userID,
                         deliveryAddress: this.orderAddressSelected,
-                        products: this.cartProducts
+                        products: orderProducts
                     })
                     .then()
                     .catch(function (error) {
