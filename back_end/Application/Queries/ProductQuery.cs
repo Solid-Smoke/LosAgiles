@@ -26,5 +26,17 @@ namespace back_end.Application.Queries
 
             return products;
         }
+
+        public ProductModel GetProductById(int id)
+        {
+            var product = _productHandler.GetProductById(id);
+
+            if (product.ProductImage != null)
+            {
+                product.ProductImageBase64 = Convert.ToBase64String(product.ProductImage);
+            }
+
+            return product;
+        }
     }
 }
