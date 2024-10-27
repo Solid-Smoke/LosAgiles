@@ -73,12 +73,42 @@ namespace back_end.Infrastructure.Repositories {
             return OrderProductsData;
         }
 
-        public bool ApproveOrder(string OrderID) {
-            return true; //TODO
+        public bool ApproveOrder(string orderID) {
+            string query = "UPDATE [Orders] SET [Status] = 'Aprobada' WHERE [OrderId] = @OrderID";
+            try {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+                    sqlCommand.Parameters.AddWithValue("@OrderID", orderID);
+
+                    sqlConnection.Open();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (SqlException sqlEx) {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
         }
 
-        public bool RejectOrder(string OrderID) {
-            return true; //TODO
+        public bool RejectOrder(string orderID) {
+            string query = "UPDATE [Orders] SET [Status] = 'Rechazada' WHERE [OrderId] = @OrderID";
+            try {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+                    sqlCommand.Parameters.AddWithValue("@OrderID", orderID);
+
+                    sqlConnection.Open();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (SqlException sqlEx) {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
         }
     }
 }

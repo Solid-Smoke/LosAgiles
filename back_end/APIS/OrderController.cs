@@ -17,14 +17,32 @@ namespace back_end.APIS {
         }
 
         [HttpGet("GetProductsByOrderID/{id}")]
-        public ActionResult<List<OrderProductsModel>> GetProductsByOrderID( string id,
+        public ActionResult<List<OrderProductsModel>> GetProductsByOrderID(string id,
         [FromServices] GetProductsByOrderID GetProductsByOrderID) {
             var productsInOrder = GetProductsByOrderID.Execute(id);
             return Ok(productsInOrder);
         }
 
-        //ApproveOrder
+        [HttpPut("ApproveOrder/{id}")]
+        public IActionResult ApproveOrder(string id,
+        [FromServices] ApproveOrder ApproveOrder) {
+            var wasApproved = ApproveOrder.Execute(id);
+            if (wasApproved) {
+                return NoContent();
+            } else {
+                return NotFound();
+            }
+        }
 
-        //RejectOrder
+        [HttpPut("RejectOrder/{id}")]
+        public IActionResult RejectOrder(string id,
+        [FromServices] RejectOrder RejectOrder) {
+            var wasRejected = RejectOrder.Execute(id);
+            if (wasRejected) {
+                return NoContent();
+            } else {
+                return NotFound();
+            }
+        }
     }
 }
