@@ -41,12 +41,12 @@
                 <br>
                 <strong>Total: ₡</strong>
                 <br>
-                <div @click="showPaymentModal = true" style="display: flex; justify-content: center; margin-top: 10px;">
-                    <button type="submit" class="btn btn-success btn-block">
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <button @click="showPaymentModal = true" type="submit" class="btn btn-success btn-block">
                         Comprar
                     </button>
-                    <button type="submit" class="btn btn-op2">
-                        Cancelar
+                    <button @click="returnToShoppingCart" type="submit" class="btn btn-op2">
+                        Volver al carrito
                     </button>
                 </div>
                 <b-modal 
@@ -98,6 +98,9 @@
             }
         },
         methods: {
+            returnToShoppingCart() {
+                this.$router.push({ name: 'cartView.vue' });
+            },
             getUserCart() {
                 axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`)
                 .then((response) => {
