@@ -45,5 +45,24 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
             }
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<ProductModel> GetProductById(int id)
+        {
+            try
+            {
+                var product = _productQuery.GetProductById(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return new JsonResult(product);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo producto.");
+            }
+        }
     }
 }
