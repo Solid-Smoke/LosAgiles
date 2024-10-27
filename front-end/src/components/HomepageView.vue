@@ -43,7 +43,6 @@ export default {
       axios
         .get(`${BackendUrl}/Products/GetAllProducts`)
         .then((response) => {
-          console.log('Datos API: ', response.data);
           this.products = response.data;
         })
         .catch((error) => {
