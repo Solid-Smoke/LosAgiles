@@ -82,8 +82,6 @@
                         createdDate: '',
                         totalAmount: 0,
                         Address: '',
-                        state: '',
-                        selectedAction: null,
                         products: [
                             { productName: '', amount: 0 }
                         ],
@@ -100,7 +98,6 @@
                 axios.get(`${BackendUrl}/Order/GetPendingOrders`)
                 .then((response) => {
                     this.orders = response.data;
-                    //console.log(this.orders);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -111,7 +108,6 @@
                 .then((response) => {
                     order.products = response.data;
                     this.selectedProducts = order.products;
-                    //console.log(order.products);
                     this.ProductsModal = true;
                 })
                 .catch((error) => {
@@ -121,7 +117,6 @@
             ApproveOrder(order) {
                 axios.put(`${BackendUrl}/Order/ApproveOrder/${order.orderID}`)
                 .then(() => {
-                    //console.log('Orden exitosamente aprobada');
                     window.location.reload();
                 })
                 .catch((error) => {
@@ -131,7 +126,6 @@
             RejectOrder(order) {
                 axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
                     .then(() => {
-                        //console.log('Orden exitosamente rechazada');
                         window.location.reload();
                     })
                     .catch((error) => {

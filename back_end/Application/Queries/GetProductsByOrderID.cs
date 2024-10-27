@@ -10,7 +10,6 @@ namespace back_end.Application.Queries {
         }
 
         public List<OrderProductsModel> Execute(string OrderId) {
-            // Llamar al método GetProductsByOrderID del repositorio
             return _orderHandler.GetProductsByOrderID(OrderId);
         }
     }

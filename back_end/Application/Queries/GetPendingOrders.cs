@@ -10,7 +10,6 @@ namespace back_end.Application.Queries {
         }
 
         public List<OrderModel> Execute() {
-            // Llamar al método GetPendingOrders del repositorio
             return _orderHandler.GetPendingOrders();
         }
     }
