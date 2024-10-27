@@ -41,6 +41,7 @@ namespace back_end.Infrastructure.Repositories
             var insertList = new List<object>();
             foreach (var product in products)
                 insertList.Add(new { orderID, product.BusinessID });
+            insertList = insertList.Distinct<object>().ToList();
             return sqlConnection.Execute("INSERT INTO BusinessOrders VALUES (@orderID, @businessID)", insertList) > 0;
         }
 
