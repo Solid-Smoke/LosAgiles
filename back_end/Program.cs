@@ -2,6 +2,7 @@
 using back_end.Application.Interfaces;
 using back_end.Application.Queries;
 using back_end.Infrastructure.Repositories;
+using System.Data.SqlClient;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);

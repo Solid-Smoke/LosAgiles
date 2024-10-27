@@ -76,7 +76,6 @@ function loadGoogleMapsApiKey() {
             },
             emitCoordinates() {
                 this.$emit('selectedCoordinates', this.coordinates);
-                this.hideMap();
             },
             showMap() {
                 this.mapVisibilizationStyle = this.mapIsShownStyle;
