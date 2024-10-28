@@ -20,6 +20,7 @@ import MyBusinessView from './components/MyBusinessView.vue';
 import MyBusinessInventoryView from './components/MyBusinessInventoryView.vue';
 import AdminViewAllBusiness from './components/AdminViewAllBusiness.vue';
 import CartView from './components/CartView.vue';
+import IndividualProductPage from './components/IndividualProductPage.vue';
 import MetodoPago from './components/MetodoPago.vue';
 import OrderConfirmation from './components/OrderConfirmation.vue';
 import MyOrders from './components/MyOrders.vue';
@@ -43,7 +44,8 @@ const router = createRouter({
         { path: "/MyBusinessInventory", name: "userBusinessInventory", component: MyBusinessInventoryView },
         { path: "/AdminViewAllBusiness", name: "adminViewAllBusiness", component: AdminViewAllBusiness },
         { path: "/VerCarrito", name: "cartView.vue", component: CartView },
-        {  path: "/MetodoPago", name: "MetodoPago", component: MetodoPago},
+        { path: "/product/:id", name: "IndividualProductPage", component: IndividualProductPage },
+        { path: "/MetodoPago", name: "MetodoPago", component: MetodoPago },
         { path: "/ConfirmarOrdenes", name: "Confirmacion de ordenes", component: OrderConfirmation },
         { path: "/MisOrdenes", name: "Mis ordenes", component: MyOrders },
     ],

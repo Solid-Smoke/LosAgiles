@@ -1,23 +1,23 @@
-﻿using back_end.Domain;
-using back_end.Infrastructure.Repositories;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
 using Microsoft.AspNetCore.Http;
 
 namespace back_end.Application.Commands
 {
     public class ProductCommand
     {
-        private readonly ProductHandler _productHandler;
+        private readonly IProductHandler productHandler;
 
-        public ProductCommand()
+        public ProductCommand(IProductHandler productHandler)
         {
-            _productHandler = new ProductHandler();
+            this.productHandler = productHandler;
         }
 
-        public async Task<bool> CreateProduct(ProductModel product, HttpRequest request)
+        public async Task<bool> createProduct(ProductModel product, HttpRequest request)
         {
             ValidateProduct(product);
             await ProcessProductImage(product, request);
-            return _productHandler.CreateProduct(product);
+            return productHandler.CreateProduct(product);
         }
 
         private void ValidateProduct(ProductModel product)

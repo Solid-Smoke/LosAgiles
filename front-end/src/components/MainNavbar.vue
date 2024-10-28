@@ -7,11 +7,7 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-form>
-                        <b-form-input size="sm" placeholder="Search"></b-form-input>
-                        <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-                    </b-nav-form>
-
+                    
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
                         <b-dropdown-item href="/VerCarrito">Carrito</b-dropdown-item>
@@ -65,7 +61,9 @@
                 personalDetailsModal: false,
                 loginData: {
                     userID: "1",
-                }
+                },
+                searchProducts: () => {},
+                products: []
             }
         },
         methods: {

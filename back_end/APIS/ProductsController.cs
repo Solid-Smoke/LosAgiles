@@ -1,6 +1,7 @@
 using back_end.Application.Commands;
 using back_end.Application.Queries;
 using back_end.Domain;
+using back_end.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -10,12 +11,12 @@ namespace back_end.APIS
     public class ProductsController : ControllerBase
     {
         private readonly ProductCommand _productCommand;
-        private readonly ProductQuery _productQuery;
+        private readonly IProductQuery productQuery;
 
-        public ProductsController()
+        public ProductsController(IProductQuery productQuery, IProductHandler productHandler)
         {
-            _productCommand = new ProductCommand();
-            _productQuery = new ProductQuery();
+            this.productQuery = productQuery;
+            this._productCommand = new ProductCommand(productHandler);
         }
 
         [HttpPost]
@@ -23,7 +24,7 @@ namespace back_end.APIS
         {
             try
             {
-                var result = await _productCommand.CreateProduct(product, Request);
+                var result = await _productCommand.createProduct(product, Request);
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -37,12 +38,47 @@ namespace back_end.APIS
         {
             try
             {
-                var products = _productQuery.GetAllProducts();
+                var products = productQuery.getAllProducts();
                 return new JsonResult(products);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
+            }
+        }
+
+        [HttpGet]
+        public async
+            Task<ActionResult<List<ProductsSearchModel>>> searchProducts(
+            int startIndex, int maxResults, string? searchText)
+        {
+            return productQuery.
+                searchProducts(startIndex, maxResults, searchText);
+        }
+
+        [HttpGet("CountProductsBySearch")]
+        public async
+            Task<ActionResult<int>> countProductsBySearch(string? searchText)
+        {
+            return productQuery.countProductsBySearch(searchText);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ProductModel> GetProductById(int id)
+        {
+            try
+            {
+                var product = productQuery.GetProductById(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return new JsonResult(product);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo producto.");
             }
         }
     }

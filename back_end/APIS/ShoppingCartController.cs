@@ -12,12 +12,30 @@ namespace back_end.APIS
         public ShoppingCartController() { }
 
         [HttpGet("{id}")]
-        public ActionResult<List<ShoppingCartItemModel>> getUserCart(
+        public ActionResult<List<ShoppingCartItemDataModel>> getUserCart(
             string id,
             [FromServices] GetUserShoppingCart getUserShoppingCartQuery)
         {
             var cartItems = getUserShoppingCartQuery.Execute(id);
             return Ok(cartItems);
+        }
+
+        [HttpPost("{id}")]
+        public IActionResult AddItemToCart(
+            string id,
+            [FromBody] ShoppingCartItemModel item,
+            [FromServices] AddItemToShoppingCart addItemToShoppingCartCommand)
+        {
+            var wasAdded = addItemToShoppingCartCommand.Execute(id, item);
+
+            if (wasAdded)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("{id}")]
@@ -29,13 +47,32 @@ namespace back_end.APIS
 
             if (wasDeleted)
             {
-                return NoContent();
+                return Ok();
             }
             else
             {
-                return NotFound();
+                return NoContent();
             }
+        }
 
+        [HttpGet("{id}/Verify")]
+        public ActionResult<List<ShoppingCartItemDataModel>> validateUserCartQuantities(
+            string id,
+            [FromServices] GetShoppingCartInvalidItems userCartInvalidCart)
+        {
+            var invalidProducts = userCartInvalidCart.Execute(id);
+
+            return Ok(invalidProducts);
+        }
+
+        [HttpDelete("{id}/DeleteInvalidProducts")]
+        public IActionResult deleteCartItems(
+            string id,
+            [FromBody] List<ShoppingCartItemDataModel> itemsToDelete,
+            [FromServices] DeleteInvalidProductsFromUserCart deleteItemsFromUserCartCommand)
+        {
+            deleteItemsFromUserCartCommand.Execute(id, itemsToDelete);
+            return Ok();
         }
     }
 }
