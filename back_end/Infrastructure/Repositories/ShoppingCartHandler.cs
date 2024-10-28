@@ -1,7 +1,6 @@
-﻿using back_end.Domain;
-using System.Data;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
 using System.Data.SqlClient;
-using back_end.Application.Interfaces;
 
 namespace back_end.Infrastructure.Repositories
 {
@@ -61,6 +60,30 @@ namespace back_end.Infrastructure.Repositories
             return cartData;
         }
 
+        public bool DeleteItemFromCart(string clientId, int productId)
+        {
+            string query = "DELETE FROM [ShoppingCarts] WHERE [ClientID] = @ClientId AND [ProductID] = @ProductId";
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+                    sqlCommand.Parameters.AddWithValue("@ProductId", productId);
+
+                    sqlConnection.Open();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
+        }
+
         public bool DeleteCart(string clientId)
         {
             string query = "DELETE FROM [ShoppingCarts] WHERE [ClientID] = @ClientId";
@@ -81,6 +104,58 @@ namespace back_end.Infrastructure.Repositories
             {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
                 return false;
+            }
+        }
+
+        public List<ShoppingCartItemModel> ValidateCartQuantities(string clientId, List<ShoppingCartItemModel> cartItems)
+        {
+            string query = @"
+                SELECT [p].[ProductID], [p].[Stock]
+                FROM [Products] [p]
+                JOIN [ShoppingCarts] [sc] ON [p].[ProductID] = [sc].ProductID
+                WHERE [sc].ClientID = @ClientId";
+
+            List<ShoppingCartItemModel> invalidProducts = new List<ShoppingCartItemModel>();
+
+            try
+            {
+                Dictionary<int, int> productStock = new Dictionary<int, int>();
+
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+                    sqlConnection.Open();
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int productId = Convert.ToInt32(reader["ProductID"]);
+                            int stock = Convert.ToInt32(reader["Stock"]);
+                            productStock[productId] = stock;
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+
+                foreach (var item in cartItems)
+                {
+                    if (productStock.ContainsKey(item.ProductID))
+                    {
+                        int stock = productStock[item.ProductID];
+                        if (item.Amount > stock)
+                        {
+                            invalidProducts.Add(item);
+                        }
+                    }
+                }
+
+                return invalidProducts;
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return invalidProducts;
             }
         }
     }
