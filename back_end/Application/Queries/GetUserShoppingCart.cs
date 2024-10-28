@@ -13,7 +13,6 @@ namespace back_end.Application.Queries
 
         public List<ShoppingCartItemModel> Execute(string clientId)
         {
-            // Llamar al método getCart del repositorio
             return _shoppingCartHandler.GetCart(clientId);
         }
     }

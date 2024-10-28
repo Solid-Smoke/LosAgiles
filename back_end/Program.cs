@@ -25,6 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Shopping Cart Dependencies
+builder.Services.AddScoped<DeleteInvalidProductsFromUserCart>();
+builder.Services.AddScoped<GetShoppingCartInvalidItems>();
 builder.Services.AddScoped<AddItemToShoppingCart>();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
