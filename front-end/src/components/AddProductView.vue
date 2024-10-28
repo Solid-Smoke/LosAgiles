@@ -58,9 +58,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="daysAvailable" class="form-label">Días Disponibles (Formato: L, K, M, J, V, S, D sin comas ni espacios)</label>
-                    <input v-model="formData.daysAvailable" type="text" class="form-control" id="daysAvailable" required pattern="[LKMJVSD]{1,7}">
-                    <small class="text-muted">Ejemplo: LJ para Lunes y Jueves</small>
+                    <label class="form-label">Días Disponibles</label>
+                    <div>
+                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input" :id="day.value" :value="day.value" v-model="selectedDays">
+                            <label class="form-check-label" :for="day.value">{{ day.label }}</label>
+                        </div>
+                    </div>
+                    <small class="text-muted">Seleccione los días disponibles.</small>
                 </div>
             </div>
 
@@ -107,6 +112,16 @@ export default {
                 daysAvailable: "",
                 businessId: null
             },
+            selectedDays: [],
+            daysOfWeek: [
+                { label: "Lunes", value: "L" },
+                { label: "Martes", value: "K" },
+                { label: "Miércoles", value: "M" },
+                { label: "Jueves", value: "J" },
+                { label: "Viernes", value: "V" },
+                { label: "Sábado", value: "S" },
+                { label: "Domingo", value: "D" }
+            ]
         };
     },
     computed: {
@@ -138,17 +153,7 @@ export default {
                 this.formData.productImage = file;
             }
         },
-        validateDaysAvailable() {
-            const days = this.formData.daysAvailable.split('');
-            const uniqueDays = new Set(days);
-            return days.length === uniqueDays.size;
-        },
         saveProductDetails() {
-            if (!this.validateDaysAvailable()) {
-                this.showErrorModal("Los días disponibles tienen caracteres duplicados o incorrectos.");
-                return;
-            }
-
             const formData = new FormData();
             formData.append("name", this.formData.name);
             formData.append("description", this.formData.description);
@@ -160,7 +165,7 @@ export default {
 
             if (this.formData.isPerishable === 'true') {
                 formData.append("dailyAmount", this.formData.dailyAmount);
-                formData.append("daysAvailable", this.formData.daysAvailable);
+                formData.append("daysAvailable", this.selectedDays.join(""));
             } else {
                 formData.append("daysAvailable", null);
             }
@@ -202,6 +207,7 @@ export default {
             this.formData.isPerishable = false;
             this.formData.dailyAmount = 0;
             this.formData.daysAvailable = "";
+            this.selectedDays = [];
         },
         openModal(businessId) {
             this.AddProductModal = true;
