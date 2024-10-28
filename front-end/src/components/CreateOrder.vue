@@ -119,8 +119,9 @@
         },
         methods: {
             validateOrderFields() {
-                const OrderIsReadyToSend = !this.addressListIsEmpty;
-                if(OrderIsReadyToSend)
+                if(Object.keys(this.orderAddressSelected).length == 0)
+                    alert("Error, debe seleccionar una dirección de entrega en el dropdown azul y en el mapa");
+                else
                     this.showPaymentModal = true;
             },
             setDeliveryDistanceKilometers(distance) {
