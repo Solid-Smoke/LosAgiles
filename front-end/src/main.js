@@ -1,7 +1,6 @@
 import { createApp } from 'vue';
 import { BootstrapVue3 } from 'bootstrap-vue-3';
 
-// Import CSS files from Bootstrap and BootstrapVue (The order is important)
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
@@ -54,7 +53,6 @@ const router = createRouter({
 export const BackendAPIAddress = "https://localhost:7168/api/Shop";
 const app = createApp(App);
 
-// Make BootstrapVue application-wide
 app.use(BootstrapVue3);
 
 app.use(router);
