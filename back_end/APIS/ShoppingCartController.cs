@@ -29,13 +29,32 @@ namespace back_end.APIS
 
             if (wasDeleted)
             {
-                return NoContent();
+                return Ok();
             }
             else
             {
-                return NotFound();
+                return NoContent();
             }
+        }
 
+        [HttpGet("{id}/Verify")]
+        public ActionResult<List<ShoppingCartItemModel>> validateUserCartQuantities(
+            string id,
+            [FromServices] GetShoppingCartInvalidItems userCartInvalidCart)
+        {
+            var invalidProducts = userCartInvalidCart.Execute(id);
+
+            return Ok(invalidProducts);
+        }
+
+        [HttpDelete("{id}/DeleteInvalidProducts")]
+        public IActionResult deleteCartItems(
+            string id,
+            [FromBody] List<ShoppingCartItemModel> itemsToDelete,
+            [FromServices] DeleteInvalidProductsFromUserCart deleteItemsFromUserCartCommand)
+        {
+            deleteItemsFromUserCartCommand.Execute(id, itemsToDelete);
+            return Ok();
         }
     }
 }
