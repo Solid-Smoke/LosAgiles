@@ -21,7 +21,7 @@
                     v-for="(product, index) of products" :key="index">
                         <b-card :title="product.name"
                             :img-src="getProductImage(
-                                product.productImageInBase64)"
+                                product.productImageBase64)"
                             img-alt="Imagen de producto" img-top class="product-card mb-3">
 
                         <b-card-text>{{product.description}}</b-card-text>
