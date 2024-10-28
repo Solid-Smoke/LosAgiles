@@ -92,24 +92,7 @@
         },
         data() {    
             return {
-                cartProducts: [
-                    {
-                        productName: 'Manzana',
-                        businessName: 'Finca feliz',
-                        amount: 2,
-                        weight: 0.5,
-                        price: 1000,
-                        totalSales: 2000,
-                    },
-                    {
-                        productName: 'Adaptador sata',
-                        businessName: 'Tech solutions',
-                        amount: 2,
-                        weight: 0.5,
-                        price: 1000,
-                        totalSales: 2000,
-                    },
-                ],
+                cartProducts: [],
                 userID: 0,
                 orderAddressSelected: {},
                 deliveryDistanceKilometers: 0,
@@ -121,6 +104,12 @@
             validateOrderFields() {
                 if(Object.keys(this.orderAddressSelected).length == 0)
                     alert("Error, debe seleccionar una dirección de entrega en el dropdown azul y en el mapa");
+                else if(this.cartProducts.length == 0)
+                    {
+                        alert("Error, debe agregar productos al carrito para realizar una orden." +
+                            " Haga click en el botón Aceptar para volver a la página principal");
+                        window.location.href='/';
+                    }
                 else
                     this.showPaymentModal = true;
             },
