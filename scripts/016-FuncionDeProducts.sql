@@ -1,8 +1,11 @@
+USE LosAgilesDB;
+GO
+
 CREATE FUNCTION dbo.ConvertDaysToFullNames (@abbreviatedDays VARCHAR(7))
-RETURNS VARCHAR(40)
+RETURNS VARCHAR(100)
 AS
 BEGIN
-    DECLARE @fullDays VARCHAR(40) = ''
+    DECLARE @fullDays VARCHAR(100) = ''
 
     IF CHARINDEX('L', @abbreviatedDays) > 0 SET @fullDays += 'Lunes, '
     IF CHARINDEX('K', @abbreviatedDays) > 0 SET @fullDays += 'Martes, '
