@@ -33,7 +33,7 @@
                         <b-card :title="product.name"
                             :img-src="getProductImage(
                                 product.productImageInBase64)"
-                            img-alt="Imagen de producto" img-top class="mb-3">
+                            img-alt="Imagen de producto" img-top class="product-card mb-3">
 
                         <b-card-text>{{product.description}}</b-card-text>
 
@@ -119,5 +119,16 @@
         padding-bottom: 10px;
         margin-bottom: 60px;
         background-color: #0DCAF0;
+    }
+    .product-card {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        
+        &:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid #007bff;
+        }
     }
 </style>
