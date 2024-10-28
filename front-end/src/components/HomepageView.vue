@@ -1,12 +1,6 @@
 <template>
     <MainNavbar />
-    <SearchBar 
-        :startSearchIndex="startSearchIndex" 
-        :maxResults="productsPerPage"
-        @search-made="isSearchActive = true; currentPage = 1;"
-        @products-retrieved="updateProducts"
-        @products-counted="(count) => searchResultsCount = count"
-        id="searchbar" />
+    <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
 
     <b-container fluid class="px-5">
         <b-row class="justify-content-center">
@@ -17,7 +11,6 @@
                             <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 250px; height: 250px;"/>
                             <b-card-text class="product-description">{{ truncateDescription(product.description, 165) }}</b-card-text>
                             <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
-                            <b-button variant="primary">Añadir al Carrito</b-button>
                         </b-card>
                     </b-col>
                 </b-row>
@@ -119,5 +112,10 @@ export default {
     transform: translateY(-5px) scale(1.03);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border: 1px solid #007bff;
+}
+
+.product-description {
+    min-height: 95px;
+    text-align: justify;
 }
 </style>
