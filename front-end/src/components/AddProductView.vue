@@ -72,6 +72,16 @@
             <button type="submit" class="btn btn-success btn-block">Añadir Producto</button>
         </form>
     </b-modal>
+
+    <b-modal v-model="errorModalVisible" centered hide-footer title="Error">
+        <p class="my-4">{{ errorMessage }}</p>
+        <b-button variant="danger" @click="errorModalVisible = false">Cerrar</b-button>
+    </b-modal>
+
+    <b-modal v-model="successModalVisible" centered hide-footer title="Éxito">
+        <p class="my-4">Producto añadido exitosamente.</p>
+        <b-button variant="success" @click="closeSuccessModal">Aceptar</b-button>
+    </b-modal>
 </template>
 
 <script>
@@ -81,6 +91,9 @@ export default {
     data() {
         return {
             AddProductModal: false,
+            errorModalVisible: false,
+            successModalVisible: false,
+            errorMessage: "",
             formData: {
                 name: "",
                 description: "",
@@ -92,7 +105,7 @@ export default {
                 isPerishable: false,
                 dailyAmount: 0,
                 daysAvailable: "",
-                businessId: 1
+                businessId: null
             },
         };
     },
@@ -110,14 +123,14 @@ export default {
 
             if (file) {
                 if (file.type !== 'image/png') {
-                    alert("El archivo debe ser una imagen PNG.");
+                    this.showErrorModal("El archivo debe ser una imagen PNG.");
                     event.target.value = null;
                     return;
                 }
 
                 const maxSize = 2 * 1024 * 1024;
                 if (file.size > maxSize) {
-                    alert("La imagen no debe exceder los 2 MB.");
+                    this.showErrorModal("La imagen no debe exceder los 2 MB.");
                     event.target.value = null;
                     return;
                 }
@@ -132,6 +145,7 @@ export default {
         },
         saveProductDetails() {
             if (!this.validateDaysAvailable()) {
+                this.showErrorModal("Los días disponibles tienen caracteres duplicados o incorrectos.");
                 return;
             }
 
@@ -158,10 +172,24 @@ export default {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
+            }).then(() => {
+                this.showSuccessModal();
             }).catch(error => {
+                this.showErrorModal("Error guardando el producto.");
                 console.error("Error guardando el producto:", error);
             });
 
+            this.closeModal();
+        },
+        showErrorModal(message) {
+            this.errorMessage = message;
+            this.errorModalVisible = true;
+        },
+        showSuccessModal() {
+            this.successModalVisible = true;
+        },
+        closeSuccessModal() {
+            this.successModalVisible = false;
             this.closeModal();
         },
         resetFormFields() {
