@@ -13,6 +13,7 @@
                     {{ address.district }},
                     <p>{{ address.otherSigns }}</p>
                 </b-dropdown-item>
+                <b-button @click="this.$refs.addAddressForm.openModal();" variant="success">Agregar dirección</b-button>
             </b-dropdown>
             <div style="display: flex; justify-content: center; margin-top: 0px;">
                 <button type="submit" class="btn btn-op-close btn-block" v-if="mapIsShown" @click="emitCoordinatesAndDistance">
@@ -21,11 +22,13 @@
             </div>
         </div>
     </div>
+    <AddAddressForm parentRoute="/Orden" ref="addAddressForm" :userId="this.userId" />
 </template>
 <script>
 import { LosAgilesMapsApiKey } from '@/main';
 import { BackendAPIAddress } from '@/main';
 import axios from 'axios';
+import AddAddressForm from './AddAddressForm.vue';
 
 const DeliveryStationCoordinates = [9.934257476114691, -84.08158663635609];
 
@@ -52,6 +55,9 @@ function loadGoogleMapsApiKey() {
 
 
     export default {
+        components: {
+            AddAddressForm
+        },
         data() {
             return {
                 addresses: [],
