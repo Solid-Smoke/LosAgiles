@@ -15,7 +15,7 @@
                 </b-dropdown-item>
             </b-dropdown>
             <div style="display: flex; justify-content: center; margin-top: 0px;">
-                <button type="submit" class="btn btn-op-close btn-block" v-if="mapIsShown" @click="emitCoordinates">
+                <button type="submit" class="btn btn-op-close btn-block" v-if="mapIsShown" @click="emitCoordinatesAndDistance">
                     Confirmar ubicación exacta de entrega
                 </button>
             </div>
@@ -26,6 +26,8 @@
 import { LosAgilesMapsApiKey } from '@/main';
 import { BackendAPIAddress } from '@/main';
 import axios from 'axios';
+
+const DeliveryStationCoordinates = [9.934257476114691, -84.08158663635609];
 
 function loadGoogleMapsApiKey() {
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",
@@ -74,8 +76,9 @@ function loadGoogleMapsApiKey() {
             assignCoordinates(coordinatesToAssign) {
                 this.coordinates = coordinatesToAssign;
             },
-            emitCoordinates() {
+            emitCoordinatesAndDistance() {
                 this.$emit('selectedCoordinates', this.coordinates);
+                this.$emit('deliveryDistanceKilometers', this.calculateDeliveryDistanceKilometers(this.coordinates, DeliveryStationCoordinates));
             },
             showMap() {
                 this.mapVisibilizationStyle = this.mapIsShownStyle;
@@ -122,6 +125,11 @@ function loadGoogleMapsApiKey() {
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            calculateDeliveryDistanceKilometers(deliveryCoordinates, deliveryCentralCoordinates) {
+                let kilometer = Math.sqrt(12910961929) / 13000000;
+                return Math.sqrt((deliveryCoordinates[0] - deliveryCentralCoordinates[0])**2
+                    + (deliveryCoordinates[1] - deliveryCentralCoordinates[1])**2) / kilometer;
             }
         },
         mounted() {

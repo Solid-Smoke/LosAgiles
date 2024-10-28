@@ -34,7 +34,8 @@
         <b-col>
             <div class="cart-container">
                 <h2 class="display-4 text-center mb-4"><strong>Detalles orden</strong></h2>
-                <MapPointSelector @selected-address="(address) => selectAddress(address)"/>
+                <MapPointSelector @selected-address="(address) => selectAddress(address)"
+                    @delivery-distance-kilometers="(kilometers) => setDeliveryDistanceKilometers(kilometers)"/>
                 <strong>Subtotal: ₡{{ totalPrice }}</strong>
                 <br>
                 <strong>Costo de envío: ₡{{deliveryCost}}</strong>
@@ -103,6 +104,9 @@
             }
         },
         methods: {
+            setDeliveryDistanceKilometers(distance) {
+                this.deliveryDistanceKilometers = distance;
+            },
             selectAddress(address) {
                 this.orderAddressSelected = address;
             },
@@ -148,7 +152,7 @@
         },
         computed: {
             totalOrderAmmount() {
-                return this.totalPrice + this.IVATaxAmmount;
+                return this.totalPrice + this.IVATaxAmmount + this.deliveryCost;
             },
             IVATaxAmmount() {
                 return this.totalPrice * IVATax;
@@ -161,7 +165,19 @@
                 return totalWeight;
             },
             deliveryCost() {
-                return 0;
+                const MetropolitanRadioInKilometers = 70;
+                const MetropolitanFirstDeliveryCost = 1700;
+                const NonMetropolitanFirstDeliveryCost = 2350;
+                const AdditionalKilometerCost = 1000;
+                let additionalKilometerAmmount = 0;
+                if(this.deliveryDistanceKilometers >= 2) {
+                    additionalKilometerAmmount = (Math.trunc(this.deliveryDistanceKilometers) - 1) * AdditionalKilometerCost;
+                }
+                if (this.deliveryDistanceKilometers < MetropolitanRadioInKilometers) {
+                    return MetropolitanFirstDeliveryCost + additionalKilometerAmmount;
+                } else {
+                    return NonMetropolitanFirstDeliveryCost + additionalKilometerAmmount;
+                }
             },
             totalPrice() {
                 return this.cartProducts.reduce((total, product) => total + product.totalSales, 0);
