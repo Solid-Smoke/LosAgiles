@@ -191,9 +191,11 @@ export default {
             this.formData.dailyAmount = 0;
             this.formData.daysAvailable = "";
         },
-        openModal() {
+        openModal(businessId) {
             this.AddProductModal = true;
             this.resetFormFields();
+            this.formData.businessId = businessId;
+            console.log(this.formData.businessId);
         },
         closeModal() {
             this.AddProductModal = false;
