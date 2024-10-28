@@ -12,7 +12,7 @@
             <span>
                 {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
             </span>
-            <b-button variant="primary" style="font-size: 1.50rem;" @click="actualResultsPage = 0;">Inicio</b-button>
+            <b-button style="font-size: 1.50rem;" @click="actualResultsPage = 0;">Inicio</b-button>
             <b-button variant="primary" style="font-size: 1.50rem;" @click="goPreviousPage">Anterior</b-button>
             <b-button variant="primary" style="font-size: 1.50rem;" @click="goNextPage">Siguiente</b-button>
         </b-button-group>
