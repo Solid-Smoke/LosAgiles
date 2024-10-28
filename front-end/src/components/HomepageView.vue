@@ -7,14 +7,17 @@
         }"
         @products-counted="(count) => this.searchResultsCount = count"
         id="searchbar"/>
-    <b-button-group style="float: right;">
-        <span>
-            {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
-        </span>
-        <b-button variant="primary" @click="actualResultsPage = 0;">Inicio</b-button>
-        <b-button variant="primary" @click="goPreviousPage">Anterior</b-button>
-        <b-button variant="primary" @click="goNextPage">Siguiente</b-button>
-    </b-button-group>
+    <div style="display: flex; justify-content: flex-end;">
+        <b-button-group style="float: right;">
+            <span>
+                {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
+            </span>
+            <b-button variant="primary" @click="actualResultsPage = 0;">Inicio</b-button>
+            <b-button variant="primary" @click="goPreviousPage">Anterior</b-button>
+            <b-button variant="primary" @click="goNextPage">Siguiente</b-button>
+        </b-button-group>
+    </div>
+    
     <b-container fluid class="px-5">
         <b-row style>
             <b-col>
