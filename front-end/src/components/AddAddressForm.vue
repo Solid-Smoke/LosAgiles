@@ -17,7 +17,8 @@
                 <!-- Cantons will be displayed according to the province selected or San José cantons by default-->
                 <div class="form-group">
                     <label for="canton">Cantón</label>
-                    <select v-model="formData.canton" @change='cantonIndex = $event.target.selectedIndex.toString()' id="canton" required class="form-control">
+                    <select v-model="formData.canton" @change='cantonIndex = $event.target.selectedIndex.toString()' id="canton"
+                        required class="form-control">
                         <option value="" disabled>Seleccione un cantón</option>
                         <option v-for='(canton, index) of provinces.provinces[provinceIndex].cantons' :key="index">{{ canton.name }}</option>
                     </select>
@@ -27,7 +28,8 @@
                     <label for="district">Distrito</label>
                     <select v-model="formData.district" id="district" required class="form-control">
                         <option value="" disabled>Seleccione un cantón</option>
-                        <option v-for='(district, index) of provinces.provinces[provinceIndex].cantons[cantonIndex].districts' :key="index">{{ district }}</option>
+                        <option v-for='(district, index) of provinces.provinces[provinceIndex].cantons[cantonIndex].districts'
+                            :key="index">{{ district }}</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -38,7 +40,9 @@
                     <label for="other-signs">Otras señas</label>
                     <textarea v-model="formData.otherSigns" id="other-signs" class="form-control" required></textarea>
                     <label for="other-signs" style="text-align: right;"> {{ otherSignsCharCount }} /500</label>
-                    <label v-if="otherSignsCharCount > 500" for="other-signs" style="text-align: center;"> Este campo de texto no debe exceder los 500 caracteres</label>
+                    <label v-if="otherSignsCharCount > 500" for="other-signs" style="text-align: center;">
+                        Este campo de texto no debe exceder los 500 caracteres
+                    </label>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-success btn-block">
@@ -94,9 +98,8 @@ export default {
                         postalCode: this.formData.postalCode,
                         otherSigns: this.formData.otherSigns
                     })
-                    .then(function (response) {
-                        console.log(response);
-                        window.location.href = "/direcciones";
+                    .then((response) => {
+                        window.location.href = this.parentRoute;
                     })
                     .catch(function (error) {
                         console.log(error);

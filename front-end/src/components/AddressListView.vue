@@ -23,7 +23,7 @@
             </tbody>
         </table>
         <b-button @click="this.openAddAddressForm()" variant="success" style="float: right">Agregar dirección</b-button>
-        <AddAddressForm ref="addAddressForm" :userId="this.userId" />
+        <AddAddressForm parentRoute="/direcciones" ref="addAddressForm" :userId="this.userId" />
     </div>
 </template>
 
