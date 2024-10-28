@@ -98,7 +98,7 @@ export default {
                         postalCode: this.formData.postalCode,
                         otherSigns: this.formData.otherSigns
                     })
-                    .then((response) => {
+                    .then(() => {
                         window.location.href = this.parentRoute;
                     })
                     .catch(function (error) {
