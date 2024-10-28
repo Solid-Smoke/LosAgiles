@@ -29,7 +29,12 @@
           </b-form-group>
   
           <div class="text-center mt-2">
-            <b-button variant="primary" class="add-to-cart-btn" @click="confirmAddToCart">Añadir al Carrito</b-button>
+            <template v-if="isClient">
+                <b-button variant="primary" class="add-to-cart-btn" @click="confirmAddToCart">Añadir al Carrito</b-button>
+            </template>
+            <template v-else>
+                <b-button variant="primary" class="add-to-cart-btn" @click="redirectToRegister">Registrarse en el sitio</b-button>
+            </template>
             <b-button variant="primary" class="close-add-to-cart-btn" @click="closeCart" >Volver al Homepage</b-button>
           </div>
         </b-col>
@@ -98,11 +103,24 @@
       },
       closeCart() {
         this.$router.push({ name: 'Home' });
-      },
+        },
+      redirectToRegister() {
+          this.$router.push('/registro');
+      }
     },
     mounted() {
       const productId = this.$route.params.id;
       this.getProductDetails(productId);
+    },
+    props: {
+        isAdmin: {
+            type: Boolean,
+            required: true,
+        },
+        isClient: {
+            type: Boolean,
+            required: true,
+        },
     },
   };
   </script>
