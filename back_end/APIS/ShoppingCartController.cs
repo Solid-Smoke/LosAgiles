@@ -20,6 +20,25 @@ namespace back_end.APIS
             return Ok(cartItems);
         }
 
+        [HttpPost("{id}")]
+        public IActionResult AddItemToCart(
+            string id,
+            string productId,
+            int amount,
+            [FromServices] AddItemToShoppingCart addItemToShoppingCartCommand)
+        {
+            var wasAdded = addItemToShoppingCartCommand.Execute(id, productId, amount);
+
+            if (wasAdded)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(
             string id,

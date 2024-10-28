@@ -5,5 +5,6 @@ namespace back_end.Application.Interfaces
     {
         List<ShoppingCartItemModel> GetCart(string clientId);
         bool DeleteCart(string clientId);
+        public bool AddCartItem(string clientId, string productId, int amount);
     }
 }

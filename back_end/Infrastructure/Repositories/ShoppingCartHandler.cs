@@ -1,7 +1,6 @@
-﻿using back_end.Domain;
-using System.Data;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
 using System.Data.SqlClient;
-using back_end.Application.Interfaces;
 
 namespace back_end.Infrastructure.Repositories
 {
@@ -67,6 +66,31 @@ namespace back_end.Infrastructure.Repositories
                 using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
                 {
                     sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+
+                    sqlConnection.Open();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
+        }
+
+        public bool AddCartItem(string clientId, string productId, int amount)
+        {
+            string query = "INSERT INTO [ShoppingCarts] ([ClientID], [ProductID], [Amount]) VALUES (@ClientId, @ProductID, @Amount)";
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+                    sqlCommand.Parameters.AddWithValue("@ProductID", productId);
+                    sqlCommand.Parameters.AddWithValue("@Amount", amount);
 
                     sqlConnection.Open();
                     int rowsAffected = sqlCommand.ExecuteNonQuery();
