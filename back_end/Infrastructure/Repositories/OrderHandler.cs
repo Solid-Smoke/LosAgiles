@@ -13,6 +13,18 @@ namespace back_end.Infrastructure.Repositories {
             this.sqlConnection = sqlConnection;
         }
 
+        private int substractProductsStock(List<CreateOrderProductsModel> products)
+        {
+            int rowsAffected = 0;
+            foreach (var product in products)
+                rowsAffected += sqlConnection.Execute("UPDATE Products\r\n" +
+                    "SET Products.Stock = (select Stock from Products where ProductID = @ProductID) - @Ammount\r\n" +
+                    "WHERE ProductID = @ProductID",
+                    new { product.ProductID, product.Ammount }
+                );
+            return rowsAffected;
+        }
+
         public bool createOrder(CreateOrderModel orderData)
         {
             sqlConnection.Open();
@@ -25,6 +37,7 @@ namespace back_end.Infrastructure.Repositories {
                 Console.WriteLine("Inserted orderID in transaction: " + orderID);
                 bool insertedInOrderProducts = insertInOrderProducts((int)orderID, orderData.Products);
                 bool InsertedInBusinessOrders = insertInBusinessOrders((int)orderID, orderData.Products);
+                int rowsAffected = substractProductsStock(orderData.Products);
                 sqlConnection.Execute("COMMIT");
                 sqlConnection.Close();
                 return true;

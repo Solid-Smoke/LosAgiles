@@ -163,10 +163,19 @@
                         deliveryAddress: this.orderAddressSelected,
                         products: orderProducts
                     })
-                    .then()
+                    .then(() => this.clearCart())
                     .catch(function (error) {
                         console.log(error);
                     });
+            },
+            clearCart() {
+                axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}`)
+                .then(() => {
+                    this.cartProducts = [];
+                })
+                .catch((error) => {
+                    console.log("El carrito no pudo vaciarse", error);
+                });
             }
         },
         computed: {
