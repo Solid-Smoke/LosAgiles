@@ -155,7 +155,7 @@
                 return this.totalPrice + this.IVATaxAmmount + this.deliveryCost;
             },
             IVATaxAmmount() {
-                return this.totalPrice * IVATax;
+                return parseFloat(((this.totalPrice + this.deliveryCost) * IVATax).toFixed(2));
             },
             totalOrderWeight() {
                 let totalWeight = 0;
