@@ -121,6 +121,11 @@ function loadGoogleMapsApiKey() {
                 .then(
                     (response) => {
                         this.addresses = response.data;
+                        if(this.addresses.length == 0) {
+                            this.$emit('emptyAddressList');
+                        } else {
+                            this.$emit('noEmptyAddressList');
+                        }
                     })
                 .catch(function (error) {
                     console.log(error);
@@ -135,6 +140,9 @@ function loadGoogleMapsApiKey() {
         mounted() {
             this.userId = this.getUserId();
             this.getUserAddressList();
+            if(this.addresses.length > 0) {
+                this.selectAddress(this.addresses[0]);
+            }
             loadGoogleMapsApiKey();
             this.initMap();
             this.mapVisibilizationStyle = this.mapIsShownStyle;

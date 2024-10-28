@@ -35,7 +35,9 @@
             <div class="cart-container">
                 <h2 class="display-4 text-center mb-4"><strong>Detalles orden</strong></h2>
                 <MapPointSelector @selected-address="(address) => selectAddress(address)"
-                    @delivery-distance-kilometers="(kilometers) => setDeliveryDistanceKilometers(kilometers)"/>
+                    @delivery-distance-kilometers="(kilometers) => setDeliveryDistanceKilometers(kilometers)"
+                    @empty-address-list="this.addressListIsEmpty = true"
+                    @no-empty-address-list="this.addressListIsEmpty = false"/>
                 <strong>Subtotal: ₡{{ totalPrice }}</strong>
                 <br>
                 <strong>Costo de envío: ₡{{deliveryCost}}</strong>
@@ -45,7 +47,7 @@
                 <strong>Total: ₡{{ totalOrderAmmount }}</strong>
                 <br>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
-                    <button @click="showPaymentModal = true" type="submit" class="btn btn-success btn-block">
+                    <button @click="validateOrderFields" type="submit" class="btn btn-success btn-block">
                         Comprar
                     </button>
                     <button @click="returnToShoppingCart" type="submit" class="btn btn-op2">
@@ -111,10 +113,16 @@
                 userID: 0,
                 orderAddressSelected: {},
                 deliveryDistanceKilometers: 0,
-                showPaymentModal: false
+                showPaymentModal: false,
+                addressListIsEmpty: true
             }
         },
         methods: {
+            validateOrderFields() {
+                const OrderIsReadyToSend = !this.addressListIsEmpty;
+                if(OrderIsReadyToSend)
+                    this.showPaymentModal = true;
+            },
             setDeliveryDistanceKilometers(distance) {
                 this.deliveryDistanceKilometers = distance;
             },
@@ -128,7 +136,6 @@
                 axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`)
                 .then((response) => {
                     this.cartProducts = response.data;
-                    console.log(this.cartProducts);
                 })
                 .catch((error) => {
                     this.$refs.errorCleanCartModal.openModal("Error al cargar el carrito", error);
@@ -204,8 +211,10 @@
             },
         },
         mounted() {
-            this.userID = this.getUserId();
-            this.getUserCart();
+            if (this.isClient) {
+                this.userID = this.getUserId();
+                this.getUserCart();
+            }
         },
     }
     
