@@ -131,21 +131,7 @@ export default {
             return days.length === uniqueDays.size;
         },
         saveProductDetails() {
-            if (this.formData.name.length < 1 || this.formData.name.length > 50) {
-                alert("El nombre debe tener entre 1 y 50 caracteres.");
-                return;
-            }
-            if (this.formData.description.length < 1 || this.formData.description.length > 512) {
-                alert("La descripción debe tener entre 1 y 512 caracteres.");
-                return;
-            }
-            if (this.formData.price <= 0) {
-                alert("El precio debe ser mayor a cero.");
-                return;
-            }
-
             if (!this.validateDaysAvailable()) {
-                alert("Los días disponibles no deben repetirse.");
                 return;
             }
 
@@ -172,8 +158,6 @@ export default {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
-            }).then(response => {
-                console.log("Producto guardado con éxito:", response.data);
             }).catch(error => {
                 console.error("Error guardando el producto:", error);
             });
@@ -195,7 +179,6 @@ export default {
             this.AddProductModal = true;
             this.resetFormFields();
             this.formData.businessId = businessId;
-            console.log(this.formData.businessId);
         },
         closeModal() {
             this.AddProductModal = false;
