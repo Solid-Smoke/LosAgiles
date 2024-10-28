@@ -166,17 +166,17 @@
             },
             deliveryCost() {
                 const MetropolitanRadioInKilometers = 70;
-                const MetropolitanFirstDeliveryCost = 1700;
-                const NonMetropolitanFirstDeliveryCost = 2350;
-                const AdditionalKilometerCost = 1000;
-                let additionalKilometerAmmount = 0;
-                if(this.deliveryDistanceKilometers >= 2) {
-                    additionalKilometerAmmount = (Math.trunc(this.deliveryDistanceKilometers) - 1) * AdditionalKilometerCost;
+                const MetropolitanFirstKilogramDeliveryCost = 1700;
+                const NonMetropolitanFirstKilogramDeliveryCost = 2350;
+                const AdditionalKilogramCost = 1000;
+                let additionalKilogramAmmount = 0;
+                if(this.totalOrderWeight >= 2) {
+                    additionalKilogramAmmount = (Math.trunc(this.totalOrderWeight) - 1) * AdditionalKilogramCost;
                 }
                 if (this.deliveryDistanceKilometers < MetropolitanRadioInKilometers) {
-                    return MetropolitanFirstDeliveryCost + additionalKilometerAmmount;
+                    return MetropolitanFirstKilogramDeliveryCost + additionalKilogramAmmount;
                 } else {
-                    return NonMetropolitanFirstDeliveryCost + additionalKilometerAmmount;
+                    return NonMetropolitanFirstKilogramDeliveryCost + additionalKilogramAmmount;
                 }
             },
             totalPrice() {
