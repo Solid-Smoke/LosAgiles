@@ -7,17 +7,6 @@
         }"
         @products-counted="(count) => this.searchResultsCount = count"
         id="searchbar"/>
-    <div style="display: flex; justify-content: flex-end;">
-        <b-button-group style="float: right;">
-            <span>
-                {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
-            </span>
-            <b-button variant="success" style="font-size: 1.50rem;" @click="actualResultsPage = 0;">Inicio</b-button>
-            <b-button variant="primary" style="font-size: 1.50rem;" @click="goPreviousPage">◄ Anterior</b-button>
-            <b-button variant="primary" style="font-size: 1.50rem;" @click="goNextPage">Siguiente ►</b-button>
-        </b-button-group>
-    </div>
-    
     <b-container fluid class="px-5">
         <b-row style>
             <b-col>
@@ -50,6 +39,16 @@
             </b-col>
         </b-row>
     </b-container>
+    <div style="display: flex; justify-content: flex-end;">
+        <b-button-group style="float: right;">
+            <span>
+                {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
+            </span>
+            <b-button variant="success" style="font-size: 1.50rem;" @click="actualResultsPage = 0;">Inicio</b-button>
+            <b-button variant="primary" style="font-size: 1.50rem;" @click="goPreviousPage">◄ Anterior</b-button>
+            <b-button variant="primary" style="font-size: 1.50rem;" @click="goNextPage">Siguiente ►</b-button>
+        </b-button-group>
+    </div>
 </template>
 
 <script>
@@ -64,7 +63,7 @@
         data() {
             return {
                 products: [],
-                maxSearchResultsPerPage: 8,
+                maxSearchResultsPerPage: 16,
                 actualResultsPage: 0,
                 searchResultsCount: 0
             };
