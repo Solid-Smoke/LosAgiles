@@ -29,21 +29,36 @@
           </b-form-group>
   
           <div class="text-center mt-2">
-            <b-button variant="primary" class="add-to-cart-btn">Añadir al Carrito</b-button>
+            <template v-if="isClient">
+                <b-button variant="primary" class="add-to-cart-btn" @click="confirmAddToCart">Añadir al Carrito</b-button>
+            </template>
+            <template v-else>
+                <b-button variant="primary" class="add-to-cart-btn" @click="redirectToRegister">Registrarse en el sitio</b-button>
+            </template>
+            <b-button variant="primary" class="close-add-to-cart-btn" @click="closeCart" >Volver al Homepage</b-button>
           </div>
         </b-col>
       </b-row>
+      <ActionModalConfirm ref="confirmProductModal" />
+      <ActionModalError ref="errorProductModal"/>
+      <ActionModalWarning ref="warningProductModal" @confirmed="addToShoppingCart" />
     </b-container>
   </template>
   
   <script>
   import { BackendUrl } from '@/main';
-import MainNavbar from './MainNavbar.vue';
+  import MainNavbar from './MainNavbar.vue';
+  import ActionModalConfirm from './ActionModalConfirm.vue';
+  import ActionModalError from './ActionModalError.vue';
+  import ActionModalWarning from './ActionModalWarning.vue';
   import axios from 'axios';
   
   export default {
     components: {
       MainNavbar,
+      ActionModalConfirm,
+      ActionModalWarning,
+      ActionModalError,
     },
     data() {
       return {
@@ -68,10 +83,44 @@ import MainNavbar from './MainNavbar.vue';
             console.error('Error obteniendo detalles del producto:', error);
           });
       },
+      confirmAddToCart(){
+          this.$refs.warningProductModal.openModal("¿Deseas añadir este producto al carrito?");
+      },
+      addToShoppingCart() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const id = Number(user[0].userID);
+          axios
+              .post(`${BackendUrl}/ShoppingCart/${id}`, {
+                  productId: this.product.productID,
+                  amount: this.quantity
+              })
+              .then(() => {
+                  this.$refs.confirmProductModal.openModal("Se ha añadido el producto al carrito de forma exitosa");
+              })
+              .catch((error) => {
+                  this.$refs.errorProductModal.openModal("Error al añadir el producto al carrito", error);
+              });
+      },
+      closeCart() {
+        this.$router.push({ name: 'Home' });
+        },
+      redirectToRegister() {
+          this.$router.push('/registro');
+      }
     },
     mounted() {
       const productId = this.$route.params.id;
       this.getProductDetails(productId);
+    },
+    props: {
+        isAdmin: {
+            type: Boolean,
+            required: true,
+        },
+        isClient: {
+            type: Boolean,
+            required: true,
+        },
     },
   };
   </script>
@@ -113,14 +162,23 @@ import MainNavbar from './MainNavbar.vue';
   .product-description {
     text-align: justify;
   }
-  
+
   .add-to-cart-btn {
-    background-color: #007bff;
+    background-color: #1a8654;
     font-size: 1rem;
-    padding: 6px 15px;
+    padding: 10px 20px;
+    margin: 0 10px;
+  }
+
+
+  .close-add-to-cart-btn {
+    background-color: #0cbde1;
+    font-size: 1rem;
+    padding: 10px 20px;
+    margin: 0 10px;
   }
   
-  b-form-input {
+  .b-form-input {
     font-size: 1rem;
   }
   

@@ -16,9 +16,9 @@ namespace back_end.Infrastructure.Repositories
             sqlConnection = new SqlConnection(routeConnection);
         }
 
-        public List<ShoppingCartItemModel> GetCart(string clientId)
+        public List<ShoppingCartItemDataModel> GetCart(string clientId)
         {
-            List<ShoppingCartItemModel> cartData = new List<ShoppingCartItemModel>();
+            List<ShoppingCartItemDataModel> cartData = new List<ShoppingCartItemDataModel>();
             string query = "SELECT * FROM [udfSelectShoppingCart](@ClientId)";
             try
             {
@@ -33,7 +33,7 @@ namespace back_end.Infrastructure.Repositories
                         while (reader.Read())
                         {
                             cartData.Add(
-                                new ShoppingCartItemModel
+                                new ShoppingCartItemDataModel
                                 {
                                     ProductID = Convert.ToInt32(reader["ProductID"]),
                                     ProductName = reader["ProductName"].ToString(),
@@ -105,7 +105,32 @@ namespace back_end.Infrastructure.Repositories
             }
         }
 
-        public List<ShoppingCartItemModel> ValidateCartQuantities(string clientId, List<ShoppingCartItemModel> cartItems)
+        public bool AddCartItem(string clientId, ShoppingCartItemModel newItem)
+        {
+            string query = "INSERT INTO [ShoppingCarts] ([ClientID], [ProductID], [Amount]) VALUES (@ClientId, @ProductID, @Amount)";
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@ClientId", clientId);
+                    sqlCommand.Parameters.AddWithValue("@ProductID", newItem.ProductID);
+                    sqlCommand.Parameters.AddWithValue("@Amount", newItem.Amount);
+
+                    sqlConnection.Open();
+                    int rowsAffected = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
+        }
+
+        public List<ShoppingCartItemDataModel> ValidateCartQuantities(string clientId, List<ShoppingCartItemDataModel> cartItems)
         {
             string query = @"
                 SELECT [p].[ProductID], [p].[Stock]
@@ -113,7 +138,7 @@ namespace back_end.Infrastructure.Repositories
                 JOIN [ShoppingCarts] [sc] ON [p].[ProductID] = [sc].ProductID
                 WHERE [sc].ClientID = @ClientId";
 
-            List<ShoppingCartItemModel> invalidProducts = new List<ShoppingCartItemModel>();
+            List<ShoppingCartItemDataModel> invalidProducts = new List<ShoppingCartItemDataModel>();
 
             try
             {
