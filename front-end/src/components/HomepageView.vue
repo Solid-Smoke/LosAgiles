@@ -40,13 +40,13 @@
         </b-row>
     </b-container>
     <div style="display: flex; justify-content: flex-end;">
-        <b-button-group style="float: right;">
+        <b-button-group style="float: right; margin-bottom: 10%; margin-right: 5%">
             <span>
                 {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
             </span>
-            <b-button variant="success" style="font-size: 1.50rem;" @click="actualResultsPage = 0;">Inicio</b-button>
-            <b-button variant="primary" style="font-size: 1.50rem;" @click="goPreviousPage">◄ Anterior</b-button>
-            <b-button variant="primary" style="font-size: 1.50rem;" @click="goNextPage">Siguiente ►</b-button>
+            <b-button variant="success" style="font-size: 1.25rem;" @click="actualResultsPage = 0;">Inicio</b-button>
+            <b-button variant="primary" style="font-size: 1.25rem;" @click="goPreviousPage">◄ Anterior</b-button>
+            <b-button variant="primary" style="font-size: 1.25rem;" @click="goNextPage">Siguiente ►</b-button>
         </b-button-group>
     </div>
 </template>
