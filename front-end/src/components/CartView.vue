@@ -1,87 +1,101 @@
 ﻿<template>
-    <MainNavbar />
-    <div class="cart-container">
-        <h1 class="display-4 text-center mb-4"><strong>Mi Carrito</strong></h1>
-        <div class="table-responsive-sm">
-            <table class="table table-striped table-hover table-cart">
-                <thead>
-                    <tr>
-                        <th scope="col">
-                            <input type="checkbox"
-                                   @change="toggleSelectAll($event)"
-                                   :checked="areAllSelected">
-                        </th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Emprendimiento</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio Unitario</th>
-                        <th scope="col">Precio Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="product in cartProducts"
-                        :key="product.productID"
-                        @click="toggleSelect(product)">
-                        <td>
-                            <input type="checkbox" 
-                                   v-model="selectedProducts" 
-                                   :value="{ productID: product.productID,
+    <template v-if="isClient">
+        <MainNavbar />
+        <div class="cart-container">
+            <h1 class="display-4 text-center mb-4"><strong>Mi Carrito</strong></h1>
+            <template v-if="hasProducts">
+                <div class="table-responsive-sm">
+                    <table class="table table-striped table-hover table-cart">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <input type="checkbox"
+                                           @change="toggleSelectAll($event)"
+                                           :checked="areAllSelected">
+                                </th>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Emprendimiento</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Precio Unitario</th>
+                                <th scope="col">Precio Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="product in cartProducts"
+                                :key="product.productID"
+                                @click="toggleSelect(product)">
+                                <td>
+                                    <input type="checkbox"
+                                           v-model="selectedProducts"
+                                           :value="{ productID: product.productID,
                                              productName: product.productName,
                                              businessName: product.businessName,
                                              amount: product.amount,
                                              price: product.price,
                                              totalSales: product.totalSales }">
-                        </td>
-                        <td>{{ product.productName }}</td>
-                        <td>{{ product.businessName }}</td>
-                        <td>{{ product.amount }}</td>
-                        <td>₡ {{ product.price }}</td>
-                        <td>₡ {{ product.totalSales }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                                </td>
+                                <td>{{ product.productName }}</td>
+                                <td>{{ product.businessName }}</td>
+                                <td>{{ product.amount }}</td>
+                                <td>₡ {{ product.price }}</td>
+                                <td>₡ {{ product.totalSales }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        <div v-if="selectedProducts.length === 0" class="cart-total">
-            <h4><strong>Total: ₡ {{ totalPrice.toFixed(2) }}</strong></h4>
-        </div>
+                <div v-if="selectedProducts.length === 0" class="cart-total">
+                    <h4><strong>Total: ₡ {{ totalPrice.toFixed(2) }}</strong></h4>
+                </div>
 
-        <div v-if="selectedProducts.length === 0" class="cart-buttons">
-            <button @click="checkout"
-                    class="btn btn-op1">
-                Comprar Todo
-            </button>
-            <button @click="openCleanCartWarningModal"
-                    class="btn btn-op2">
-                Vaciar Carrito
-            </button>
-            <button @click="closeCart"
-                    class="btn btn-op-close">
-                Cerrar Carrito
-            </button>
-        </div>
+                <div v-if="selectedProducts.length === 0" class="cart-buttons">
+                    <button @click="checkout"
+                            class="btn btn-op1">
+                        Comprar Todo
+                    </button>
+                    <button @click="openCleanCartWarningModal"
+                            class="btn btn-op2">
+                        Vaciar Carrito
+                    </button>
+                    <button @click="closeCart"
+                            class="btn btn-op-close">
+                        Cerrar Carrito
+                    </button>
+                </div>
 
-        <div v-if="selectedProducts.length > 0" class="selected-total">
-            <h4><strong>Total: ₡ {{ selectedTotal.toFixed(2) }}</strong></h4>
-        </div>
+                <div v-if="selectedProducts.length > 0" class="selected-total">
+                    <h4><strong>Total: ₡ {{ selectedTotal.toFixed(2) }}</strong></h4>
+                </div>
 
-        <div v-if="selectedProducts.length > 0" class="cart-buttons">
-            <button class="btn btn-op1">
-                Comprar Todo
-            </button>
-            <button class="btn btn-op2">
-                Eliminar Seleccionado
-            </button>
-            <button @click="closeCart"
-                    class="btn btn-op-close">
-                Cerrar Carrito
-            </button>
+                <div v-if="selectedProducts.length > 0" class="cart-buttons">
+                    <button class="btn btn-op1">
+                        Comprar Todo
+                    </button>
+                    <button class="btn btn-op2">
+                        Eliminar Seleccionado
+                    </button>
+                    <button @click="closeCart"
+                            class="btn btn-op-close">
+                        Cerrar Carrito
+                    </button>
+                </div>
+            </template>
+            <template v-else>
+                <h3 class="text-center mb-4">
+                    Actualmente no tiene ordenes registradas
+                    <br /><a href="/">Regresar</a>
+                </h3>
+            </template>
         </div>
-    </div>
-    <ActionModalConfirm ref="confirmCartModal" />
-    <ActionModalWarning ref="warningCleanCartModal" @confirmed="clearCart" />
-    <ActionModalWarning ref="warningInvalidCartModal" @confirmed="deleteInvalidItems" />
-    <ActionModalError ref="errorCartModal" />
+        <ActionModalConfirm ref="confirmCartModal" />
+        <ActionModalWarning ref="warningCleanCartModal" @confirmed="clearCart" />
+        <ActionModalWarning ref="warningInvalidCartModal" @confirmed="deleteInvalidItems" />
+        <ActionModalError ref="errorCartModal" />
+    </template>
+    <template v-else>
+        <h1 class="display-4 text-center mb-4"><strong>403 Forbidden</strong></h1>
+        <h3 class="text-center mb-4">No es un usuario registrado <br /><a href="/">Regresar</a></h3>
+    </template>
 </template>
 
 <script>
@@ -122,6 +136,7 @@
                 selectedProducts: [],
                 invalidProducts: [],
                 userID: 0,
+                hasProducts: false,
             };
         },
         methods: {
@@ -129,6 +144,9 @@
                 axios.get(`${BackendUrl}/ShoppingCart/${this.userID}`)
                     .then((response) => {
                         this.cartProducts = response.data;
+                        if (this.cartProducts[0]) {
+                            this.hasProducts = true;
+                        }
                     })
                     .catch((error) => {
                         this.$refs.errorCartModal.openModal("Error al cargar el carrito", error);
@@ -191,27 +209,27 @@
             },
             VerifyCartItems() {
                 axios.get(`${BackendUrl}/ShoppingCart/${this.userID}/Verify`)
-                .then((response) => {
-                    this.invalidItems = response.data;
-                    if (this.invalidItems.length > 0) {
-                        this.$refs.warningInvalidCartModal.openModal("Se han detectado items invalidos (Exceden el stock disponible) ¿Desea eliminarlos del carrito?");
-                    } else {
-                        this.$refs.confirmCartModal.openModal("Su carrito es valido, se puede procesar la compra");
-                    }
-                })
-                .catch((error) => {
-                    this.$refs.errorCartModal.openModal("Error al verificar los productos del carrito", error);
-                });
+                    .then((response) => {
+                        this.invalidItems = response.data;
+                        if (this.invalidItems.length > 0) {
+                            this.$refs.warningInvalidCartModal.openModal("Se han detectado items invalidos (Exceden el stock disponible) ¿Desea eliminarlos del carrito?");
+                        } else {
+                            this.$refs.confirmCartModal.openModal("Su carrito es valido, se puede procesar la compra");
+                        }
+                    })
+                    .catch((error) => {
+                        this.$refs.errorCartModal.openModal("Error al verificar los productos del carrito", error);
+                    });
 
-                
+
             },
             deleteInvalidItems() {
                 axios.delete(`${BackendUrl}/ShoppingCart/${this.userID}/DeleteInvalidProducts`, {
-                        data: this.invalidItems
-                    }).then(() => {
-                        this.$refs.confirmCartModal.openModal("Se han eliminado los elementos invalidos del carrito");
-                        this.getUserCart();
-                    })
+                    data: this.invalidItems
+                }).then(() => {
+                    this.$refs.confirmCartModal.openModal("Se han eliminado los elementos invalidos del carrito");
+                    this.getUserCart();
+                })
                     .catch((error) => {
                         this.$refs.errorCartModal.openModal("Error al eliminar los elementos invalidos del carrito", error);
                     });
@@ -234,6 +252,16 @@
         mounted() {
             this.userID = this.getUserId();
             this.getUserCart();
+        },
+        props: {
+            isAdmin: {
+                type: Boolean,
+                required: true,
+            },
+            isClient: {
+                type: Boolean,
+                required: true,
+            },
         },
     };
 </script>
