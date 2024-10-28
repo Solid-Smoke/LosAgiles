@@ -22,9 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Interfaces\" />
     <Folder Include="Application\Commands\" />
-    <Folder Include="Application\Queries\" />
+    <Folder Include="Application\Interfaces\" />
   </ItemGroup>
 
 </Project>

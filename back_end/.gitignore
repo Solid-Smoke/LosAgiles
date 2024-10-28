@@ -1,5 +1,7 @@
 efpt.config.json
 efpt.config.json.user
+*.cd
+*.dgml
 
 obj/
 
