@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Application\Commands\" />
+    <Folder Include="Application\Interfaces\" />
   </ItemGroup>
 
 </Project>
