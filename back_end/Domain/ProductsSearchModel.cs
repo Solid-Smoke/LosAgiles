@@ -2,7 +2,8 @@
 
 public partial class ProductsSearchModel
 {
-    public int ProductId { get; set; }
+    public int ProductID { get; set; }
+
     public string Name { get; set; }
 
     public string Description { get; set; }
@@ -13,5 +14,5 @@ public partial class ProductsSearchModel
 
     public byte[] ProductImage { get; set; }
 
-    public string? ProductImageInBase64 { get; set; }
+    public string? ProductImageBase64 { get; set; }
 }
