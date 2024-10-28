@@ -1,6 +1,6 @@
 <template>
     <MainNavbar />
-    <b-row class="font-weight-bold text-center mb-2 border-bottom border-2 border-dark">
+    <b-row v-if="isClient" class="font-weight-bold text-center mb-2 border-bottom border-2 border-dark">
         <b-col>   
             <div class="cart-container">
                 <h2 class="display-4 text-center mb-4"><strong>Productos a ordenar</strong></h2>
@@ -60,6 +60,7 @@
             </div>
         </b-col>
     </b-row>
+    <h4 style="margin: 10%; text-align: center;" v-else>Solo los clientes registrados pueden crear órdenes</h4>
 </template>
 
 <script>
@@ -72,6 +73,16 @@
     const IVATax = 0.13;
 
     export default {
+        props: {
+            isAdmin: {
+                type: Boolean,
+                required: true,
+            },
+            isClient: {
+                type: Boolean,
+                required: true,
+            },
+        },
         components: {
             MainNavbar,
             MapPointSelector,
