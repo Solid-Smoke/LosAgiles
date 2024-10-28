@@ -158,7 +158,12 @@
                 return Number(user[0].userID);
             },
             checkout() {
-                this.VerifyCartItems();
+                if(this.cartProducts.length > 0) {
+                    this.VerifyCartItems();
+                } else {
+                    this.$refs.errorCartModal.openModal("No se puede realizar la compra de este carrito", "Carrito Vacio");
+                }
+                
             },
             openCleanCartWarningModal() {
                 this.$refs.warningCleanCartModal.openModal("¿Estás seguro de que deseas vaciar el carrito? (Esta accion es irreversible)");

@@ -45,11 +45,15 @@
   import MainNavbar from './MainNavbar.vue';
   import ActionModalConfirm from './ActionModalConfirm.vue';
   import ActionModalError from './ActionModalError.vue';
+  import ActionModalWarning from './ActionModalWarning.vue';
   import axios from 'axios';
   
   export default {
     components: {
       MainNavbar,
+      ActionModalConfirm,
+      ActionModalWarning,
+      ActionModalError,
     },
     data() {
       return {
@@ -80,14 +84,17 @@
       addToShoppingCart() {
         const user = JSON.parse(localStorage.getItem('user'));
         const id = Number(user[0].userID);
-        axios
-          .post(`${BackendUrl}/ShoppingCart/${id}`, this.product.productID, this.quantity)
-          .then(() => {
-
-          })
-          .catch((error) => {
-
-          },
+          axios
+              .post(`${BackendUrl}/ShoppingCart/${id}`, {
+                  productId: this.product.productID,
+                  amount: this.quantity
+              })
+              .then(() => {
+                  this.$refs.confirmProductModal.openModal("Se ha añadido el producto al carrito de forma exitosa");
+              })
+              .catch((error) => {
+                  this.$refs.errorProductModal.openModal("Error al añadir el producto al carrito", error);
+              });
       },
       closeCart() {
         this.$router.push({ name: 'Home' });

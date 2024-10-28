@@ -12,9 +12,9 @@ namespace back_end.Application.Commands
             _shoppingCartHandler = shoppingCartHandler;
         }
 
-        public bool Execute(string clientId, string productId, int amount)
+        public bool Execute(string clientId, ShoppingCartItemModel newItem)
         {
-            return _shoppingCartHandler.AddCartItem(clientId, productId, amount);
+            return _shoppingCartHandler.AddCartItem(clientId, newItem);
         }
     }
 }

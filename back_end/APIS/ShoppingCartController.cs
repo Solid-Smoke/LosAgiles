@@ -12,7 +12,7 @@ namespace back_end.APIS
         public ShoppingCartController() { }
 
         [HttpGet("{id}")]
-        public ActionResult<List<ShoppingCartItemModel>> getUserCart(
+        public ActionResult<List<ShoppingCartItemDataModel>> getUserCart(
             string id,
             [FromServices] GetUserShoppingCart getUserShoppingCartQuery)
         {
@@ -23,11 +23,10 @@ namespace back_end.APIS
         [HttpPost("{id}")]
         public IActionResult AddItemToCart(
             string id,
-            string productId,
-            int amount,
+            [FromBody] ShoppingCartItemModel item,
             [FromServices] AddItemToShoppingCart addItemToShoppingCartCommand)
         {
-            var wasAdded = addItemToShoppingCartCommand.Execute(id, productId, amount);
+            var wasAdded = addItemToShoppingCartCommand.Execute(id, item);
 
             if (wasAdded)
             {
@@ -57,7 +56,7 @@ namespace back_end.APIS
         }
 
         [HttpGet("{id}/Verify")]
-        public ActionResult<List<ShoppingCartItemModel>> validateUserCartQuantities(
+        public ActionResult<List<ShoppingCartItemDataModel>> validateUserCartQuantities(
             string id,
             [FromServices] GetShoppingCartInvalidItems userCartInvalidCart)
         {
@@ -69,7 +68,7 @@ namespace back_end.APIS
         [HttpDelete("{id}/DeleteInvalidProducts")]
         public IActionResult deleteCartItems(
             string id,
-            [FromBody] List<ShoppingCartItemModel> itemsToDelete,
+            [FromBody] List<ShoppingCartItemDataModel> itemsToDelete,
             [FromServices] DeleteInvalidProductsFromUserCart deleteItemsFromUserCartCommand)
         {
             deleteItemsFromUserCartCommand.Execute(id, itemsToDelete);
