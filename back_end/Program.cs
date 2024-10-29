@@ -1,7 +1,8 @@
-using back_end.Application.Queries;
-using back_end.Application.Interfaces;
-using back_end.Infrastructure.Repositories;
 using back_end.Application.Commands;
+using back_end.Application.interfaces;
+using back_end.Application.Interfaces;
+using back_end.Application.Queries;
+using back_end.Infrastructure.Repositories;
 using System.Data.SqlClient;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -29,12 +30,19 @@ builder.Services.AddScoped<IProductQuery, ProductQuery>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Shopping Cart Dependencies
+//Business Dependencies
 builder.Services.AddScoped<DeleteInvalidProductsFromUserCart>();
 builder.Services.AddScoped<GetShoppingCartInvalidItems>();
 builder.Services.AddScoped<AddItemToShoppingCart>();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
+builder.Services.AddScoped<IBusinessHandler, BusinessHandler>();
+
+//Shopping Cart Dependencies
+builder.Services.AddScoped<GetBusinessByEmployeeID>();
+builder.Services.AddScoped<GetBusinessAddressByBusinessID>();
+builder.Services.AddScoped<GetAllBusiness>();
+builder.Services.AddScoped<InsertNewBusiness>();
 builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
 builder.Services.AddScoped<GetPendingOrders>();
 builder.Services.AddScoped<GetProductsByOrderID>();

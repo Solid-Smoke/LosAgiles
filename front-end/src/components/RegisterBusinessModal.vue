@@ -106,6 +106,7 @@
 </template>
 
 <script>
+    import { BackendUrl } from '@/main';
     import axios from "axios";
     export default {
         
@@ -129,7 +130,7 @@
             },
             saveBusinessData() {
                 axios
-                    .post("https://localhost:7168/api/NewBusiness", {
+                    .post(`${BackendUrl}/NewBusiness`, {
                         userid: this.getUserId(),
                         businessid: 0,
                         name: this.businessData.businessName,
