@@ -2,6 +2,7 @@
     <MainNavbar />
     <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
 
+
     <b-container fluid class="px-5">
         <b-row class="justify-content-center">
             <b-col lg="10" md="9">
@@ -57,6 +58,8 @@ export default {
                 .get(`${BackendUrl}/Products/GetAllProducts`)
                 .then((response) => {
                     this.products = response.data;
+                    this.isSearchActive = false; 
+                    this.currentPage = 1;
                 })
                 .catch((error) => {
                     console.error('Error obteniendo productos:', error);
