@@ -71,7 +71,6 @@ export default {
                 postalCode: "",
                 otherSigns: "",
             },
-            // This 2 values will change, just setted initial value.
             provinceIndex: "1",
             cantonIndex: "1",
             provinces,
