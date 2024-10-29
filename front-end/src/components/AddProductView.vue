@@ -3,9 +3,9 @@
         <form @submit.prevent="saveProductDetails">
             <div class="form-group">
                 <label for="isPerishable" class="form-label">¿Es perecedero?</label><br>
-                <input style="padding: 5px;" type="radio" id="isPerishable-yes" value="true" v-model="formData.isPerishable">
+                <input style="padding: 5px;" type="radio" id="isPerishable-yes" :value="true" v-model="formData.isPerishable">
                 <label style="margin-left: 5px;" for="isPerishable-yes">Sí</label><br>
-                <input style="padding: 5px;" type="radio" id="isPerishable-no" value="false" v-model="formData.isPerishable">
+                <input style="padding: 5px;" type="radio" id="isPerishable-no" :value="false" v-model="formData.isPerishable">
                 <label style="margin-left: 5px;" for="isPerishable-no">No</label>
             </div>
 
@@ -38,13 +38,13 @@
                 <small class="text-muted">El precio debe ser mayor a cero y no puede exceder 5 millones.</small>
             </div>
 
-            <div class="form-group" v-if="formData.isPerishable === 'false'">
+            <div class="form-group" v-if="formData.isPerishable === false">
                 <label for="stock" class="form-label">Cantidad</label>
                 <input v-model="formData.stock" type="number" class="form-control" id="stock" min="1" max="100" required>
                 <small class="text-muted">Cantidad entre 1 y 100.</small>
             </div>
 
-            <div class="form-group" v-if="formData.isPerishable === 'true'">
+            <div class="form-group" v-if="formData.isPerishable === true">
                 <label for="dailyAmount" class="form-label">Cantidad diaria</label>
                 <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="1" max="100" required @input="syncStockWithDailyAmount">
                 <small class="text-muted">Cantidad diaria entre 1 y 100.</small>
@@ -56,7 +56,7 @@
                 <small class="text-muted">Máximo 3 decimales</small>
             </div>
 
-            <div v-if="formData.isPerishable === 'true'" class="form-group">
+            <div v-if="formData.isPerishable === true" class="form-group">
                 <label class="form-label">Días Disponibles</label>
                 <div>
                     <div v-for="day in daysOfWeek" :key="day.value" class="form-check form-check-inline">
@@ -152,7 +152,7 @@ export default {
             this.formData.stock = this.formData.dailyAmount;
         },
         saveProductDetails() {
-            if (this.formData.isPerishable === 'true' && this.formData.stock > this.formData.dailyAmount) {
+            if (this.formData.isPerishable && this.formData.stock > this.formData.dailyAmount) {
                 this.showErrorModal("El stock no puede ser mayor que la cantidad diaria para un producto perecedero.");
                 return;
             }
@@ -163,8 +163,8 @@ export default {
             formData.append("price", this.formData.price);
             formData.append("stock", this.formData.stock);
             formData.append("weight", this.formData.weight);
-            formData.append("isPerishable", this.formData.isPerishable === 'true');
-            if (this.formData.isPerishable === 'true') {
+            formData.append("isPerishable", this.formData.isPerishable);
+            if (this.formData.isPerishable) {
                 formData.append("dailyAmount", this.formData.dailyAmount);
                 formData.append("daysAvailable", this.selectedDays.join(""));
             } else {
