@@ -9,7 +9,7 @@
                     <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
                         <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
                             <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 250px; height: 250px;"/>
-                            <b-card-text class="product-description">{{ truncateDescription(product.description, 165) }}</b-card-text>
+                            <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
                             <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
                         </b-card>
                     </b-col>
