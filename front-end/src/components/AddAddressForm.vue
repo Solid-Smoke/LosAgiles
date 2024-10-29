@@ -14,7 +14,6 @@
                         </option>
                     </select>
                 </div>
-                <!-- Cantons will be displayed according to the province selected or San José cantons by default-->
                 <div class="form-group">
                     <label for="canton">Cantón</label>
                     <select v-model="formData.canton" @change='cantonIndex = $event.target.selectedIndex.toString()' id="canton"
@@ -23,7 +22,6 @@
                         <option v-for='(canton, index) of provinces.provinces[provinceIndex].cantons' :key="index">{{ canton.name }}</option>
                     </select>
                 </div>
-                <!-- District will be displayed according to the canton selected or Carmen districts by default-->
                 <div class="form-group">
                     <label for="district">Distrito</label>
                     <select v-model="formData.district" id="district" required class="form-control">
@@ -58,8 +56,6 @@ import axios from "axios";
 import provinces from "../assets/provinces_data.json";
 import { BackendAPIAddress } from "@/main";
 export default {
-    //parent_route is what route will be sended the user interface after submitting the form,
-    // if no prop is passed, will be "/" by default.
     props: {
         parentRoute: String,
         userId: Number,
@@ -78,7 +74,7 @@ export default {
             // This 2 values will change, just setted initial value.
             provinceIndex: "1",
             cantonIndex: "1",
-            provinces, //data for province, in a .json in assets folder
+            provinces,
         };
 
     },
