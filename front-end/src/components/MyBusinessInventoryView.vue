@@ -1,5 +1,10 @@
 <template>
-    <MainNavbar />
+    <template v-if="isClient">
+        <MainNavbar />
+    </template>
+    <template v-if="isAdmin">
+        <AdminNavbar />
+    </template>
     <h1 class="display-4 text-center mb-4"><strong>Inventario</strong></h1>
     <div class="table-responsive-sm">
         <table class="table-custom table-striped">
@@ -29,12 +34,14 @@
 
 <script>
     import MainNavbar from './MainNavbar.vue';
+    import AdminNavbar from './AdminNavbar.vue';
     import { BackendUrl } from '../main.js';
     import axios from "axios";
 
     export default {
         components: {
-            MainNavbar
+            MainNavbar,
+            AdminNavbar
         },
         data() {
             return {
@@ -83,7 +90,17 @@
         created() {
             this.currentBusinessId = this.$route.query.businessID;
             this.getBusinessInventory();
-        }
+        },
+        props: {
+            isAdmin: {
+                type: Boolean,
+                required: true,
+            },
+            isClient: {
+                type: Boolean,
+                required: true,
+            },
+        },
     };
 </script>
 
