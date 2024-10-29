@@ -2,8 +2,8 @@
     <AdminNavbar />
     <h1 class="display-4 text-center mb-4"><strong>Emprendimientos Registrados</strong></h1>
     <div class="table-responsive-sm">
-        <table class="table table-striped table-hover">
-            <thead>
+        <table class="table-custom table-striped">
+            <thead class="table-header">
                 <tr>
                     <th scope="col">Nombre</th>
                     <th scope="col">Cédula Asociada</th>
@@ -15,17 +15,17 @@
             </thead>
             <tbody>
                 <tr v-for="business in businesses" :key="business.businessID">
-                    <td>{{ business.name }}</td>
-                    <td>{{ business.idNumber }}</td>
-                    <td>
-                        <button v-on:click="showContactInfo(business)" class="btn btn-primary">Ver Contacto</button>
+                    <td class="table-cell">{{ business.name }}</td>
+                    <td class="table-cell">{{ business.idNumber }}</td>
+                    <td class="table-cell-button">
+                        <button v-on:click="showContactInfo(business)" class="btn-op-close">Ver Contacto</button>
                     </td>
-                    <td>{{ business.permissions }}</td>
-                    <td>
-                        <button v-on:click="showLocation(business)" class="btn btn-success">Ver Ubicación</button>
+                    <td class="table-cell">{{ business.permissions }}</td>
+                    <td class="table-cell-button">
+                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicación</button>
                     </td>
-                    <td>
-                        <button v-on:click="viewInventory(business)" class="btn btn-info">Inventario</button>
+                    <td class="table-cell-button">
+                        <a @click="viewInventory(business)" class="link-blue">Inventario</a>
                     </td>
                 </tr>
             </tbody>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+    import { BackendUrl } from '../main.js';
     import AdminNavbar from './AdminNavbar.vue';
     import axios from "axios";
 
@@ -68,10 +69,9 @@
         },
         methods: {
             getUserBusiness() {
-                axios.get("https://localhost:7168/api/AllBusinessData").
+                axios.get(`${BackendUrl}/Business`).
                     then((response) => {
                         this.businesses = response.data;
-                        console.log(this.businesses);
                     }
                 );
             },
@@ -82,9 +82,7 @@
             },
             async loadLocation(business) {
                 try {
-                    const response = await axios.get("https://localhost:7168/api/BusinesessAddresessByBusinessID", {
-                        params: { BusinessID: business.businessID },
-                    });
+                    const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
                     this.address = response.data[0];
                 } catch (error) {
                     console.error("Error al cargar la ubicación: ", error);
@@ -106,11 +104,6 @@
                     name: 'userBusinessInventory',
                     query: {
                         businessID: business.businessID,
-                        name: business.name,
-                        idNumber: business.idNumber,
-                        email: business.email,
-                        telephone: business.telephone,
-                        permissions: business.permissions,
                     },
                 });
             },

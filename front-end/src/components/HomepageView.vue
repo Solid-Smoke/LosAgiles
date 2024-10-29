@@ -2,13 +2,8 @@
     <template v-if="isClient"><MainNavbar /></template>
     <template v-if="isAdmin"><AdminNavbar /></template>
     <template v-if="!isClient && !isAdmin"><UnregisteredNavbar /></template>
-    <SearchBar 
-        :startSearchIndex="startSearchIndex" 
-        :maxResults="productsPerPage"
-        @search-made="isSearchActive = true; currentPage = 1;"
-        @products-retrieved="updateProducts"
-        @products-counted="(count) => searchResultsCount = count"
-        id="searchbar" />
+    <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
+
 
     <b-container fluid class="px-5">
         <b-row class="justify-content-center">
@@ -17,9 +12,8 @@
                     <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
                         <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
                             <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 250px; height: 250px;"/>
-                            <b-card-text class="product-description">{{ truncateDescription(product.description, 165) }}</b-card-text>
+                            <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
                             <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
-                            <b-button variant="primary">Añadir al Carrito</b-button>
                         </b-card>
                     </b-col>
                 </b-row>
@@ -70,6 +64,8 @@ export default {
                 .get(`${BackendUrl}/Products/GetAllProducts`)
                 .then((response) => {
                     this.products = response.data;
+                    this.isSearchActive = false; 
+                    this.currentPage = 1;
                 })
                 .catch((error) => {
                     console.error('Error obteniendo productos:', error);
@@ -135,5 +131,10 @@ export default {
     transform: translateY(-5px) scale(1.03);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border: 1px solid #007bff;
+}
+
+.product-description {
+    min-height: 95px;
+    text-align: justify;
 }
 </style>

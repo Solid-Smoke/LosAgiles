@@ -4,7 +4,7 @@
              title=""
              content-class="modal-content-warning">
         <div class="modal-title">
-            Accion realizada con exito
+            Información
         </div>
         <div class="modal-body">
             <p>{{ message }}</p>

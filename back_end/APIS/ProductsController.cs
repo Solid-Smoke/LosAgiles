@@ -1,7 +1,7 @@
 using back_end.Application.Commands;
+using back_end.Application.Interfaces;
 using back_end.Application.Queries;
 using back_end.Domain;
-using back_end.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -27,7 +27,7 @@ namespace back_end.APIS
                 var result = await _productCommand.createProduct(product, Request);
                 return new JsonResult(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creando producto.");
             }
@@ -41,15 +41,14 @@ namespace back_end.APIS
                 var products = productQuery.getAllProducts();
                 return new JsonResult(products);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos.");
             }
         }
 
         [HttpGet]
-        public async
-            Task<ActionResult<List<ProductsSearchModel>>> searchProducts(
+        public async Task<ActionResult<List<ProductsSearchModel>>> searchProducts(
             int startIndex, int maxResults, string? searchText)
         {
             return productQuery.
@@ -57,8 +56,7 @@ namespace back_end.APIS
         }
 
         [HttpGet("CountProductsBySearch")]
-        public async
-            Task<ActionResult<int>> countProductsBySearch(string? searchText)
+        public async Task<ActionResult<int>> countProductsBySearch(string? searchText)
         {
             return productQuery.countProductsBySearch(searchText);
         }
@@ -76,9 +74,28 @@ namespace back_end.APIS
 
                 return new JsonResult(product);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo producto.");
+            }
+        }
+
+        [HttpGet("Business/{businessID}")]
+        public ActionResult<List<ProductModel>> GetProductsByBusinessID(string businessID)
+        {
+            try
+            {
+                var products = productQuery.GetProductsByBusinessID(businessID);
+                if (products == null || products.Count == 0)
+                {
+                    return NotFound("No se encontraron productos para el Business ID especificado.");
+                }
+
+                return new JsonResult(products);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos por Business ID.");
             }
         }
     }
