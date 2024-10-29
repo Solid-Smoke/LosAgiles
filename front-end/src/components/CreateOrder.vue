@@ -191,7 +191,7 @@
             totalOrderWeight() {
                 let totalWeight = 0;
                 for(let i = 0; i < this.cartProducts.length; i++) {
-                    totalWeight += this.cartProducts[i].weight; 
+                    totalWeight += this.cartProducts[i].weight * this.cartProducts[i].amount; 
                 }
                 return totalWeight;
             },
