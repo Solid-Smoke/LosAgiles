@@ -196,7 +196,7 @@
                 return totalWeight;
             },
             deliveryCost() {
-                const MetropolitanRadioInKilometers = 70;
+                const MetropolitanRadioInKilometers = 60;
                 const MetropolitanFirstKilogramDeliveryCost = 1700;
                 const NonMetropolitanFirstKilogramDeliveryCost = 2350;
                 const AdditionalKilogramCost = 1000;
