@@ -31,7 +31,7 @@ namespace back_end.Infrastructure.Repositories {
             sqlConnection.Execute("BEGIN TRAN");
             try
             {
-                int? orderID = insertInOrders(orderData.ClientID, orderData.DeliveryAddress);
+                int? orderID = insertInOrders(orderData.ClientID, orderData.DeliveryAddress, orderData.DeliveryDate);
                 if (orderID == null)
                     throw new Exception("Inserted OrderID is null");
                 Console.WriteLine("Inserted orderID in transaction: " + orderID);
@@ -67,14 +67,14 @@ namespace back_end.Infrastructure.Repositories {
             return sqlConnection.Execute("INSERT INTO OrderProducts (ProductId, OrderID, Amount) VALUES (@ProductId, @orderID, @Ammount)", insertList) > 0;
         }
 
-        private int insertInOrders(int? clientID, ClientsAddress deliveryAddress)
+        private int insertInOrders(int? clientID, ClientsAddress deliveryAddress, string deliveryDate)
         {
-
+            
             return sqlConnection.QuerySingle<int>(
-                "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress)\r\n" +
+                "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate)\r\n" +
                 "OUTPUT INSERTED.OrderID\r\n" +
-                "VALUES (getdate(), @clientID, @deliveryAddressID)",
-                new { clientID, deliveryAddressID = deliveryAddress.AddressID }
+                "VALUES (getdate(), @clientID, @deliveryAddressID, @deliveryDate)",
+                new { clientID, deliveryAddressID = deliveryAddress.AddressID, deliveryDate }
             );
         }
 

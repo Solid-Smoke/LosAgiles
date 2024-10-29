@@ -38,6 +38,12 @@
                     @delivery-distance-kilometers="(kilometers) => setDeliveryDistanceKilometers(kilometers)"
                     @empty-address-list="this.addressListIsEmpty = true"
                     @no-empty-address-list="this.addressListIsEmpty = false"/>
+                <div style="margin: 10px">
+                    <label for="date-selector"><strong style="font-size: 20px;">Seleccione fecha de entrega</strong></label>
+                </div>
+                <div style="margin: 10px">
+                    <input v-model="selectedDeliveryDate" type="date" name="date-selector" id="order-date-selector">
+                </div>
                 <strong>Subtotal: ₡{{ totalPrice }}</strong>
                 <br>
                 <strong>Costo de envío: ₡{{deliveryCost}}</strong>
@@ -97,7 +103,8 @@
                 orderAddressSelected: {},
                 deliveryDistanceKilometers: 0,
                 showPaymentModal: false,
-                addressListIsEmpty: true
+                addressListIsEmpty: true,
+                selectedDeliveryDate: null
             }
         },
         methods: {
@@ -105,11 +112,13 @@
                 if(Object.keys(this.orderAddressSelected).length == 0)
                     alert("Error, debe seleccionar una dirección de entrega en el dropdown azul y en el mapa");
                 else if(this.cartProducts.length == 0)
-                    {
-                        alert("Error, debe agregar productos al carrito para realizar una orden." +
-                            " Haga click en el botón Aceptar para volver a la página principal");
-                        window.location.href='/';
-                    }
+                {
+                    alert("Error, debe agregar productos al carrito para realizar una orden." +
+                        " Haga click en el botón Aceptar para volver a la página principal");
+                    window.location.href='/';
+                }
+                else if (this.selectedDeliveryDate == null)
+                    alert("Error, debe seleccionar una fecha de entrega para proceder con el pedido")
                 else
                     this.showPaymentModal = true;
             },
@@ -142,7 +151,8 @@
                         {
                             productID: this.cartProducts[i].productID,
                             businessID: this.cartProducts[i].businessID,
-                            ammount: this.cartProducts[i].amount
+                            ammount: this.cartProducts[i].amount,
+                            deliveryDate: this.selectedDeliveryDate
                         }
                     );
                 }
@@ -150,11 +160,14 @@
                     .post(BackendUrl + "/Order", {
                         clientID: this.userID,
                         deliveryAddress: this.orderAddressSelected,
-                        products: orderProducts
+                        products: orderProducts,
+                        deliveryDate: this.selectedDeliveryDate
                     })
                     .then(() => this.clearCart())
                     .catch(function (error) {
                         console.log(error);
+                        alert("No se pudo realizar la orden por un error en el servidor");
+                        window.location.href = "/Orden"
                     });
             },
             clearCart() {

@@ -26,7 +26,7 @@ namespace back_end.Application.Commands
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return false;
+                throw ex;
             }
         }
     }
