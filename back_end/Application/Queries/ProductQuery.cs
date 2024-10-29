@@ -44,7 +44,7 @@ namespace back_end.Application.Queries
                 maxResults);
             foreach (var product in products)
                 if (product.ProductImage != null)
-                    product.ProductImageBase64 = Convert.ToBase64String(
+                    product.ProductImageInBase64 = Convert.ToBase64String(
                     product.ProductImage);
             return products;
         }

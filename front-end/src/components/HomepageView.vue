@@ -10,8 +10,14 @@
         id="searchbar" />
 
     <b-container fluid class="px-5">
-        <b-row class="justify-content-center">
-            <b-col lg="10" md="9">
+        <b-row style>
+            <b-col>
+                <div v-if="products.length == 0" class="container mt-1">
+                    <h6 class="text-center">
+                    <br><br><br><br>
+                    <strong>No se encontraron productos</strong>
+                    </h6>
+                </div>
                 <b-row>
                     <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
                         <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
@@ -21,42 +27,37 @@
                         </b-card>
                     </b-col>
                 </b-row>
-
-                <p v-if="paginatedProducts.length === 0" class="text-center mt-4"><strong>No hay productos disponibles.</strong></p>
-
-                <b-pagination v-model="currentPage" :total-rows="isSearchActive ? searchResultsCount : products.length" :per-page="productsPerPage" align="center" class="mt-3"  @change="onPageChange"></b-pagination>
             </b-col>
         </b-row>
     </b-container>
+    <div style="display: flex; justify-content: flex-end;">
+        <b-button-group style="float: right; margin-bottom: 10%; margin-right: 5%">
+            <span>
+                {{ actualResultsPage + 1 }}/{{ totalPagesBySearch }}
+            </span>
+            <b-button variant="success" style="font-size: 1.25rem;" @click="actualResultsPage = 0;">Inicio</b-button>
+            <b-button variant="primary" style="font-size: 1.25rem;" @click="goPreviousPage">◄ Anterior</b-button>
+            <b-button variant="primary" style="font-size: 1.25rem;" @click="goNextPage">Siguiente ►</b-button>
+        </b-button-group>
+    </div>
 </template>
 
 <script>
-import { BackendUrl } from '@/main';
 import MainNavbar from './MainNavbar.vue';
-import axios from 'axios';
 import SearchBar from './SearchBar.vue';
 
 export default {
     components: {
         MainNavbar,
-        SearchBar,
+        SearchBar
     },
     data() {
         return {
             products: [],
-            currentPage: 1,
-            productsPerPage: 8,
-            startSearchIndex: 0,
-            searchResultsCount: 0,
-            isSearchActive: false,
+            maxSearchResultsPerPage: 16,
+            actualResultsPage: 0,
+            searchResultsCount: 0
         };
-    },
-    computed: {
-        paginatedProducts() {
-            const start = (this.currentPage - 1) * this.productsPerPage;
-            const end = start + this.productsPerPage;
-            return this.products.slice(start, end);
-        },
     },
     methods: {
         getProducts() {
@@ -94,7 +95,7 @@ export default {
         onPageChange(page) {
             this.currentPage = page;
         },
-    },
+    },  
     mounted() {
         this.getProducts();
     },

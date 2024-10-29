@@ -1,15 +1,21 @@
 <template>
     <b-nav-form>
-        <b-form-input placeholder="Buscar producto, categoría o empresa..." v-model="searchText" :state="inputIsValid" aria-describedby="input-live-feedback" />
-
-        <b-button size="sm" class="my-2 my-sm-0" type="submit" @click="onSearchClick" >Buscar</b-button>
-       
-        <b-form-invalid-feedback id="input-live-feedback" style="background-color: white;" >
-            El texto tiene más de {{ maxLenghtSearchText }} caracteres o se
-            ingresó algún caracter especial no permitido. Caracteres especiales
+        <b-form-input
+            placeholder="Buscar producto, categoría o empresa..."
+            v-model="searchText" :state="inputIsValid"
+            aria-describedby="input-live-feedback"/>
+        <b-button size="sm" class="my-2 my-sm-0" type="submit" 
+            @click="searchProducts(this.startSearchIndex,
+                this.maxResults, this.searchText)">Buscar</b-button>
+    
+        <b-form-invalid-feedback id="input-live-feedback"
+        style="background-color: white;">
+            El texto tiene más de {{ maxLenghtSearchText }} caracteres
+            o se ingresó algún caracter especial no permitido. Caracteres especiales
             permitidos: {{ allowedSpecialCharacters }}
         </b-form-invalid-feedback>
     </b-nav-form>
+    
 </template>
 
 <script>
@@ -62,41 +68,39 @@ export default {
                         params: {
                             startIndex,
                             maxResults,
-                            searchText: searchText.trim() || "",
-                        },
-                    })
-                    .then((response) => {
-                        this.products = response.data.map((product) => ({
-                            ...product,
-                            productID: product.productID,
-                        }));
-
-                        this.$emit("productsRetrieved", this.products);
-                        this.countProductsBySearch(searchText);
-                    })
-                    .catch((error) => {
-                        console.error("Error en la búsqueda de productos:", error);
+                            searchText: searchText.trim()
+                        }})
+                    .then(
+                        (response) => {
+                            this.countProductsBySearch(this.searchText);
+                            this.products = response.data;
+                            this.$emit('productsRetreived', this.products);
+                        })
+                    .catch(function (error) {
+                        console.log(error);
                     });
-            }
-        },
-        countProductsBySearch(searchText) {
-            axios
-                .get(`${BackendUrl}/Products/CountProductsBySearch`, {
-                    params: { searchText: searchText.trim() || "" },
-                })
-                .then((response) => {
-                    this.$emit("productsCounted", response.data);
-                })
-                .catch((error) => {
-                    console.error("Error contando productos:", error);
+                }
+            },
+            countProductsBySearch(searchText) {
+                axios
+                .get(BackendUrl +
+                    "/Products/CountProductsBySearch",
+                    {params: {searchText}})
+                .then(
+                    (response) => {
+                        this.$emit('productsCounted', response.data);
+                    })
+                .catch(function (error) {
+                    console.log(error);
                 });
+            },
         },
-    },
-    mounted() {
-        this.searchProducts(0, this.maxResults, "");
-    },
-};
+        mounted() {
+            this.searchProducts(0, this.maxResults, "");
+        }
+    }
 </script>
 
 <style scoped>
+
 </style>

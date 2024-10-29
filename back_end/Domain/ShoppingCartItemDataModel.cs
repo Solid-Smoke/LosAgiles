@@ -1,6 +1,6 @@
 ﻿namespace back_end.Domain
 {
-    public class ShoppingCartItemModel
+    public class ShoppingCartItemDataModel
     {
         public int ProductID { get; set; }
         public string? ProductName { get; set; }
