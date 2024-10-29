@@ -6,6 +6,7 @@
         @search-made="isSearchActive = true; currentPage = 1;"
         @products-retrieved="updateProducts"
         @products-counted="(count) => searchResultsCount = count"
+        @resetSearch="getProducts"
         id="searchbar" />
 
     <b-container fluid class="px-5">
@@ -64,6 +65,8 @@ export default {
                 .get(`${BackendUrl}/Products/GetAllProducts`)
                 .then((response) => {
                     this.products = response.data;
+                    this.isSearchActive = false; 
+                    this.currentPage = 1;
                 })
                 .catch((error) => {
                     console.error('Error obteniendo productos:', error);
