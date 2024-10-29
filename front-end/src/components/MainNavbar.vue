@@ -63,7 +63,11 @@
             getUserName() {
                 const user = JSON.parse(localStorage.getItem('user'));
                 return user[0].userName;
-            }
+            },
+            logout() {
+                localStorage.removeItem('user');
+                window.location.href = "/";
+            },
         },
         created() {
             this.userName = this.getUserName();
