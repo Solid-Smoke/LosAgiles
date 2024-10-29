@@ -215,6 +215,7 @@
                             this.$refs.warningInvalidCartModal.openModal("Se han detectado items invalidos (Exceden el stock disponible) ¿Desea eliminarlos del carrito?");
                         } else {
                             this.$refs.confirmCartModal.openModal("Su carrito es valido, se puede procesar la compra");
+                            this.$router.push({ name: 'Orden' });
                         }
                     })
                     .catch((error) => {

@@ -5,19 +5,32 @@
             <div id="mapContainer" :style="mapVisibilizationStyle">
                 <div id="map"></div>
             </div>
-            <div style="display: flex; justify-content: center; margin-top: 10px;">
-                <button type="submit" class="btn btn-success btn-block" v-if="mapIsShown" @click="emitCoordinates">
-                    Confirmar ubicación de entrega
-                </button>
-                <button v-if="!mapIsShown" @click="showMap" class="btn btn-success btn-block">
-                    Elegir ubicación de entrega
+            <b-dropdown id="dropdown-dropleft" dropleft text="Seleccionar una de mis direcciones de entrega"
+                variant="primary" class="m-2">
+                <b-dropdown-item href="#" @click="selectAddress(address);"  v-for="(address, index) of addresses" :key="index">
+                    {{ address.province }},
+                    {{ address.canton }},
+                    {{ address.district }},
+                    <p>{{ address.otherSigns }}</p>
+                </b-dropdown-item>
+                <b-button @click="this.$refs.addAddressForm.openModal();" variant="success">Agregar dirección</b-button>
+            </b-dropdown>
+            <div style="display: flex; justify-content: center; margin-top: 0px;">
+                <button type="submit" class="btn btn-op-close btn-block" v-if="mapIsShown" @click="emitCoordinatesAndDistance">
+                    Confirmar ubicación exacta de entrega
                 </button>
             </div>
         </div>
     </div>
+    <AddAddressForm parentRoute="/Orden" ref="addAddressForm" :userId="this.userId" />
 </template>
 <script>
 import { LosAgilesMapsApiKey } from '@/main';
+import { BackendAPIAddress } from '@/main';
+import axios from 'axios';
+import AddAddressForm from './AddAddressForm.vue';
+
+const DeliveryStationCoordinates = [9.934257476114691, -84.08158663635609];
 
 function loadGoogleMapsApiKey() {
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",
@@ -42,10 +55,14 @@ function loadGoogleMapsApiKey() {
 
 
     export default {
+        components: {
+            AddAddressForm
+        },
         data() {
             return {
+                addresses: [],
                 coordinates: [],
-                mapIsShown: false,
+                mapIsShown: true,
                 mapIsShownStyle: {
                     display: 'flex',
                     flexDirection: 'column',
@@ -54,16 +71,20 @@ function loadGoogleMapsApiKey() {
                 mapIsHideStyle: {
                     display: 'none'
                 },
-                mapVisibilizationStyle: this.mapIsHideStyle,
+                mapVisibilizationStyle: this.mapIsShownStyle,
             }
         },
         methods: {
+            selectAddress(address) {
+                console.log(address.district);
+                this.$emit('selectedAddress', address);
+            },
             assignCoordinates(coordinatesToAssign) {
                 this.coordinates = coordinatesToAssign;
             },
-            emitCoordinates() {
+            emitCoordinatesAndDistance() {
                 this.$emit('selectedCoordinates', this.coordinates);
-                this.hideMap();
+                this.$emit('deliveryDistanceKilometers', this.calculateDeliveryDistanceKilometers(this.coordinates, DeliveryStationCoordinates));
             },
             showMap() {
                 this.mapVisibilizationStyle = this.mapIsShownStyle;
@@ -78,7 +99,7 @@ function loadGoogleMapsApiKey() {
                 const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
                 const myLatlng = { lat: 9.934257476114691, lng: -84.08158663635609 };
                 const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 4,
+                    zoom: 14,
                     center: myLatlng,
                     mapId: "DEMO_MAP_ID",
                 });
@@ -93,12 +114,44 @@ function loadGoogleMapsApiKey() {
                     marker.position = {lat: event.latLng.lat(),
                         lng: event.latLng.lng()};
                 });
+            },
+            getUserId() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return Number(user[0].userID);
+            },
+            getUserAddressList() {
+                axios
+                .get(BackendAPIAddress +
+                    "/getAllClientAddresses/details?userId=" +
+                    this.userId)
+                .then(
+                    (response) => {
+                        this.addresses = response.data;
+                        if(this.addresses.length == 0) {
+                            this.$emit('emptyAddressList');
+                        } else {
+                            this.$emit('noEmptyAddressList');
+                        }
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            calculateDeliveryDistanceKilometers(deliveryCoordinates, deliveryCentralCoordinates) {
+                let kilometer = Math.sqrt(12910961929) / 13000000;
+                return Math.sqrt((deliveryCoordinates[0] - deliveryCentralCoordinates[0])**2
+                    + (deliveryCoordinates[1] - deliveryCentralCoordinates[1])**2) / kilometer;
             }
         },
         mounted() {
+            this.userId = this.getUserId();
+            this.getUserAddressList();
+            if(this.addresses.length > 0) {
+                this.selectAddress(this.addresses[0]);
+            }
             loadGoogleMapsApiKey();
             this.initMap();
-            this.mapVisibilizationStyle = this.mapIsHideStyle;
+            this.mapVisibilizationStyle = this.mapIsShownStyle;
         } 
     }
 </script>
@@ -109,5 +162,11 @@ function loadGoogleMapsApiKey() {
       height: 300px;
       margin-top: 20px;
       border: 1px solid #ccc;
+    }
+    .dropdown-item-limited {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
