@@ -33,11 +33,12 @@
 .table-cell {
     padding: 12px;
     border: 1px solid #dee2e6;
+    text-align: justify;
 }
 .table-cell-button {
     padding: 12px;
     border: 1px solid #dee2e6;
-    text-align: center; /* Centra el contenido de la celda */
+    text-align: center;
 }
 
 .table-striped tbody tr:nth-child(odd) {

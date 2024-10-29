@@ -89,8 +89,8 @@
             },
             showContactInfo(business) {
                 const message = `Contacto de ${business.name}\n
-                                 Correo: ${business.email}\n
-                                 Número Telefónico: ${business.telephone}`;
+                                 , Correo: ${business.email}\n
+                                 , Número Telefónico: ${business.telephone}`;
                 this.$refs.confirmBusinesstModal.openModal(message);
             },
             async loadLocation(business) {
@@ -105,11 +105,11 @@
             async showLocation(business) {
                 await this.loadLocation(business);
                 const message = `Ubicación de ${business.name}\n` +
-                                `Provincia: ${this.address.province}\n` +
-                                `Cantón: ${this.address.canton}\n` +
-                                `Distrito: ${this.address.district}\n` +    
-                                `Código Postal: ${this.address.postalCode}\n` +
-                                `Otras Señales: ${this.address.otherSigns}`;
+                                `, Provincia: ${this.address.province}\n` +
+                                `, Cantón: ${this.address.canton}\n` +
+                                `, Distrito: ${this.address.district}\n` +    
+                                `, Código Postal: ${this.address.postalCode}\n` +
+                                `, Otras Señales: ${this.address.otherSigns}`;
 
                 this.$refs.confirmBusinesstModal.openModal(message);
                 

@@ -20,7 +20,7 @@
                     <td class="table-cell">{{ product.description }}</td>
                     <td class="table-cell">{{ product.price }}</td>
                     <td class="table-cell">{{ product.stock }}</td>
-                    <td class="table-cell">{{ product.perishable ? 'Sí' : 'No' }}</td>
+                    <td class="table-cell">{{ product.isPerishable ? 'Sí' : 'No' }}</td>
                 </tr>
             </tbody>
         </table>
