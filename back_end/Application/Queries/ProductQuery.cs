@@ -1,5 +1,5 @@
-﻿using back_end.Domain;
-using back_end.Application.Interfaces;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
 
 namespace back_end.Application.Queries
 {
@@ -9,6 +9,7 @@ namespace back_end.Application.Queries
         List<ProductModel> getAllProducts();
         ProductModel GetProductById(int id);
         List<ProductsSearchModel> searchProducts(int startIndex, int maxResults, string? searchText);
+        public List<InventoryItem> GetProductsByBusinessID(string businessID);
     }
 
     public class ProductQuery : IProductQuery
@@ -65,6 +66,11 @@ namespace back_end.Application.Queries
             }
 
             return product;
+        }
+
+        public List<InventoryItem> GetProductsByBusinessID(string businessID)
+        {
+            return productHandler.getProductsByBusinessID(businessID);
         }
     }
 }

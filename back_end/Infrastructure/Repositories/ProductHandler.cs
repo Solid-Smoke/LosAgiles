@@ -1,8 +1,8 @@
-﻿using back_end.Domain;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
+using Dapper;
 using System.Data;
 using System.Data.SqlClient;
-using Dapper;
-using back_end.Application.Interfaces;
 
 namespace back_end.Infrastructure.Repositories
 {
@@ -16,28 +16,37 @@ namespace back_end.Infrastructure.Repositories
             this.sqlConnection = sqlConnection;
         }
 
-        public List<ProductModel> getProductsByBusinessID(string businessID)
+        public List<InventoryItem> getProductsByBusinessID(string businessID)
         {
-            List<ProductModel> businessData = new List<ProductModel>();
-            string query = "SELECT * FROM PRODUCTS WHERE BusinessID = " + businessID;
-            DataTable tableQueryResult = createTableResult(query);
-            foreach (DataRow column in tableQueryResult.Rows)
+            List<InventoryItem> businessData = new List<InventoryItem>();
+            string query = "SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID";
+
+            using (SqlCommand command = new SqlCommand(query, sqlConnection))
             {
-                businessData.Add(
-                    new ProductModel
+                command.Parameters.AddWithValue("@BusinessID", businessID);
+                sqlConnection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        ProductID = Convert.ToInt32(column["ProductID"]),
-                        Name = Convert.ToString(column["Name"]),
-                        Description = Convert.ToString(column["Description"]),
-                        Price = Convert.ToInt32(column["Price"]),
-                        Stock = Convert.ToInt32(column["Stock"]),
-                        Weight = Convert.ToDecimal(column["Weight"]),
-                        IsPerishable = Convert.ToBoolean(column["Perishable"]),
-                        DailyAmount = Convert.ToInt32(column["DailyAmount"]),
-                        DaysAvailable = Convert.ToString(column["DaysAvailable"]),
-                        BusinessID = Convert.ToInt32(column["BusinessID"]),
-                        ProductImage = (byte[])column["ProductImage"]
-                    });
+                        businessData.Add(
+                            new InventoryItem
+                            {
+                                ProductID = reader.IsDBNull(reader.GetOrdinal("ProductID")) ? null : reader.GetInt32(reader.GetOrdinal("ProductID")),
+                                Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? "" : reader.GetString(reader.GetOrdinal("Name")),
+                                Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "" : reader.GetString(reader.GetOrdinal("Description")),
+                                Category = reader.IsDBNull(reader.GetOrdinal("Category")) ? "" : reader.GetString(reader.GetOrdinal("Category")),
+                                Price = reader.IsDBNull(reader.GetOrdinal("Price")) ? 0 : reader.GetInt32(reader.GetOrdinal("Price")),
+                                Stock = reader.IsDBNull(reader.GetOrdinal("Stock")) ? 0 : reader.GetInt32(reader.GetOrdinal("Stock")),
+                                Weight = reader.IsDBNull(reader.GetOrdinal("Weight")) ? 0 : reader.GetDecimal(reader.GetOrdinal("Weight")),
+                                IsPerishable = reader.IsDBNull(reader.GetOrdinal("IsPerishable")) ? false : reader.GetBoolean(reader.GetOrdinal("IsPerishable")),
+                                DailyAmount = reader.IsDBNull(reader.GetOrdinal("DailyAmount")) ? 0 : reader.GetInt32(reader.GetOrdinal("DailyAmount")),
+                                DaysAvailable = reader.IsDBNull(reader.GetOrdinal("DaysAvailable")) ? "" : reader.GetString(reader.GetOrdinal("DaysAvailable")),
+                                BusinessID = reader.IsDBNull(reader.GetOrdinal("BusinessID")) ? null : reader.GetInt32(reader.GetOrdinal("BusinessID")),
+                            });
+                    }
+                }
             }
             return businessData;
         }
