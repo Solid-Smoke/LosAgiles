@@ -56,7 +56,8 @@ namespace back_end.Infrastructure.Repositories {
             foreach (var product in products)
                 insertList.Add(new { orderID, product.BusinessID });
             insertList = insertList.Distinct<object>().ToList();
-            return sqlConnection.Execute("INSERT INTO BusinessOrders (OrderID, BusinessID) VALUES (@orderID, @BusinessID)", insertList) > 0;
+            return sqlConnection.Execute("EXEC spInsertBusinessOrders @orderIDParam = @orderID, @BusinessIDParam = @BusinessID",
+                insertList) > 0;
         }
 
         private bool insertInOrderProducts(int orderID, List<CreateOrderProductsModel> products)
