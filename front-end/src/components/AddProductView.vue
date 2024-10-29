@@ -2,6 +2,14 @@
     <b-modal v-model="AddProductModal" centered scrollable hide-footer title="Añadir Producto">
         <form @submit.prevent="saveProductDetails">
             <div class="form-group">
+                <label for="isPerishable" class="form-label">¿Es perecedero?</label><br>
+                <input style="padding: 5px;" type="radio" id="isPerishable-yes" value="true" v-model="formData.isPerishable">
+                <label style="margin-left: 5px;" for="isPerishable-yes">Sí</label><br>
+                <input style="padding: 5px;" type="radio" id="isPerishable-no" value="false" v-model="formData.isPerishable">
+                <label style="margin-left: 5px;" for="isPerishable-no">No</label>
+            </div>
+
+            <div class="form-group">
                 <label for="name" class="form-label">Nombre del Producto</label>
                 <input v-model="formData.name" type="text" class="form-control" id="name" required minlength="1" maxlength="50">
                 <small class="text-muted">{{ nameRemainingChars }} caracteres restantes</small>
@@ -30,10 +38,16 @@
                 <small class="text-muted">El precio debe ser mayor a cero y no puede exceder 5 millones.</small>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="formData.isPerishable === 'false'">
                 <label for="stock" class="form-label">Cantidad</label>
                 <input v-model="formData.stock" type="number" class="form-control" id="stock" min="1" max="100" required>
                 <small class="text-muted">Cantidad entre 1 y 100.</small>
+            </div>
+
+            <div class="form-group" v-if="formData.isPerishable === 'true'">
+                <label for="dailyAmount" class="form-label">Cantidad diaria</label>
+                <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="1" max="100" required @input="syncStockWithDailyAmount">
+                <small class="text-muted">Cantidad diaria entre 1 y 100.</small>
             </div>
 
             <div class="form-group">
@@ -42,31 +56,15 @@
                 <small class="text-muted">Máximo 3 decimales</small>
             </div>
 
-            <div class="form-group">
-                <label for="isPerishable" class="form-label">Perecedero</label><br>
-                <input style="padding: 5px;" type="radio" id="isPerishable-yes" value="true" v-model="formData.isPerishable">
-                <label style="margin-left: 5px;" for="isPerishable-yes">Sí</label><br>
-                <input style="padding: 5px;" type="radio" id="isPerishable-no" value="false" v-model="formData.isPerishable">
-                <label style="margin-left: 5px;" for="isPerishable-no">No</label>
-            </div>
-
-            <div v-if="formData.isPerishable === 'true'">
-                <div class="form-group">
-                    <label for="dailyAmount" class="form-label">Cantidad diaria</label>
-                    <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="1" max="100" required>
-                    <small class="text-muted">Cantidad diaria entre 1 y 100.</small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Días Disponibles</label>
-                    <div>
-                        <div v-for="day in daysOfWeek" :key="day.value" class="form-check form-check-inline">
-                            <input type="checkbox" class="form-check-input" :id="day.value" :value="day.value" v-model="selectedDays">
-                            <label class="form-check-label" :for="day.value">{{ day.label }}</label>
-                        </div>
+            <div v-if="formData.isPerishable === 'true'" class="form-group">
+                <label class="form-label">Días Disponibles</label>
+                <div>
+                    <div v-for="day in daysOfWeek" :key="day.value" class="form-check form-check-inline">
+                        <input type="checkbox" class="form-check-input" :id="day.value" :value="day.value" v-model="selectedDays">
+                        <label class="form-check-label" :for="day.value">{{ day.label }}</label>
                     </div>
-                    <small class="text-muted">Seleccione los días disponibles.</small>
                 </div>
+                <small class="text-muted">Seleccione los días disponibles.</small>
             </div>
 
             <div class="form-group">
@@ -135,25 +133,29 @@ export default {
     methods: {
         onFileChange(event) {
             const file = event.target.files[0];
-
             if (file) {
                 if (file.type !== 'image/png') {
                     this.showErrorModal("El archivo debe ser una imagen PNG.");
                     event.target.value = null;
                     return;
                 }
-
                 const maxSize = 2 * 1024 * 1024;
                 if (file.size > maxSize) {
                     this.showErrorModal("La imagen no debe exceder los 2 MB.");
                     event.target.value = null;
                     return;
                 }
-
                 this.formData.productImage = file;
             }
         },
+        syncStockWithDailyAmount() {
+            this.formData.stock = this.formData.dailyAmount;
+        },
         saveProductDetails() {
+            if (this.formData.isPerishable === 'true' && this.formData.stock > this.formData.dailyAmount) {
+                this.showErrorModal("El stock no puede ser mayor que la cantidad diaria para un producto perecedero.");
+                return;
+            }
             const formData = new FormData();
             formData.append("name", this.formData.name);
             formData.append("description", this.formData.description);
@@ -162,17 +164,14 @@ export default {
             formData.append("stock", this.formData.stock);
             formData.append("weight", this.formData.weight);
             formData.append("isPerishable", this.formData.isPerishable === 'true');
-
             if (this.formData.isPerishable === 'true') {
                 formData.append("dailyAmount", this.formData.dailyAmount);
                 formData.append("daysAvailable", this.selectedDays.join(""));
             } else {
                 formData.append("daysAvailable", null);
             }
-
             formData.append("businessID", this.formData.businessId);
             formData.append("productImage", this.formData.productImage);
-
             axios.post('https://localhost:7168/api/Products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -183,7 +182,6 @@ export default {
                 this.showErrorModal("Error guardando el producto.");
                 console.error("Error guardando el producto:", error);
             });
-
             this.closeModal();
         },
         showErrorModal(message) {
@@ -222,7 +220,7 @@ export default {
 </script>
 
 <style>
-    .form-group {
-        margin-bottom: 20px;
-    }
+.form-group {
+    margin-bottom: 20px;
+}
 </style>
