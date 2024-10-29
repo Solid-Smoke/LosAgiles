@@ -45,6 +45,7 @@ builder.Services.AddScoped<GetAllBusiness>();
 builder.Services.AddScoped<InsertNewBusiness>();
 builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
 builder.Services.AddScoped<GetPendingOrders>();
+builder.Services.AddScoped<GetOrdersByClientID>();
 builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();
 builder.Services.AddScoped<RejectOrder>();

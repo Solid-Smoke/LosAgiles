@@ -120,6 +120,7 @@ namespace back_end.Infrastructure.Repositories
             return products;
         }
 
+
         private List<T> dapperSelectQuery<T>(string query, object parameters)
         {
             sqlConnection.Open();
@@ -173,13 +174,14 @@ namespace back_end.Infrastructure.Repositories
             return dapperCountQuery(query,
                 new { searchText = "%" + searchText + "%", });
         }
+
         public ProductModel GetProductById(int id)
         {
             string query = $@"
-        SELECT p.*, b.Name AS BusinessName 
-        FROM Products p
-        INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
-        WHERE ProductID = {id}";
+                SELECT p.*, b.Name AS BusinessName, dbo.ConvertDaysToFullNames(p.DaysAvailable) AS DaysAvailableFull
+                FROM Products p
+                INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
+                WHERE ProductID = {id}";
 
             DataTable tableQueryResult = createTableResult(query);
 
@@ -201,12 +203,11 @@ namespace back_end.Infrastructure.Repositories
                 Weight = Convert.ToDecimal(column["Weight"]),
                 IsPerishable = Convert.ToBoolean(column["IsPerishable"]),
                 DailyAmount = column["DailyAmount"] as int?,
-                DaysAvailable = Convert.ToString(column["DaysAvailable"]),
+                DaysAvailable = Convert.ToString(column["DaysAvailableFull"]),
                 BusinessID = Convert.ToInt32(column["BusinessID"]),
                 BusinessName = Convert.ToString(column["BusinessName"]),
                 ProductImage = column["ProductImage"] as byte[]
             };
         }
-
     }
 }
