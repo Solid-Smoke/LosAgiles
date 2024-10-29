@@ -1,5 +1,5 @@
 <template>
-    <MainNavbar />
+    <AdminNavbar />
     <h1 class="display-4 text-center mb-4"><strong>Emprendimientos Registrados</strong></h1>
     <div class="table-responsive-sm">
         <table class="table table-striped table-hover">
@@ -34,12 +34,12 @@
 </template>
 
 <script>
-    import MainNavbar from './MainNavbar.vue';
+    import AdminNavbar from './AdminNavbar.vue';
     import axios from "axios";
 
     export default {
         components: {
-            MainNavbar,
+            AdminNavbar,
         },
         data() {
             return {

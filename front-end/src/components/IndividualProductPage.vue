@@ -1,5 +1,7 @@
 <template>
-    <MainNavbar />
+    <template v-if="isClient"><MainNavbar /></template>
+    <template v-if="isAdmin"><AdminNavbar /></template>
+    <template v-if="!isClient && !isAdmin"><UnregisteredNavbar /></template>
   
     <b-container class="product-page">
       <b-row class="justify-content-center">
@@ -48,6 +50,8 @@
   <script>
   import { BackendUrl } from '@/main';
   import MainNavbar from './MainNavbar.vue';
+  import AdminNavbar from './AdminNavbar.vue';
+  import UnregisteredNavbar from './UnregisteredNavbar.vue';
   import ActionModalConfirm from './ActionModalConfirm.vue';
   import ActionModalError from './ActionModalError.vue';
   import ActionModalWarning from './ActionModalWarning.vue';
@@ -56,6 +60,8 @@
   export default {
     components: {
       MainNavbar,
+      AdminNavbar,
+      UnregisteredNavbar,
       ActionModalConfirm,
       ActionModalWarning,
       ActionModalError,
