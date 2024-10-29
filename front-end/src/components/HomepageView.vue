@@ -4,7 +4,6 @@
     <template v-if="!isClient && !isAdmin"><UnregisteredNavbar /></template>
     <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
 
-
     <b-container fluid class="px-5">
         <b-row class="justify-content-center">
             <b-col lg="10" md="9">
