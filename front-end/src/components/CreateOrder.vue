@@ -42,7 +42,7 @@
                     <label for="date-selector"><strong style="font-size: 20px;">Seleccione fecha de entrega</strong></label>
                 </div>
                 <div style="margin: 10px">
-                    <input v-model="selectedDeliveryDate" type="date" name="date-selector" id="order-date-selector">
+                    <input v-model="selectedDeliveryDate" type="date" :min="todayDate" name="date-selector" id="order-date-selector">
                 </div>
                 <strong>Subtotal: ₡{{ totalPrice }}</strong>
                 <br>
@@ -104,7 +104,8 @@
                 deliveryDistanceKilometers: 0,
                 showPaymentModal: false,
                 addressListIsEmpty: true,
-                selectedDeliveryDate: null
+                selectedDeliveryDate: null,
+                todayDate: 0,
             }
         },
         methods: {
@@ -227,6 +228,11 @@
                 this.userID = this.getUserId();
                 this.getUserCart();
             }
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Meses comienzan en 0
+            const dd = String(today.getDate()).padStart(2, '0');
+            this.todayDate = `${yyyy}-${mm}-${dd}`;
         },
     }
     
