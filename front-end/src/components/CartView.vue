@@ -82,7 +82,7 @@
             </template>
             <template v-else>
                 <h3 class="text-center mb-4">
-                    Actualmente no tiene ordenes registradas
+                    Actualmente no tiene productos en su carrito
                     <br /><a href="/">Regresar</a>
                 </h3>
             </template>
