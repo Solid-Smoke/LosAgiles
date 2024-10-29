@@ -2,6 +2,14 @@
     <b-modal v-model="AddProductModal" centered scrollable hide-footer title="Añadir Producto">
         <form @submit.prevent="saveProductDetails">
             <div class="form-group">
+                <label for="isPerishable" class="form-label">¿Es perecedero?</label><br>
+                <input style="padding: 5px;" type="radio" id="isPerishable-yes" value="true" v-model="formData.isPerishable">
+                <label style="margin-left: 5px;" for="isPerishable-yes">Sí</label><br>
+                <input style="padding: 5px;" type="radio" id="isPerishable-no" value="false" v-model="formData.isPerishable">
+                <label style="margin-left: 5px;" for="isPerishable-no">No</label>
+            </div>
+
+            <div class="form-group">
                 <label for="name" class="form-label">Nombre del Producto</label>
                 <input v-model="formData.name" type="text" class="form-control" id="name" required minlength="1" maxlength="50">
                 <small class="text-muted">{{ nameRemainingChars }} caracteres restantes</small>
@@ -30,10 +38,16 @@
                 <small class="text-muted">El precio debe ser mayor a cero y no puede exceder 5 millones.</small>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="formData.isPerishable === 'false'">
                 <label for="stock" class="form-label">Cantidad</label>
                 <input v-model="formData.stock" type="number" class="form-control" id="stock" min="1" max="100" required>
                 <small class="text-muted">Cantidad entre 1 y 100.</small>
+            </div>
+
+            <div class="form-group" v-if="formData.isPerishable === 'true'">
+                <label for="dailyAmount" class="form-label">Cantidad diaria</label>
+                <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="1" max="100" required @input="syncStockWithDailyAmount">
+                <small class="text-muted">Cantidad diaria entre 1 y 100.</small>
             </div>
 
             <div class="form-group">
@@ -42,26 +56,15 @@
                 <small class="text-muted">Máximo 3 decimales</small>
             </div>
 
-            <div class="form-group">
-                <label for="isPerishable" class="form-label">Perecedero</label><br>
-                <input style="padding: 5px;" type="radio" id="isPerishable-yes" value="true" v-model="formData.isPerishable">
-                <label style="margin-left: 5px;" for="isPerishable-yes">Sí</label><br>
-                <input style="padding: 5px;" type="radio" id="isPerishable-no" value="false" v-model="formData.isPerishable">
-                <label style="margin-left: 5px;" for="isPerishable-no">No</label>
-            </div>
-
-            <div v-if="formData.isPerishable === 'true'">
-                <div class="form-group">
-                    <label for="dailyAmount" class="form-label">Cantidad diaria</label>
-                    <input v-model="formData.dailyAmount" type="number" class="form-control" id="dailyAmount" min="1" max="100" required>
-                    <small class="text-muted">Cantidad diaria entre 1 y 100.</small>
+            <div v-if="formData.isPerishable === 'true'" class="form-group">
+                <label class="form-label">Días Disponibles</label>
+                <div>
+                    <div v-for="day in daysOfWeek" :key="day.value" class="form-check form-check-inline">
+                        <input type="checkbox" class="form-check-input" :id="day.value" :value="day.value" v-model="selectedDays">
+                        <label class="form-check-label" :for="day.value">{{ day.label }}</label>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="daysAvailable" class="form-label">Días Disponibles (Formato: L, K, M, J, V, S, D sin comas ni espacios)</label>
-                    <input v-model="formData.daysAvailable" type="text" class="form-control" id="daysAvailable" required pattern="[LKMJVSD]{1,7}">
-                    <small class="text-muted">Ejemplo: LJ para Lunes y Jueves</small>
-                </div>
+                <small class="text-muted">Seleccione los días disponibles.</small>
             </div>
 
             <div class="form-group">
@@ -72,6 +75,16 @@
             <button type="submit" class="btn btn-success btn-block">Añadir Producto</button>
         </form>
     </b-modal>
+
+    <b-modal v-model="errorModalVisible" centered hide-footer title="Error">
+        <p class="my-4">{{ errorMessage }}</p>
+        <b-button variant="danger" @click="errorModalVisible = false">Cerrar</b-button>
+    </b-modal>
+
+    <b-modal v-model="successModalVisible" centered hide-footer title="Éxito">
+        <p class="my-4">Producto añadido exitosamente.</p>
+        <b-button variant="success" @click="closeSuccessModal">Aceptar</b-button>
+    </b-modal>
 </template>
 
 <script>
@@ -81,6 +94,9 @@ export default {
     data() {
         return {
             AddProductModal: false,
+            errorModalVisible: false,
+            successModalVisible: false,
+            errorMessage: "",
             formData: {
                 name: "",
                 description: "",
@@ -92,8 +108,18 @@ export default {
                 isPerishable: false,
                 dailyAmount: 0,
                 daysAvailable: "",
-                businessId: 1
+                businessId: null
             },
+            selectedDays: [],
+            daysOfWeek: [
+                { label: "Lunes", value: "L" },
+                { label: "Martes", value: "K" },
+                { label: "Miércoles", value: "M" },
+                { label: "Jueves", value: "J" },
+                { label: "Viernes", value: "V" },
+                { label: "Sábado", value: "S" },
+                { label: "Domingo", value: "D" }
+            ]
         };
     },
     computed: {
@@ -107,48 +133,29 @@ export default {
     methods: {
         onFileChange(event) {
             const file = event.target.files[0];
-
             if (file) {
                 if (file.type !== 'image/png') {
-                    alert("El archivo debe ser una imagen PNG.");
+                    this.showErrorModal("El archivo debe ser una imagen PNG.");
                     event.target.value = null;
                     return;
                 }
-
                 const maxSize = 2 * 1024 * 1024;
                 if (file.size > maxSize) {
-                    alert("La imagen no debe exceder los 2 MB.");
+                    this.showErrorModal("La imagen no debe exceder los 2 MB.");
                     event.target.value = null;
                     return;
                 }
-
                 this.formData.productImage = file;
             }
         },
-        validateDaysAvailable() {
-            const days = this.formData.daysAvailable.split('');
-            const uniqueDays = new Set(days);
-            return days.length === uniqueDays.size;
+        syncStockWithDailyAmount() {
+            this.formData.stock = this.formData.dailyAmount;
         },
         saveProductDetails() {
-            if (this.formData.name.length < 1 || this.formData.name.length > 50) {
-                alert("El nombre debe tener entre 1 y 50 caracteres.");
+            if (this.formData.isPerishable === 'true' && this.formData.stock > this.formData.dailyAmount) {
+                this.showErrorModal("El stock no puede ser mayor que la cantidad diaria para un producto perecedero.");
                 return;
             }
-            if (this.formData.description.length < 1 || this.formData.description.length > 512) {
-                alert("La descripción debe tener entre 1 y 512 caracteres.");
-                return;
-            }
-            if (this.formData.price <= 0) {
-                alert("El precio debe ser mayor a cero.");
-                return;
-            }
-
-            if (!this.validateDaysAvailable()) {
-                alert("Los días disponibles no deben repetirse.");
-                return;
-            }
-
             const formData = new FormData();
             formData.append("name", this.formData.name);
             formData.append("description", this.formData.description);
@@ -157,27 +164,35 @@ export default {
             formData.append("stock", this.formData.stock);
             formData.append("weight", this.formData.weight);
             formData.append("isPerishable", this.formData.isPerishable === 'true');
-
             if (this.formData.isPerishable === 'true') {
                 formData.append("dailyAmount", this.formData.dailyAmount);
-                formData.append("daysAvailable", this.formData.daysAvailable);
+                formData.append("daysAvailable", this.selectedDays.join(""));
             } else {
                 formData.append("daysAvailable", null);
             }
-
             formData.append("businessID", this.formData.businessId);
             formData.append("productImage", this.formData.productImage);
-
             axios.post('https://localhost:7168/api/Products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
-            }).then(response => {
-                console.log("Producto guardado con éxito:", response.data);
+            }).then(() => {
+                this.showSuccessModal();
             }).catch(error => {
+                this.showErrorModal("Error guardando el producto.");
                 console.error("Error guardando el producto:", error);
             });
-
+            this.closeModal();
+        },
+        showErrorModal(message) {
+            this.errorMessage = message;
+            this.errorModalVisible = true;
+        },
+        showSuccessModal() {
+            this.successModalVisible = true;
+        },
+        closeSuccessModal() {
+            this.successModalVisible = false;
             this.closeModal();
         },
         resetFormFields() {
@@ -190,10 +205,12 @@ export default {
             this.formData.isPerishable = false;
             this.formData.dailyAmount = 0;
             this.formData.daysAvailable = "";
+            this.selectedDays = [];
         },
-        openModal() {
+        openModal(businessId) {
             this.AddProductModal = true;
             this.resetFormFields();
+            this.formData.businessId = businessId;
         },
         closeModal() {
             this.AddProductModal = false;
@@ -203,7 +220,7 @@ export default {
 </script>
 
 <style>
-    .form-group {
-        margin-bottom: 20px;
-    }
+.form-group {
+    margin-bottom: 20px;
+}
 </style>

@@ -27,23 +27,29 @@
                     <td>
                         <button v-on:click="viewInventory(business)" class="btn btn-info">Inventario</button>
                     </td>
+                    <td>
+                        <button @click="openProductModal(business.businessID)" class="btn btn-info">Agregar Producto</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
+    <AddProductView ref="addProductModal" />
 </template>
 
 <script>
     import MainNavbar from './MainNavbar.vue';
+    import AddProductView from './AddProductView.vue';
     import axios from "axios";
 
     export default {
         components: {
             MainNavbar,
+            AddProductView,
         },
         data() {
             return {
-                userID: "3",
+                userID: "1",
                 address: [
                     {
                         businessID: 0,
@@ -76,12 +82,13 @@
         },
         methods: {
             getUserBusiness() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                const id = Number(user[0].userID);
                 axios.get("https://localhost:7168/api/BusinessDataByEmployeeID", {
-                    params: { EmployeeID: this.userID },
+                    params: { EmployeeID: id },
                 }).then(
                     (response) => {
                         this.businesses = response.data;
-                        console.log(this.businesses);
                     }
                 );
             },
@@ -123,6 +130,9 @@
                         permissions: business.permissions,
                     },
                 });
+            },
+            openProductModal(businessID) {
+                this.$refs.addProductModal.openModal(businessID);
             },
         },
         created() {
