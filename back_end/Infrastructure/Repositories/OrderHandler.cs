@@ -110,6 +110,40 @@ namespace back_end.Infrastructure.Repositories {
             return OrderData;
         }
 
+        public List<OrderModel> GetOrdersByClientID(string clientID) {
+            List<OrderModel> OrderData = new List<OrderModel>();
+            string query = "SELECT * FROM udfOrdersByClientID(@ClientID);";
+            try {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+                    sqlCommand.Parameters.AddWithValue("@ClientID", clientID);
+                    sqlConnection.Open();
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
+                        while (reader.Read()) {
+                            OrderData.Add(
+                                new OrderModel {
+                                    OrderID = Convert.ToInt32(reader["OrderID"]),
+                                    CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                                    DeliveryDate = reader["DeliveryDate"] != DBNull.Value
+                                    ? Convert.ToDateTime(reader["DeliveryDate"]) : (DateTime?)null,
+                                    TotalAmount = Convert.ToInt32(reader["TotalAmount"]),
+                                    Status = reader["Status"].ToString(),
+                                    Address = reader["Address"].ToString()
+                                });
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException sqlEx) {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            return OrderData;
+        }
+
         public List<OrderProductsModel> GetProductsByOrderID(string orderID) {
             List<OrderProductsModel> OrderProductsData = new List<OrderProductsModel>();
             string query = "SELECT * FROM [udfProductsByOrderID](@OrderID)";

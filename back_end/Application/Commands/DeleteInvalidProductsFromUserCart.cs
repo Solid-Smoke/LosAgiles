@@ -12,7 +12,7 @@ namespace back_end.Application.Commands
             _shoppingCartHandler = shoppingCartHandler;
         }
 
-        public void Execute(string clientId, List<ShoppingCartItemModel> itemsToDelete)
+        public void Execute(string clientId, List<ShoppingCartItemDataModel> itemsToDelete)
         {
             foreach (var item in itemsToDelete)
             {

@@ -32,12 +32,14 @@ builder.Services.AddSwaggerGen();
 //Shopping Cart Dependencies
 builder.Services.AddScoped<DeleteInvalidProductsFromUserCart>();
 builder.Services.AddScoped<GetShoppingCartInvalidItems>();
+builder.Services.AddScoped<AddItemToShoppingCart>();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
 builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
 
 //Orders dependencies
 builder.Services.AddScoped<GetPendingOrders>();
+builder.Services.AddScoped<GetOrdersByClientID>();
 builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();
 builder.Services.AddScoped<RejectOrder>();

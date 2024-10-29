@@ -49,7 +49,11 @@ export default {
     methods: {
         onSearchClick() {
             this.$emit("searchMade");
-            this.searchProducts(0, this.maxResults, this.searchText);
+            if (this.searchText.trim() === "") {
+                this.$emit("resetSearch");
+            } else {
+                this.searchProducts(0, this.maxResults, this.searchText);
+            }
         },
         searchProducts(startIndex, maxResults, searchText) {
             if (this.inputIsValid) {

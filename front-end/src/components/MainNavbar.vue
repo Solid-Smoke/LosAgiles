@@ -11,13 +11,13 @@
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
                         <b-dropdown-item href="/VerCarrito">Carrito</b-dropdown-item>
+                        <b-dropdown-item href="/MisOrdenes">Ordenes</b-dropdown-item>
                         <b-dropdown-item href="/direcciones">Direcciones de entrega</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Mis empresas">
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
                         <b-dropdown-item href="/MyBusiness">Ver empresa</b-dropdown-item>
-                        <b-dropdown-item @click="openProductModal">Añadir Producto</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Admin">
@@ -38,25 +38,21 @@
         </b-navbar>
     </div>
     <RegisterBusinessModal ref="registerBusinessModal" />
-    <AddProductView ref="addProductModal" />
     <UserPersonalDetails ref="personalDetailsModal" />
 </template>
 
 <script>
     import RegisterBusinessModal from './RegisterBusinessModal.vue';
-    import AddProductView from './AddProductView.vue';
     import UserPersonalDetails from './UserPersonalDetails.vue';
 
     export default {
         components: {
             RegisterBusinessModal,
-            AddProductView,
             UserPersonalDetails
         },
         data() {
             return {
                 registerBusinessModal: false,
-                addProductModal: false,
                 personalDetailsModal: false,
                 loginData: {
                     userID: "1",
@@ -68,9 +64,6 @@
         methods: {
             openRegisterBusinessModal() {
                 this.$refs.registerBusinessModal.openModal(this.loginData.userID);        
-            },
-            openProductModal() {
-                this.$refs.addProductModal.openModal();
             },
             openPersonalDetailsModal() {
                 this.$refs.personalDetailsModal.openModal();

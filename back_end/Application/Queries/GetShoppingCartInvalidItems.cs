@@ -12,7 +12,7 @@ namespace back_end.Application.Queries
             _shoppingCartHandler = shoppingCartHandler;
         }
 
-        public List<ShoppingCartItemModel> Execute(string clientId)
+        public List<ShoppingCartItemDataModel> Execute(string clientId)
         {
             var cartItems = _shoppingCartHandler.GetCart(clientId);
 
