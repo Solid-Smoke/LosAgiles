@@ -38,7 +38,6 @@
                 <small class="text-muted">El precio debe ser mayor a cero y no puede exceder 5 millones.</small>
             </div>
 
-            <!-- Mostrar stock o cantidad diaria en función de si es perecedero -->
             <div class="form-group" v-if="formData.isPerishable === false">
                 <label for="stock" class="form-label">Cantidad</label>
                 <input v-model="formData.stock" type="number" class="form-control" id="stock" min="1" max="100" required>
