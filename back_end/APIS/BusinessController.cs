@@ -1,5 +1,6 @@
-﻿using back_end.Domain;
-using back_end.Infrastructure.Repositories;
+﻿using back_end.Application.Commands;
+using back_end.Application.Queries;
+using back_end.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.APIS
@@ -8,48 +9,56 @@ namespace back_end.APIS
     [ApiController]
     public class BusinessController : ControllerBase
     {
-        private readonly BusinessHandler _businessHandler;
+        public BusinessController() { }
 
-        public BusinessController()
+        [HttpGet]
+        public ActionResult<List<BusinessModel>> GetAllBusinesses(
+            [FromServices] GetAllBusiness getAllBusinessQuery)
         {
-            _businessHandler = new BusinessHandler();
+            var businesses = getAllBusinessQuery.Execute();
+            return Ok(businesses);
         }
 
-        [HttpGet("~/api/AllBusinessData")]
-        public List<BusinessModel> getAllBusinessData()
+        [HttpGet("Employee/{employeeID}")]
+        public ActionResult<List<BusinessModel>> GetBusinessesByEmployeeID(
+            string employeeID,
+            [FromServices] GetBusinessByEmployeeID getBusinessByEmployeeIDQuery)
         {
-            var businesses = _businessHandler.getAllBusiness();
-            return businesses;
+            var businesses = getBusinessByEmployeeIDQuery.Execute(employeeID);
+            return Ok(businesses);
         }
 
-        [HttpGet("~/api/BusinessDataByEmployeeID")]
-        public List<BusinessModel> getBusinessDataByEmployeeID(string employeeID)
+        [HttpGet("{businessID}/Addresses")]
+        public ActionResult<List<BusinessAddressModel>> GetBusinessAddresses(
+            int businessID,
+            [FromServices] GetBusinessAddressByBusinessID getBusinessAddressByBusinessIDQuery)
         {
-            var businesses = _businessHandler.getBusinessByEmployeeID(employeeID);
-            return businesses;
-        }
-        [HttpGet("~/api/BusinesessAddresessByBusinessID")]
-        public List<BusinessAddressModel> getBusinesessAddresessByBusinessID(int businessID)
-        {
-            var businesses = _businessHandler.getBusinessAddressByBusinessID(Convert.ToString(businessID));
-            return businesses;
+            var addresses = getBusinessAddressByBusinessIDQuery.Execute(businessID.ToString());
+            return Ok(addresses);
         }
 
-        [HttpPost("~/api/NewBusiness")]
-        public async Task<ActionResult<bool>> createNewBusiness(CompleteBusinessModel newBusiness)
+        [HttpPost]
+        public ActionResult<bool> CreateBusiness(
+            [FromBody] CompleteBusinessModel newBusiness,
+            [FromServices] InsertNewBusiness insertNewBusinessCommand)
         {
+            if (newBusiness == null)
+            {
+                return BadRequest("Invalid business data.");
+            }
+
             try
             {
-                if (newBusiness == null)
+                var result = insertNewBusinessCommand.Execute(newBusiness);
+                if (result)
                 {
-                    return BadRequest();
+                    return Ok();
                 }
-                var result = _businessHandler.insertNewBusiness(newBusiness);
-                return new JsonResult(result);
+                return BadRequest("Failed to create new business.");
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error on createNewBusiness");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new business.");
             }
         }
     }
