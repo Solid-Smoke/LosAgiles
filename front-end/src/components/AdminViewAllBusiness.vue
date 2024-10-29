@@ -1,15 +1,15 @@
 <template>
-    <MainNavbar />
+    <AdminNavbar />
     <h1 class="display-4 text-center mb-4"><strong>Emprendimientos Registrados</strong></h1>
     <div class="table-responsive-sm">
         <table class="table-custom table-striped">
             <thead class="table-header">
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col">C閐ula Asociada</th>
-                    <th scope="col">Informaci髇 de Contacto</th>
+                    <th scope="col">C茅dula Asociada</th>
+                    <th scope="col">Informaci贸n de Contacto</th>
                     <th scope="col">Permisos</th>
-                    <th scope="col">Ubicaci髇</th>
+                    <th scope="col">Ubicaci贸n</th>
                     <th scope="col">Ver Inventario</th>
                 </tr>
             </thead>
@@ -22,7 +22,7 @@
                     </td>
                     <td class="table-cell">{{ business.permissions }}</td>
                     <td class="table-cell-button">
-                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicaci髇</button>
+                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicaci贸n</button>
                     </td>
                     <td class="table-cell-button">
                         <a @click="viewInventory(business)" class="link-blue">Inventario</a>
@@ -34,13 +34,13 @@
 </template>
 
 <script>
-    import MainNavbar from './MainNavbar.vue';
+    import AdminNavbar from './AdminNavbar.vue';
     import { BackendUrl } from '../main.js';
     import axios from "axios";
 
     export default {
         components: {
-            MainNavbar,
+            AdminNavbar,
         },
         data() {
             return {
@@ -78,25 +78,25 @@
             showContactInfo(business) {
                 alert("Contacto de " + business.name + "\n\t" +
                         "Correo: " + business.email + "\n\t" +
-                        "N鷐ero Telef髇ico: " +business.telephone);
+                        "N煤mero Telef贸nico: " +business.telephone);
             },
             async loadLocation(business) {
                 try {
                     const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
                     this.address = response.data[0];
                 } catch (error) {
-                    console.error("Error al cargar la ubicaci髇: ", error);
+                    console.error("Error al cargar la ubicaci贸n: ", error);
                 }
             },
             async showLocation(business) {
                 await this.loadLocation(business);
                 console.log(this.address);
-                alert("Ubicaci髇 de " + business.name + "\n\t" +
+                alert("Ubicaci贸n de " + business.name + "\n\t" +
                     "Provincia: " + this.address.province + "\n\t" +
                     "Canton: " + this.address.canton + "\n\t" +
                     "Distrito: " + this.address.district + "\n\t" +
                     "Codigo Postal: " + this.address.postalCode + "\n\t" +
-                    "Otras Se馻les: " + this.address.otherSigns);
+                    "Otras Se帽ales: " + this.address.otherSigns);
 
             },
             viewInventory(business) {

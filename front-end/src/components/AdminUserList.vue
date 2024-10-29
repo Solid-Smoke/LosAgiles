@@ -1,6 +1,6 @@
 <template>
     <template v-if="isAdmin">
-        <MainNavbar />
+        <AdminNavbar />
         <div class="container mt-5">
             <h1 class="display-4 text-center mb-4"><strong>LISTA DE USUARIOS</strong></h1>
 
@@ -33,12 +33,12 @@
 </template>
 
 <script>
-    import MainNavbar from './MainNavbar.vue';
+    import AdminNavbar from './AdminNavbar.vue';
     import axios from 'axios';
     
     export default {
         components: {
-            MainNavbar
+            AdminNavbar
         },
 
         name: "UserList",

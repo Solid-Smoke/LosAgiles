@@ -1,7 +1,8 @@
 <template>
-    <MainNavbar />
+    <template v-if="isClient"><MainNavbar /></template>
+    <template v-if="isAdmin"><AdminNavbar /></template>
+    <template v-if="!isClient && !isAdmin"><UnregisteredNavbar /></template>
     <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
-
 
     <b-container fluid class="px-5">
         <b-row class="justify-content-center">
@@ -27,12 +28,16 @@
 <script>
 import { BackendUrl } from '@/main';
 import MainNavbar from './MainNavbar.vue';
+import AdminNavbar from './AdminNavbar.vue';
+import UnregisteredNavbar from './UnregisteredNavbar.vue';
 import axios from 'axios';
 import SearchBar from './SearchBar.vue';
 
 export default {
     components: {
         MainNavbar,
+        AdminNavbar,
+        UnregisteredNavbar,
         SearchBar,
     },
     data() {
@@ -91,6 +96,16 @@ export default {
     },
     mounted() {
         this.getProducts();
+    },
+    props: {
+        isAdmin: {
+            type: Boolean,
+            required: true,
+        },
+        isClient: {
+            type: Boolean,
+            required: true,
+        },
     },
 };
 </script>

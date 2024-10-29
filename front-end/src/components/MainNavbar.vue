@@ -7,7 +7,7 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    
+
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
                         <b-dropdown-item href="/VerCarrito">Carrito</b-dropdown-item>
@@ -19,20 +19,11 @@
                         <b-dropdown-item @click="openRegisterBusinessModal">Registrar Empresa</b-dropdown-item>
                         <b-dropdown-item href="/MyBusiness">Ver empresa</b-dropdown-item>
                     </b-nav-item-dropdown>
-
-                    <b-nav-item-dropdown text="Admin">
-                        <b-dropdown-item href="/AdminViewAllBusiness">Ver todas las empresas registradas</b-dropdown-item>
-                        <b-dropdown-item href="/UserList">Ver todos los usuarios</b-dropdown-item>
-                        <b-dropdown-item href="/confirmarOrdenes">Revisar ordenes entrantes</b-dropdown-item>
-                    </b-nav-item-dropdown>
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ms-auto">
-                    <b-nav-item><a href="/login" class="discreteLink">Iniciar sesi&oacute;n</a></b-nav-item>
-                </b-navbar-nav>
-
-                <b-navbar-nav>
-                    <b-nav-item><a href="/registro" class="discreteLink">Registrarse</a></b-nav-item>
+                    <b-nav-item><strong>{{this.userName}}</strong></b-nav-item>
+                    <b-nav-item @click="logout">Cerrar sesi&oacute;n</b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -55,8 +46,9 @@
                 registerBusinessModal: false,
                 personalDetailsModal: false,
                 loginData: {
-                    userID: "1",
+                    userID: "0",
                 },
+                userName: '',
                 searchProducts: () => {},
                 products: []
             }
@@ -67,19 +59,21 @@
             },
             openPersonalDetailsModal() {
                 this.$refs.personalDetailsModal.openModal();
-            }
+            },
+            getUserName() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                return user[0].userName;
+            },
+            logout() {
+                localStorage.removeItem('user');
+                window.location.href = "/";
+            },
         },
+        created() {
+            this.userName = this.getUserName();
+        }
     };
 </script>
 
 <style>
-    .discreteLink {
-        color: black;
-        text-decoration: none;
-    }
-
-    .discreteLink:hover {
-        color: black;
-        text-decoration: none;
-    }
 </style>
