@@ -30,24 +30,16 @@ namespace Tests
         }
 
         [Test]
-        public void searchProductsDoesntWorkWithNegativeStartIndex()
+        public void searchProductsDoesntCallHandlerWithNegativeStartIndex()
         {
             productHandlerMock.Setup(handler =>
                 handler.searchProducts(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(new List<ProductsSearchModel>());
+            int startIndex = -2;
+            int maxResults = 10;
+            string searchText = "Example search";
 
-            try
-            {
-                int startIndex = -2;
-                int maxResults = 10;
-                string searchText = "Example search";
-                productQuery.searchProducts(startIndex, maxResults, searchText);
-            }
-            catch (Exception ex)
-            {
-                Assert.Pass();
-            }
-            Assert.Fail();
+            Assert.Throws<ArgumentException>(() => productQuery.searchProducts(startIndex, maxResults, searchText));
         }
     }
 }

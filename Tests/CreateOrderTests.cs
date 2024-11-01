@@ -18,20 +18,12 @@ namespace Tests
             orderSubmitter = new SubmitOrder(orderHandlerMock.Object);
         }
         [Test]
-        public void CreateOrderDoesntWorkWithNullProductList()
+        public void CreateOrderDoesntCallHandlerWithNullProductList()
         {
             var orderData = new CreateOrderModel();
             orderData.Products = null;
-            
-            try
-            {
-                orderSubmitter.createOrder(orderData);
-            } catch
-            {
-                Assert.Pass();
-            }
-            Assert.Fail();
 
+            Assert.Throws<ArgumentException>(() => orderSubmitter.createOrder(orderData));           
         }
 
     }
