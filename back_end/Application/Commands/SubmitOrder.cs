@@ -19,6 +19,10 @@ namespace back_end.Application.Commands
 
         public bool createOrder(CreateOrderModel orderData)
         {
+            if (orderData.Products == null)
+            {
+                throw new ArgumentException("Products list cannot be null");
+            }   
             try
             {
                 return _ordersHandler.createOrder(orderData);
