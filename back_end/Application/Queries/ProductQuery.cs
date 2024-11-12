@@ -39,6 +39,8 @@ namespace back_end.Application.Queries
         public List<ProductsSearchModel> searchProducts(
             int startIndex, int maxResults, string? searchText)
         {
+            if (startIndex < 0)
+                throw new ArgumentException("startIndex must be greater than or equal to 0");
             if (searchText == null)
                 searchText = "";
             var products = productHandler.searchProducts(searchText, startIndex,
