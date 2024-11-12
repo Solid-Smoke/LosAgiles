@@ -1,9 +1,14 @@
 <template>
-    <MainNavbar />
-    <h1 class="display-4 text-center mb-4"><strong>Productos</strong></h1>
+    <template v-if="isClient">
+        <MainNavbar />
+    </template>
+    <template v-if="isAdmin">
+        <AdminNavbar />
+    </template>
+    <h1 class="display-4 text-center mb-4"><strong>Inventario</strong></h1>
     <div class="table-responsive-sm">
-        <table class="table table-striped table-hover">
-            <thead>
+        <table class="table-custom table-striped">
+            <thead class="table-header">
                 <tr>
                     <th scope="col">ID del Producto</th>
                     <th scope="col">Nombre</th>
@@ -11,22 +16,16 @@
                     <th scope="col">Precio</th>
                     <th scope="col">Stock</th>
                     <th scope="col">Perecedero</th>
-                    <th scope="col">Ver Detalles</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="product in products" :key="product.productID">
-                    <td>{{ product.productID }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.description }}</td>
-                    <td>{{ product.price }}</td>
-                    <td>{{ product.stock }}</td>
-                    <td>{{ product.perishable ? 'Sí' : 'No' }}</td>
-                    <td>
-                        <button class="btn btn-info">Accion 1</button>
-                        <button class="btn btn-info">Accion 2</button>
-                        <button class="btn btn-info">Accion 3</button>
-                    </td>
+                    <td class="table-cell">{{ product.productID }}</td>
+                    <td class="table-cell">{{ product.name }}</td>
+                    <td class="table-cell">{{ product.description }}</td>
+                    <td class="table-cell">{{ product.price }}</td>
+                    <td class="table-cell">{{ product.stock }}</td>
+                    <td class="table-cell">{{ product.isPerishable ? 'Sí' : 'No' }}</td>
                 </tr>
             </tbody>
         </table>
@@ -35,62 +34,76 @@
 
 <script>
     import MainNavbar from './MainNavbar.vue';
+    import AdminNavbar from './AdminNavbar.vue';
+    import { BackendUrl } from '../main.js';
     import axios from "axios";
 
     export default {
         components: {
-            MainNavbar
+            MainNavbar,
+            AdminNavbar
         },
         data() {
             return {
-                currentBusiness: {
-                    businessID: 0,
-                    name: '',
-                    idNumber: '',
-                    email: '',
-                    telephone: '',
-                    permissions: '',
-                },
+                currentBusinessId: "",
                 products: [
                     {
-                        "productID": 0,
-                        "name": "",
-                        "description": "",
-                        "price": 0,
-                        "stock": 0,
-                        "weight": 0.0,
-                        "perishable": false,
-                        "dailyAmount": 0,
-                        "daysAvailable": "",
-                        "businessID": 0,
-                        "productImage": null
-                    }
+                        productID: 1,
+                        name: "Product 1",
+                        description: "Description for Product 1",
+                        category: "Category A",
+                        price: 100,
+                        stock: 20,
+                        weight: 1.5,
+                        isPerishable: true,
+                        dailyAmount: 5,
+                        daysAvailable: "Mon-Sun",
+                        businessID: null,
+                    },
+                    {
+                        productID: 2,
+                        name: "Product 2",
+                        description: "Description for Product 2",
+                        category: "Category B",
+                        price: 200,
+                        stock: 10,
+                        weight: 2.0,
+                        isPerishable: false,
+                        dailyAmount: null,
+                        daysAvailable: "Tue-Sat",
+                        businessID: null,
+                    },
                 ],
 
             };
         },
         methods: {
             getBusinessInventory() {
-                axios.get("https://localhost:7168/api/ProductsByBusinessID", {
-                    params: { BusinessID: this.currentBusiness.businessID },
+                axios.get(`${BackendUrl}/Products/Business/${this.currentBusinessId}`, {
                 }).then(
                     (response) => {
                         this.products = response.data;
-                        console.log(this.products);
                     }
                 );
             },
         },
         created() {
-            this.currentBusiness.businessID = this.$route.query.businessID;
-            this.currentBusiness.name = this.$route.query.name;
-            this.currentBusiness.idNumber = this.$route.query.idNumber;
-            this.currentBusiness.email = this.$route.query.email;
-            this.currentBusiness.telephone = this.$route.query.telephone;
-            this.currentBusiness.permissions = this.$route.query.permissions;
+            this.currentBusinessId = this.$route.query.businessID;
             this.getBusinessInventory();
-        }
+        },
+        props: {
+            isAdmin: {
+                type: Boolean,
+                required: true,
+            },
+            isClient: {
+                type: Boolean,
+                required: true,
+            },
+        },
     };
 </script>
 
-<style></style>
+<style scoped>
+    @import '../styles/GeneralStyle.css';
+</style>

@@ -1,0 +1,5 @@
+USE [LosAgilesDB]
+GO
+
+DROP TABLE IF EXISTS Images;
+GO
