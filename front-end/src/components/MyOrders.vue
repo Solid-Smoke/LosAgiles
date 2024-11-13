@@ -14,6 +14,7 @@
                             <th scope="col">Estado de la orden</th>
                             <th scope="col">Dirección de entrega</th>
                             <th scope="col">Productos</th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,6 +32,15 @@
                                     Ver productos
                                 </button>
                             </td>
+                            <td v-if="order.status === 'Pendiente'">
+                                <button v-on:click="RejectOrder(order)" class="btn btn-danger">Cancelar orden</button>
+                            </td>
+                            <td v-else />
+                            <!--<td>
+                                    <button v-on:click="RejectOrder(order)" class="btn btn-danger" :disabled="order.status !== 'Pendiente'">
+                                        Cancelar orden
+                                    </button>
+                                </td>-->
                         </tr>
                     </tbody>
                 </table>
@@ -125,6 +135,15 @@
                 .catch((error) => {
                     console.log(error);
                 });
+            },
+            RejectOrder(order) {
+                axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             },
             formatDate(dateString) {
                 const date = new Date(dateString);
