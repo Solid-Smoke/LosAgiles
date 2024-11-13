@@ -32,19 +32,16 @@
                                     Ver productos
                                 </button>
                             </td>
-                            <td v-if="order.status === 'Pendiente'">
-                                <button v-on:click="RejectOrder(order)" class="btn btn-danger">Cancelar orden</button>
+                            <td>
+                                <button v-on:click="OpenWarningCancelOrderModal(order)" class="btn btn-danger" :disabled="order.status !== 'Pendiente'">
+                                    Cancelar orden
+                                </button>
                             </td>
-                            <td v-else />
-                            <!--<td>
-                                    <button v-on:click="RejectOrder(order)" class="btn btn-danger" :disabled="order.status !== 'Pendiente'">
-                                        Cancelar orden
-                                    </button>
-                                </td>-->
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <ActionModalWarning ref="warningCancelOrderModal" @confirmed="CancelOrder" />
         </template>
         <template v-else>
             <h3 class="text-center mb-4">Actualmente no tiene ordenes registradas</h3>
@@ -74,12 +71,14 @@
 
 <script>
     import MainNavbar from './MainNavbar.vue';
+    import ActionModalWarning from './ActionModalWarning.vue';
     import { BackendUrl } from '../main.js';
     import axios from "axios";
 
     export default {
         components: {
             MainNavbar,
+            ActionModalWarning,
         },
         data() {
             return {
@@ -89,6 +88,7 @@
                 selectedProducts: [],
                 selectedAddress: null,
                 hasOrders: false,
+                orderIDToDelete: 0,
                 orders: [
                     {
                         orderID: 0,
@@ -136,8 +136,12 @@
                     console.log(error);
                 });
             },
-            RejectOrder(order) {
-                axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
+            OpenWarningCancelOrderModal(order) {
+                this.orderIDToDelete = order.orderID;
+                this.$refs.warningCancelOrderModal.openModal("Está seguro de que desea cancelar la orden? (Esta accion es irreversible)");
+            },
+            CancelOrder() {
+                axios.put(`${BackendUrl}/Order/RejectOrder/${this.orderIDToDelete}`)
                     .then(() => {
                         window.location.reload();
                     })
