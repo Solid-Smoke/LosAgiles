@@ -60,9 +60,9 @@ namespace back_end.APIS
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> createOrder(CreateOrderModel orderData)
+        public async Task<ActionResult<bool>> CreateOrder(CreateOrderModel orderData)
         {
-            return orderCommand.createOrder(orderData);
+            return orderCommand.CreateOrder(orderData);
         }
     }
 }
