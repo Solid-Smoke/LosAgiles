@@ -23,7 +23,7 @@ namespace Tests
             var orderData = new CreateOrderModel();
             orderData.Products = null;
 
-            Assert.Throws<ArgumentException>(() => orderSubmitter.createOrder(orderData));           
+            Assert.Throws<ArgumentException>(() => orderSubmitter.CreateOrder(orderData));           
         }
 
     }
