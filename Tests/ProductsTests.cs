@@ -38,7 +38,7 @@ namespace back_end.Tests
             _mockProductHandler.Setup(handler => handler.CreateProduct(It.IsAny<ProductModel>())).Returns(true);
 
             // Act
-            var result = await _productCommand.createProduct(product, mockHttpRequest.Object);
+            var result = await _productCommand.CreateProduct(product, mockHttpRequest.Object);
 
             // Assert
             Assert.IsTrue(result);
