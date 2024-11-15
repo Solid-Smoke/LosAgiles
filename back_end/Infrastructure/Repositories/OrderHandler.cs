@@ -72,10 +72,13 @@ namespace back_end.Infrastructure.Repositories {
         {
             
             return sqlConnection.QuerySingle<int>(
-                "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate, DeliveryCost)\r\n" +
+                "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate, DeliveryCost, SubtotalCost, TotalCost)\r\n" +
                 "OUTPUT INSERTED.OrderID\r\n" +
-                "VALUES (getdate(), @clientID, @deliveryAddressID, @deliveryDate, @deliveryCost)",
-                new { orderData.ClientID, deliveryAddressID = orderData.DeliveryAddress.AddressID, orderData.DeliveryDate, orderData.DeliveryCost }
+                "VALUES (getdate(), @clientID, @deliveryAddressID, @deliveryDate, @deliveryCost, @subtotalCost, @totalCost)",
+                new { 
+                    orderData.ClientID, deliveryAddressID = orderData.DeliveryAddress.AddressID, orderData.DeliveryDate, orderData.DeliveryCost,
+                    orderData.SubtotalCost, orderData.TotalCost
+                }
             );
         }
 

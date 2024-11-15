@@ -8,5 +8,7 @@
         public List<CreateOrderProductsModel> Products { get; set; }
         public string DeliveryDate { get; set; }
         public float DeliveryCost { get; set; }
+        public float SubtotalCost { get; set; }
+        public float TotalCost { get; set; }
     }
 }
