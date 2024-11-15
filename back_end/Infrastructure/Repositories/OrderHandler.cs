@@ -13,7 +13,7 @@ namespace back_end.Infrastructure.Repositories {
             this.sqlConnection = sqlConnection;
         }
 
-        private int substractProductsStock(List<CreateOrderProductsModel> products)
+        private int SubstractProductsStock(List<CreateOrderProductsModel> products)
         {
             int rowsAffected = 0;
             foreach (var product in products)
@@ -25,19 +25,19 @@ namespace back_end.Infrastructure.Repositories {
             return rowsAffected;
         }
 
-        public bool createOrder(CreateOrderModel orderData)
+        public bool CreateOrder(CreateOrderModel orderData)
         {
             sqlConnection.Open();
             sqlConnection.Execute("BEGIN TRAN");
             try
             {
-                int? orderID = insertInOrders(orderData);
+                int? orderID = InsertInOrders(orderData);
                 if (orderID == null)
                     throw new Exception("Inserted OrderID is null");
                 Console.WriteLine("Inserted orderID in transaction: " + orderID);
-                bool insertedInOrderProducts = insertInOrderProducts((int)orderID, orderData.Products);
-                bool InsertedInBusinessOrders = insertInBusinessOrders((int)orderID, orderData.Products);
-                int rowsAffected = substractProductsStock(orderData.Products);
+                bool insertedInOrderProducts = InsertInOrderProducts((int)orderID, orderData.Products);
+                bool InsertedInBusinessOrders = InsertInBusinessOrders((int)orderID, orderData.Products);
+                int rowsAffected = SubstractProductsStock(orderData.Products);
                 sqlConnection.Execute("COMMIT");
                 sqlConnection.Close();
                 return true;
@@ -50,7 +50,7 @@ namespace back_end.Infrastructure.Repositories {
             }
         }
 
-        private bool insertInBusinessOrders(int orderID, List<CreateOrderProductsModel> products)
+        private bool InsertInBusinessOrders(int orderID, List<CreateOrderProductsModel> products)
         {
             var insertList = new List<object>();
             foreach (var product in products)
@@ -60,7 +60,7 @@ namespace back_end.Infrastructure.Repositories {
                 insertList) > 0;
         }
 
-        private bool insertInOrderProducts(int orderID, List<CreateOrderProductsModel> products)
+        private bool InsertInOrderProducts(int orderID, List<CreateOrderProductsModel> products)
         {
             var insertList = new List<object>();
             foreach (var product in products)
@@ -68,11 +68,11 @@ namespace back_end.Infrastructure.Repositories {
             return sqlConnection.Execute("INSERT INTO OrderProducts (ProductId, OrderID, Amount) VALUES (@ProductId, @orderID, @Ammount)", insertList) > 0;
         }
 
-        private int insertInOrders(CreateOrderModel orderData)
+        private int InsertInOrders(CreateOrderModel orderData)
         {
             
             return sqlConnection.QuerySingle<int>(
-                "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate)\r\n" +
+                "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate, DeliveryCost)\r\n" +
                 "OUTPUT INSERTED.OrderID\r\n" +
                 "VALUES (getdate(), @clientID, @deliveryAddressID, @deliveryDate, @deliveryCost)",
                 new { orderData.ClientID, deliveryAddressID = orderData.DeliveryAddress.AddressID, orderData.DeliveryDate, orderData.DeliveryCost }
