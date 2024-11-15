@@ -1,0 +1,5 @@
+USE LosAgilesDB
+GO
+
+ALTER TABLE Orders ADD DeliveryCost DECIMAL(10,2) NOT NULL DEFAULT 0
+GO
