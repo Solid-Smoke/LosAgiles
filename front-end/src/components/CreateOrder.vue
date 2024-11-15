@@ -162,7 +162,10 @@
                         clientID: this.userID,
                         deliveryAddress: this.orderAddressSelected,
                         products: orderProducts,
-                        deliveryDate: this.selectedDeliveryDate
+                        deliveryDate: this.selectedDeliveryDate,
+                        deliveryCost: this.deliveryCost,
+                        subtotalCost: this.totalPrice,
+                        totalCost: this.totalOrderAmmount
                     })
                     .then(() => this.clearCart())
                     .catch(function (error) {
