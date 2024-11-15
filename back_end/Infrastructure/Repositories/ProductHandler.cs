@@ -16,7 +16,7 @@ namespace back_end.Infrastructure.Repositories
             this.sqlConnection = sqlConnection;
         }
 
-        public List<InventoryItem> getProductsByBusinessID(string businessID)
+        public List<InventoryItem> GetProductsByBusinessID(string businessID)
         {
             List<InventoryItem> businessData = new List<InventoryItem>();
             string query = "SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID";
@@ -51,14 +51,14 @@ namespace back_end.Infrastructure.Repositories
             return businessData;
         }
 
-        private void runCommand(SqlCommand command)
+        private void RunCommand(SqlCommand command)
         {
             sqlConnection.Open();
             command.ExecuteNonQuery();
             sqlConnection.Close();
         }
 
-        private DataTable createTableResult(string query)
+        private DataTable CreateTableResult(string query)
         {
             SqlCommand selectCommand = new SqlCommand(query, sqlConnection);
             SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
@@ -89,7 +89,7 @@ namespace back_end.Infrastructure.Repositories
             commandProduct.Parameters.AddWithValue("@BusinessID", product.BusinessID);
             commandProduct.Parameters.AddWithValue("@ProductImage", (object)product.ProductImage ?? DBNull.Value);
 
-            runCommand(commandProduct);
+            RunCommand(commandProduct);
             return true;
         }
 
@@ -97,7 +97,7 @@ namespace back_end.Infrastructure.Repositories
         {
             List<ProductModel> products = new List<ProductModel>();
             string query = "SELECT * FROM Products";
-            DataTable tableQueryResult = createTableResult(query);
+            DataTable tableQueryResult = CreateTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {
                 products.Add(
@@ -120,8 +120,7 @@ namespace back_end.Infrastructure.Repositories
             return products;
         }
 
-
-        private List<T> dapperSelectQuery<T>(string query, object parameters)
+        private List<T> DapperSelectQuery<T>(string query, object parameters)
         {
             sqlConnection.Open();
             List<T> result = sqlConnection.Query<T>(query, parameters)
@@ -130,7 +129,7 @@ namespace back_end.Infrastructure.Repositories
             return result;
         }
 
-        private int dapperCountQuery(string query, object parameters)
+        private int DapperCountQuery(string query, object parameters)
         {
             sqlConnection.Open();
             int result = sqlConnection.Query<int>(query, parameters)
@@ -139,7 +138,7 @@ namespace back_end.Infrastructure.Repositories
             return result;
         }
 
-        public List<ProductsSearchModel> searchProducts(string searchText,
+        public List<ProductsSearchModel> SearchProducts(string searchText,
                 int startIndex, int maxResults)
         {
             string query = "SELECT Products.ProductID, " +
@@ -154,7 +153,7 @@ namespace back_end.Infrastructure.Repositories
                            "OFFSET @startIndex ROWS\r\n" +
                            "FETCH NEXT @maxResults ROWS ONLY";
 
-            return dapperSelectQuery<ProductsSearchModel>(query,
+            return DapperSelectQuery<ProductsSearchModel>(query,
                 new
                 {
                     searchText = "%" + searchText + "%",
@@ -163,7 +162,7 @@ namespace back_end.Infrastructure.Repositories
                 });
         }
 
-        public int countProductsBySearch(string searchText)
+        public int CountProductsBySearch(string searchText)
         {
             string query = "SELECT count(*)\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
@@ -171,7 +170,7 @@ namespace back_end.Infrastructure.Repositories
                            "WHERE Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
                            "OR Products.Category LIKE @searchText\r\n";
-            return dapperCountQuery(query,
+            return DapperCountQuery(query,
                 new { searchText = "%" + searchText + "%", });
         }
 
@@ -183,7 +182,7 @@ namespace back_end.Infrastructure.Repositories
                 INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
                 WHERE ProductID = {id}";
 
-            DataTable tableQueryResult = createTableResult(query);
+            DataTable tableQueryResult = CreateTableResult(query);
 
             if (tableQueryResult.Rows.Count == 0)
             {
@@ -208,6 +207,88 @@ namespace back_end.Infrastructure.Repositories
                 BusinessName = Convert.ToString(column["BusinessName"]),
                 ProductImage = column["ProductImage"] as byte[]
             };
+        }
+
+        public List<int> GetInOrderProductsIds(List<int> productIds)
+        {
+            return sqlConnection.Query<int>("SELECT ProductID FROM OrderProducts WHERE ProductID IN @productIds",
+                new { productIds }).ToList();
+        }
+
+        public List<int> GetInShoppingCartProductsIds(List<int> productIds)
+        {
+            return sqlConnection.Query<int>("SELECT ProductID FROM ShoppingCarts WHERE ProductID IN @productIds",
+                new { productIds }).ToList();
+        }
+
+        public bool HardDeleteProducts(List<int> productIds)
+        {
+            DataTable productIdsTable = new DataTable();
+            productIdsTable.Columns.Add("Value", typeof(int));
+            foreach (int id in productIds)
+            {
+                productIdsTable.Rows.Add(id);
+            }
+
+            var parameter = new SqlParameter("@productIds", SqlDbType.Structured)
+            {
+                TypeName = "dbo.IntList",
+                Value = productIdsTable
+            };
+            SqlCommand command = new SqlCommand("EXEC spProductsHardDelete @productIds", sqlConnection);
+            command.Parameters.Add(parameter);
+            int rowsAffected = command.ExecuteNonQuery();
+            return rowsAffected == productIds.Count;
+        }
+
+        public bool SoftDeleteProducts(List<int> productIds)
+        {
+            int rowsAffected = 0;
+            foreach (int productId in productIds)
+            {
+                rowsAffected += sqlConnection.Execute("UPDATE Products SET Products.IsDeleted = 1 WHERE ProductId = @productId", new { productId });
+            }
+            return rowsAffected == productIds.Count;
+        }
+
+        public void OpenSqlConnection()
+        {
+            if (sqlConnection.State == ConnectionState.Closed)
+            {
+                sqlConnection.Open();
+            }
+        }
+
+        public void CloseSqlConnection()
+        {
+            if (sqlConnection.State == ConnectionState.Open)
+            {
+                sqlConnection.Close();
+            }
+        }
+
+        public void BeginReadCommittedTransaction()
+        {
+            if (sqlConnection.State == ConnectionState.Open)
+            {
+                sqlConnection.Execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED; BEGIN TRANSACTION;");
+            }
+        }
+
+        public void RollbackTransaction()
+        {
+            if (sqlConnection.State == ConnectionState.Open)
+            {
+                sqlConnection.Execute("ROLLBACK");
+            }
+        }
+
+        public void CommitTransaction()
+        {
+            if (sqlConnection.State == ConnectionState.Open)
+            {
+                sqlConnection.Execute("COMMIT");
+            }
         }
     }
 }

@@ -11,11 +11,13 @@ namespace back_end.APIS
     public class ProductsController : ControllerBase
     {
         private readonly ProductCommand _productCommand;
+        private readonly ProductDelete _productDeleteCommand;
         private readonly IProductQuery productQuery;
 
         public ProductsController(IProductQuery productQuery, IProductHandler productHandler)
         {
             this.productQuery = productQuery;
+            this._productDeleteCommand = new ProductDelete(productHandler);
             this._productCommand = new ProductCommand(productHandler);
         }
 
@@ -24,7 +26,7 @@ namespace back_end.APIS
         {
             try
             {
-                var result = await _productCommand.createProduct(product, Request);
+                var result = await _productCommand.CreateProduct(product, Request);
                 return new JsonResult(result);
             }
             catch (Exception)
@@ -48,17 +50,17 @@ namespace back_end.APIS
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductsSearchModel>>> searchProducts(
+        public async Task<ActionResult<List<ProductsSearchModel>>> SearchProducts(
             int startIndex, int maxResults, string? searchText)
         {
             return productQuery.
-                searchProducts(startIndex, maxResults, searchText);
+                SearchProducts(startIndex, maxResults, searchText);
         }
 
         [HttpGet("CountProductsBySearch")]
-        public async Task<ActionResult<int>> countProductsBySearch(string? searchText)
+        public async Task<ActionResult<int>> CountProductsBySearch(string? searchText)
         {
-            return productQuery.countProductsBySearch(searchText);
+            return productQuery.CountProductsBySearch(searchText);
         }
 
         [HttpGet("{id}")]
@@ -96,6 +98,19 @@ namespace back_end.APIS
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error obteniendo productos por Business ID.");
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeleteProducts(List<int> productsIds)
+        {
+            try
+            {
+                return _productDeleteCommand.DeleteProducts(productsIds);
+            }
+            catch (Exception ex)
+            {                
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error eliminando productos.");
             }
         }
     }
