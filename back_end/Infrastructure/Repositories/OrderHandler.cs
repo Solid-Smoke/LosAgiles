@@ -1,11 +1,14 @@
-﻿using back_end.Domain;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
+using Dapper;
 using System.Data;
 using System.Data.SqlClient;
-using back_end.Application.Interfaces;
-using Dapper;
+using System.Reflection.PortableExecutable;
 
-namespace back_end.Infrastructure.Repositories {
-    public class OrderHandler : IOrderHandler {
+namespace back_end.Infrastructure.Repositories
+{
+    public class OrderHandler : IOrderHandler
+    {
         private readonly SqlConnection sqlConnection;
 
         public OrderHandler(SqlConnection sqlConnection)
@@ -70,29 +73,40 @@ namespace back_end.Infrastructure.Repositories {
 
         private int InsertInOrders(CreateOrderModel orderData)
         {
-            
+
             return sqlConnection.QuerySingle<int>(
                 "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate, DeliveryCost, SubtotalCost, TotalCost)\r\n" +
                 "OUTPUT INSERTED.OrderID\r\n" +
                 "VALUES (getdate(), @clientID, @deliveryAddressID, @deliveryDate, @deliveryCost, @subtotalCost, @totalCost)",
-                new { 
-                    orderData.ClientID, deliveryAddressID = orderData.DeliveryAddress.AddressID, orderData.DeliveryDate, orderData.DeliveryCost,
-                    orderData.SubtotalCost, orderData.TotalCost
+                new
+                {
+                    orderData.ClientID,
+                    deliveryAddressID = orderData.DeliveryAddress.AddressID,
+                    orderData.DeliveryDate,
+                    orderData.DeliveryCost,
+                    orderData.SubtotalCost,
+                    orderData.TotalCost
                 }
             );
         }
 
-        public List<OrderModel> GetPendingOrders() {
+        public List<OrderModel> GetPendingOrders()
+        {
             List<OrderModel> OrderData = new List<OrderModel>();
             string query = "SELECT * FROM [udfGetPendingOrders]()";
-            try {
-                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
                     sqlConnection.Open();
 
-                    using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
-                        while (reader.Read()) {
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
                             OrderData.Add(
-                                new OrderModel {
+                                new OrderModel
+                                {
                                     OrderID = Convert.ToInt32(reader["OrderID"]),
                                     Buyer = reader["Buyer"].ToString(),
                                     CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
@@ -104,31 +118,39 @@ namespace back_end.Infrastructure.Repositories {
                     sqlConnection.Close();
                 }
             }
-            catch (SqlException sqlEx) {
+            catch (SqlException sqlEx)
+            {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error: {ex.Message}");
             }
             return OrderData;
         }
 
-        public List<OrderModel> GetOrdersByClientID(string clientID) {
+        public List<OrderModel> GetOrdersByClientID(string clientID)
+        {
             List<OrderModel> OrderData = new List<OrderModel>();
             string query = "SELECT * FROM udfOrdersByClientID(@ClientID);";
-            try {
-                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
                     sqlCommand.Parameters.AddWithValue("@ClientID", clientID);
                     sqlConnection.Open();
 
-                    using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
-                        while (reader.Read()) {
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
                             OrderData.Add(
-                                new OrderModel {
+                                new OrderModel
+                                {
                                     OrderID = Convert.ToInt32(reader["OrderID"]),
                                     CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
                                     DeliveryDate = reader["DeliveryDate"] != DBNull.Value
-                                    ? Convert.ToDateTime(reader["DeliveryDate"]) : (DateTime?)null,
+                                    ? Convert.ToDateTime(reader["DeliveryDate"]) : null,
                                     TotalAmount = Convert.ToInt32(reader["TotalAmount"]),
                                     Status = reader["Status"].ToString(),
                                     Address = reader["Address"].ToString()
@@ -138,27 +160,35 @@ namespace back_end.Infrastructure.Repositories {
                     sqlConnection.Close();
                 }
             }
-            catch (SqlException sqlEx) {
+            catch (SqlException sqlEx)
+            {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error: {ex.Message}");
             }
             return OrderData;
         }
 
-        public List<OrderProductsModel> GetProductsByOrderID(string orderID) {
+        public List<OrderProductsModel> GetProductsByOrderID(string orderID)
+        {
             List<OrderProductsModel> OrderProductsData = new List<OrderProductsModel>();
             string query = "SELECT * FROM [udfProductsByOrderID](@OrderID)";
-            try {
-                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
                     sqlCommand.Parameters.AddWithValue("@OrderID", orderID);
                     sqlConnection.Open();
 
-                    using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
-                        while (reader.Read()) {
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
                             OrderProductsData.Add(
-                                new OrderProductsModel {
+                                new OrderProductsModel
+                                {
                                     Amount = Convert.ToInt32(reader["Amount"]),
                                     ProductName = reader["Name"].ToString()
                                 });
@@ -167,19 +197,24 @@ namespace back_end.Infrastructure.Repositories {
                     sqlConnection.Close();
                 }
             }
-            catch (SqlException sqlEx) {
+            catch (SqlException sqlEx)
+            {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error: {ex.Message}");
             }
             return OrderProductsData;
         }
 
-        public bool ApproveOrder(string orderID) {
+        public bool ApproveOrder(string orderID)
+        {
             string query = "UPDATE [Orders] SET [Status] = 'Aprobada' WHERE [OrderId] = @OrderID";
-            try {
-                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
                     sqlCommand.Parameters.AddWithValue("@OrderID", orderID);
 
                     sqlConnection.Open();
@@ -189,16 +224,20 @@ namespace back_end.Infrastructure.Repositories {
                     return rowsAffected > 0;
                 }
             }
-            catch (SqlException sqlEx) {
+            catch (SqlException sqlEx)
+            {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
                 return false;
             }
         }
 
-        public bool RejectOrder(string orderID) {
+        public bool RejectOrder(string orderID)
+        {
             string query = "UPDATE [Orders] SET [Status] = 'Rechazada' WHERE [OrderId] = @OrderID";
-            try {
-                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
                     sqlCommand.Parameters.AddWithValue("@OrderID", orderID);
 
                     sqlConnection.Open();
@@ -208,9 +247,100 @@ namespace back_end.Infrastructure.Repositories {
                     return rowsAffected > 0;
                 }
             }
-            catch (SqlException sqlEx) {
+            catch (SqlException sqlEx)
+            {
                 Console.WriteLine($"SQL Error: {sqlEx.Message}");
                 return false;
+            }
+        }
+
+        /*public bool GetOrderProducts(string orderIDs, out List<ReportOrderProductData> orderProducts)
+        {
+            orderProducts = new List<ReportOrderProductData>();
+
+            try
+            {
+                orderProducts = FetchOrderProducts(orderIDs);
+                return true;
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        private List<ReportOrderProductData> FetchOrderProducts(string orderIDs)
+        {
+            var orderProducts = new List<ReportOrderProductData>();
+            var queryResultTable = new DataTable();
+
+            string query = @"SELECT 
+                                [op].OrderID, [op].Amount, [b].[Name] as BusinessName
+                             FROM 
+                                [OrderProducts] [op]
+                             INNER JOIN 
+                                [Products] [p] ON [p].[ProductID] = [op].[ProductID]
+                             INNER JOIN 
+                                [Businesses] [b] ON [b].[BusinessID] = [p].[BusinessID]
+                             WHERE
+                                [op].OrderID IN (" + orderIDs + ")";
+
+            using (var sqlCommand = new SqlCommand(query, sqlConnection))
+            {
+                sqlConnection.Open();
+                using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(sqlCommand))
+                {
+                    sqlAdapter.Fill(queryResultTable);
+                }
+            }
+
+            foreach (DataRow row in queryResultTable.Rows)
+            {
+                var orderProductData = MapOrderProductData(row);
+                orderProducts.Add(orderProductData);
+            }
+            return orderProducts;
+        }
+
+        private ReportOrderProductData MapOrderProductData(DataRow row)
+        {
+            return new ReportOrderProductData
+            {
+                OrderID = Convert.ToInt32(row["OrderID"]),
+                Amount = Convert.ToInt32(row["Amount"]),
+                BusinessName = row["BusinessName"] != DBNull.Value ? Convert.ToString(row["BusinessName"]) : ""
+            };
+        }*/
+
+        public bool GetOrderReportData(string query, out DataTable reportData)
+        {
+            reportData = new DataTable();
+            try
+            {
+                using (var sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlConnection.Open();
+                    using (var sqlAdapter = new SqlDataAdapter(sqlCommand))
+                    {
+                        sqlAdapter.Fill(reportData);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing query: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
         }
     }
