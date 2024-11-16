@@ -267,11 +267,11 @@ namespace back_end.Infrastructure.Repositories
             }
         }
 
-        public void BeginReadCommittedTransaction()
+        public void BeginReadUncommittedTransaction()
         {
             if (sqlConnection.State == ConnectionState.Open)
             {
-                sqlConnection.Execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED; BEGIN TRANSACTION;");
+                sqlConnection.Execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; BEGIN TRANSACTION;");
             }
         }
 

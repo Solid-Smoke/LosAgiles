@@ -15,7 +15,7 @@ namespace back_end.Application.Interfaces
         bool SoftDeleteProducts(List<int> productIds);
         void OpenSqlConnection();
         void CloseSqlConnection();
-        void BeginReadCommittedTransaction();
+        void BeginReadUncommittedTransaction();
         void RollbackTransaction();
         void CommitTransaction();
         List<int> GetInShoppingCartProductsIds(List<int> productIds);

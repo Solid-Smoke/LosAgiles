@@ -19,7 +19,7 @@ namespace back_end.Application.Commands
             List<int> productsInShoppingCarts = productHandler.GetInShoppingCartProductsIds(productIds).Distinct().ToList();
             List<int> productsNotInOrdersNorShoppingCarts = productIds.Except(productsInOrders).Except(productsInShoppingCarts).ToList();
             productHandler.OpenSqlConnection();
-            productHandler.BeginReadCommittedTransaction();
+            productHandler.BeginReadUncommittedTransaction();
             try
             {
                 if (productsInOrders.Count > 0)

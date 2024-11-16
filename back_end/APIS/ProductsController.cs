@@ -102,7 +102,7 @@ namespace back_end.APIS
         }
 
         [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteProducts(List<int> productsIds)
+        public async Task<ActionResult<bool>> DeleteProducts([FromBody] List<int> productsIds)
         {
             try
             {
