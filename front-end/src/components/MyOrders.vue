@@ -1,4 +1,4 @@
-<template>
+ï»¿<template>
     <template v-if="isClient">
         <MainNavbar />
         <h1 class="display-4 text-center mb-4"><strong>Mis ordenes</strong></h1>
@@ -8,11 +8,11 @@
                     <thead>
                         <tr>
                             <th scope="col"># de orden</th>
-                            <th scope="col">Fecha de creación</th>
+                            <th scope="col">Fecha de creaciÃ³n</th>
                             <th scope="col">Fecha de entrega</th>
                             <th scope="col">Monto total</th>
                             <th scope="col">Estado de la orden</th>
-                            <th scope="col">Dirección de entrega</th>
+                            <th scope="col">DirecciÃ³n de entrega</th>
                             <th scope="col">Productos</th>
                         </tr>
                     </thead>
@@ -21,10 +21,10 @@
                             <td>{{ order.orderID }}</td>
                             <td>{{ formatDate(order.createdDate) }}</td>
                             <td>{{ order.deliveryDate ? formatDate(order.deliveryDate) : '-' }}</td>
-                            <td>{{ order.totalAmount }}</td>
+                            <td class="text-end pe-5">â‚¡ {{ order.totalAmount }}</td>
                             <td>{{ order.status }}</td>
                             <td>
-                                <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
+                                <button v-on:click="showAddress(order)" class="btn btn-info">Ver direcciÃ³n</button>
                             </td>
                             <td>
                                 <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
@@ -50,7 +50,7 @@
             </template>
         </b-modal>
 
-        <b-modal v-model="AddressModal" centered scrollable hide-footer title="Dirección de la orden">
+        <b-modal v-model="AddressModal" centered scrollable hide-footer title="DirecciÃ³n de la orden">
             <template v-if="true">
                 <p>{{ selectedAddress }}</p>
             </template>
