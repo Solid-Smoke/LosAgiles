@@ -81,7 +81,38 @@ namespace back_end.Infrastructure.Repositories {
 
         public List<OrderModel> GetPendingOrders() {
             List<OrderModel> OrderData = new List<OrderModel>();
-            string query = "SELECT * FROM [udfGetPendingOrders]()";
+            string query = "SELECT * FROM [udfGetOrdersByStatus]('Pendiente')";
+            try {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
+                    sqlConnection.Open();
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader()) {
+                        while (reader.Read()) {
+                            OrderData.Add(
+                                new OrderModel {
+                                    OrderID = Convert.ToInt32(reader["OrderID"]),
+                                    Buyer = reader["Buyer"].ToString(),
+                                    CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                                    TotalAmount = Convert.ToInt32(reader["TotalAmount"]),
+                                    Address = reader["Address"].ToString()
+                                });
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException sqlEx) {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            return OrderData;
+        }
+
+        public List<OrderModel> GetApprovedOrders() {
+            List<OrderModel> OrderData = new List<OrderModel>();
+            string query = "SELECT * FROM [udfGetOrdersByStatus]('Aprobada')";
             try {
                 using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection)) {
                     sqlConnection.Open();
