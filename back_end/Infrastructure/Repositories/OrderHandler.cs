@@ -65,7 +65,11 @@ namespace back_end.Infrastructure.Repositories {
             var insertList = new List<object>();
             foreach (var product in products)
                 insertList.Add(new { product.ProductID, orderID, product.Ammount });
-            return sqlConnection.Execute("INSERT INTO OrderProducts (ProductId, OrderID, Amount) VALUES (@ProductId, @orderID, @Ammount)", insertList) > 0;
+            int rowsAffected = sqlConnection.Execute("INSERT INTO OrderProducts (ProductId, OrderID, Amount) VALUES (@ProductId, @orderID, @Ammount)", insertList);
+            if (rowsAffected != products.Count)
+                throw new Exception("A product of the order was deleted while saving the order products data");
+            else
+                return true;
         }
 
         private int insertInOrders(int? clientID, ClientsAddress deliveryAddress, string deliveryDate)

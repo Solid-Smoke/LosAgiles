@@ -23,17 +23,9 @@ BEGIN
 			DELETE FROM Products WHERE current of @rowProducts
 		END try
         BEGIN catch
-			DECLARE @foreign_key_error INT = 547
-            IF ERROR_NUMBER() = @foreign_key_error
-            BEGIN
-				UPDATE Products SET Products.IsDeleted = 1 WHERE current of @rowProducts
-			END
-			ELSE
-            BEGIN
-                ROLLBACK;
-                close @rowProducts;
-				THROW;
-			END
+			ROLLBACK;
+            close @rowProducts;
+            THROW;
 		END catch
         SET @i += 1
     END

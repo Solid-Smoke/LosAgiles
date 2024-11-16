@@ -19,7 +19,7 @@ namespace back_end.Infrastructure.Repositories
         public List<InventoryItem> GetProductsByBusinessID(string businessID)
         {
             List<InventoryItem> businessData = new List<InventoryItem>();
-            string query = "SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID";
+            string query = "SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID AND IsDeleted = 0";
 
             using (SqlCommand command = new SqlCommand(query, sqlConnection))
             {
@@ -96,7 +96,7 @@ namespace back_end.Infrastructure.Repositories
         public List<ProductModel> GetAllProducts()
         {
             List<ProductModel> products = new List<ProductModel>();
-            string query = "SELECT * FROM Products";
+            string query = "SELECT * FROM Products WHERE IsDeleted = 0";
             DataTable tableQueryResult = CreateTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {
@@ -146,9 +146,9 @@ namespace back_end.Infrastructure.Repositories
                            "Businesses.Name AS BusinessName, ProductImage\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "WHERE IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
-                           "OR Products.Category LIKE @searchText\r\n" +
+                           "OR Products.Category LIKE @searchText)\r\n" +
                            "ORDER BY Products.ProductID\r\n" +
                            "OFFSET @startIndex ROWS\r\n" +
                            "FETCH NEXT @maxResults ROWS ONLY";
@@ -167,9 +167,9 @@ namespace back_end.Infrastructure.Repositories
             string query = "SELECT count(*)\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "WHERE IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
-                           "OR Products.Category LIKE @searchText\r\n";
+                           "OR Products.Category LIKE @searchText)\r\n";
             return DapperCountQuery(query,
                 new { searchText = "%" + searchText + "%", });
         }
@@ -180,7 +180,7 @@ namespace back_end.Infrastructure.Repositories
                 SELECT p.*, b.Name AS BusinessName, dbo.ConvertDaysToFullNames(p.DaysAvailable) AS DaysAvailableFull
                 FROM Products p
                 INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
-                WHERE ProductID = {id}";
+                WHERE ProductID = {id} AND IsDeleted = 0";
 
             DataTable tableQueryResult = CreateTableResult(query);
 
@@ -211,13 +211,13 @@ namespace back_end.Infrastructure.Repositories
 
         public List<int> GetInOrderProductsIds(List<int> productIds)
         {
-            return sqlConnection.Query<int>("SELECT ProductID FROM OrderProducts WHERE ProductID IN @productIds",
+            return sqlConnection.Query<int>("SELECT ProductID FROM OrderProducts WHERE (ProductID IN @productIds)",
                 new { productIds }).ToList();
         }
 
         public List<int> GetInShoppingCartProductsIds(List<int> productIds)
         {
-            return sqlConnection.Query<int>("SELECT ProductID FROM ShoppingCarts WHERE ProductID IN @productIds",
+            return sqlConnection.Query<int>("SELECT ProductID FROM ShoppingCarts WHERE (ProductID IN @productIds)",
                 new { productIds }).ToList();
         }
 
@@ -246,7 +246,8 @@ namespace back_end.Infrastructure.Repositories
             int rowsAffected = 0;
             foreach (int productId in productIds)
             {
-                rowsAffected += sqlConnection.Execute("UPDATE Products SET Products.IsDeleted = 1 WHERE ProductId = @productId", new { productId });
+                rowsAffected += sqlConnection.Execute("UPDATE Products SET Products.IsDeleted = 1" +
+                    "WHERE ProductId = @productId AND IsDeleted = 0", new { productId });
             }
             return rowsAffected == productIds.Count;
         }

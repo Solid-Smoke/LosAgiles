@@ -17,7 +17,7 @@ namespace back_end.Application.Commands
             bool softDeletedSuccessfull = false;
             List<int> productsInOrders = productHandler.GetInOrderProductsIds(productIds).Distinct().ToList();
             List<int> productsInShoppingCarts = productHandler.GetInShoppingCartProductsIds(productIds).Distinct().ToList();
-            List<int> productsNotInOrdersNorShoppingCarts = productIds.Except(productsInOrders).Except(productsInShoppingCarts).ToList();
+            List<int> productsNotInOrders = productIds.Except(productsInOrders).ToList();
             productHandler.OpenSqlConnection();
             productHandler.BeginReadUncommittedTransaction();
             try
@@ -27,8 +27,8 @@ namespace back_end.Application.Commands
                 else
                     softDeletedSuccessfull = true;
 
-                if (productsNotInOrdersNorShoppingCarts.Count > 0)
-                    hardDeletedSuccessfull = productHandler.HardDeleteProducts(productsNotInOrdersNorShoppingCarts);
+                if (productsNotInOrders.Count > 0)
+                    hardDeletedSuccessfull = productHandler.HardDeleteProducts(productsNotInOrders);
                 else
                     hardDeletedSuccessfull = true;
             }
