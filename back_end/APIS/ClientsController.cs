@@ -59,10 +59,7 @@ namespace back_end.APIS
         {
             try
             {
-
-
                 List<ReportCompletedOrderData> reportData;
-                string orderIDs;
 
                 if (!DateTime.TryParse(startDate, out var start) || !DateTime.TryParse(endDate, out var end))
                 {
@@ -75,11 +72,11 @@ namespace back_end.APIS
                     StartDate = start,
                     EndDate = end
                 };
-                var success = generateCompletedOrdersReport.Execute(baseFilters, out reportData, out orderIDs);
+                var success = generateCompletedOrdersReport.Execute(baseFilters, out reportData);
 
                 if (success)
                 {
-                    return Ok(new { ReportData = reportData, OrderIDs = orderIDs });
+                    return Ok(reportData);
                 }
                 else
                 {

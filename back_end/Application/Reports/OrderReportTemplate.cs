@@ -57,16 +57,16 @@ public abstract class OrderReportTemplate<T> where T : ReportOrderData
         return orderReport;
     }
 
-    public List<ReportOrderProductData> GetOrderProducts(string orderIDs)
+    public bool GetOrderProducts(string orderIDs, out List<ReportOrderProductData> orderProducts)
     {
-        var orderProducts = new List<ReportOrderProductData>();
+        orderProducts = new List<ReportOrderProductData>();
         DataTable queryResultTable;
 
         try
         {
             if (!_orderHandler.GetOrderProductsData(orderIDs, out queryResultTable))
             {
-                return orderProducts;
+                return false;
             }
 
             foreach (DataRow row in queryResultTable.Rows)
@@ -74,13 +74,14 @@ public abstract class OrderReportTemplate<T> where T : ReportOrderData
                 var orderProductData = MapOrderProductData(row);
                 orderProducts.Add(orderProductData);
             }
+
+            return true;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error retrieving order products: {ex.Message}");
+            return false;
         }
-
-        return orderProducts;
     }
 
     private ReportOrderProductData MapOrderProductData(DataRow row)

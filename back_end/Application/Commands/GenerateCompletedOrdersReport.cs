@@ -6,17 +6,18 @@ namespace back_end.Application.Commands
 {
     public class GenerateCompletedOrdersReport
     {
-        private readonly CompletedOrderReport _completedOrderReport;
+        private readonly CompletedOrderReport completedOrderReport;
         public GenerateCompletedOrdersReport(
             IOrderHandler orderHandler)
         {
-            _completedOrderReport = new CompletedOrderReport(orderHandler);
+            completedOrderReport = new CompletedOrderReport(orderHandler);
         }
 
-        public bool Execute(ReportBaseFilters baseFilters, out List<ReportCompletedOrderData> reportData, out string orderIDs)
+        public bool Execute(ReportBaseFilters baseFilters, out List<ReportCompletedOrderData> reportData)
         {
+            List<ReportOrderProductData> orderProducts = new List<ReportOrderProductData>();
             reportData = new List<ReportCompletedOrderData>();
-            orderIDs = string.Empty;
+            string orderIDs = string.Empty;
 
             if (baseFilters == null || baseFilters.ClientID < 0)
             {
@@ -24,15 +25,29 @@ namespace back_end.Application.Commands
                 return false;
             }
 
-            try
+            if (!completedOrderReport.GetOrderReport(baseFilters, out reportData, out orderIDs))
             {
-                return _completedOrderReport.GetOrderReport(baseFilters, out reportData, out orderIDs);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al ejecutar el comando: {ex.Message}");
                 return false;
             }
+
+            if (!completedOrderReport.GetOrderProducts(orderIDs, out orderProducts))
+            {
+                return false;
+            }
+
+            foreach (var completedOrder in reportData)
+            {
+                var productsForCurrentOrder = orderProducts
+                    .Where(product => product.OrderID == completedOrder.OrderID)
+                    .ToList();
+
+                completedOrder.BusinessName = string.Join(", ", productsForCurrentOrder
+                    .Select(product => product.BusinessName)
+                    .Distinct());
+
+                completedOrder.Amount = productsForCurrentOrder.Sum(product => product.Amount);
+            }
+            return true;
         }
     }
 }
