@@ -11,15 +11,18 @@ namespace back_end.Application.Reports
         {
         }
 
-        protected override string GenerateQuery(int clientID)
+        protected override bool ExecuteReportQuery(ReportBaseFilters baseFilters, out DataTable queryResultTable)
         {
-            return @"SELECT 
-                        [o].OrderID, [o].CreatedDate, [o].DeliveryDate, [o].ReceivedDate, 
-                        [o].SubtotalCost, [o].DeliveryCost, [o].TotalCost
-                     FROM 
-                        [Orders] [o]
-                     WHERE
-                        [o].ClientID = @ClientID AND [o].Status = 'Completada'";
+            string query = @"SELECT 
+                                [o].OrderID, [o].CreatedDate, [o].DeliveryDate, [o].ReceivedDate,
+                                [o].SubtotalCost, [o].DeliveryCost, [o].TotalCost
+                             FROM 
+                                [Orders] [o]
+                            WHERE
+                                [o].ClientID = @ClientID 
+                                AND [o].ReceivedDate BETWEEN @StartDate AND @EndDate
+                                AND [o].Status = 'Completada'";
+            return _orderHandler.GetReportOrderData(query, baseFilters, out queryResultTable);
         }
 
         protected override ReportCompletedOrderData MapOrderData(DataRow row)

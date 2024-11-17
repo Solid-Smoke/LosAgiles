@@ -253,84 +253,59 @@ namespace back_end.Infrastructure.Repositories
                 return false;
             }
         }
-
-        /*public bool GetOrderProducts(string orderIDs, out List<ReportOrderProductData> orderProducts)
-        {
-            orderProducts = new List<ReportOrderProductData>();
-
-            try
-            {
-                orderProducts = FetchOrderProducts(orderIDs);
-                return true;
-            }
-            catch (SqlException sqlEx)
-            {
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return false;
-            }
-        }
-
-        private List<ReportOrderProductData> FetchOrderProducts(string orderIDs)
-        {
-            var orderProducts = new List<ReportOrderProductData>();
-            var queryResultTable = new DataTable();
-
-            string query = @"SELECT 
-                                [op].OrderID, [op].Amount, [b].[Name] as BusinessName
-                             FROM 
-                                [OrderProducts] [op]
-                             INNER JOIN 
-                                [Products] [p] ON [p].[ProductID] = [op].[ProductID]
-                             INNER JOIN 
-                                [Businesses] [b] ON [b].[BusinessID] = [p].[BusinessID]
-                             WHERE
-                                [op].OrderID IN (" + orderIDs + ")";
-
-            using (var sqlCommand = new SqlCommand(query, sqlConnection))
-            {
-                sqlConnection.Open();
-                using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(sqlCommand))
-                {
-                    sqlAdapter.Fill(queryResultTable);
-                }
-            }
-
-            foreach (DataRow row in queryResultTable.Rows)
-            {
-                var orderProductData = MapOrderProductData(row);
-                orderProducts.Add(orderProductData);
-            }
-            return orderProducts;
-        }
-
-        private ReportOrderProductData MapOrderProductData(DataRow row)
-        {
-            return new ReportOrderProductData
-            {
-                OrderID = Convert.ToInt32(row["OrderID"]),
-                Amount = Convert.ToInt32(row["Amount"]),
-                BusinessName = row["BusinessName"] != DBNull.Value ? Convert.ToString(row["BusinessName"]) : ""
-            };
-        }*/
-
-        public bool GetOrderReportData(string query, out DataTable reportData)
+        public bool GetReportOrderData(string query, ReportBaseFilters baseFilters, out DataTable reportData)
         {
             reportData = new DataTable();
             try
             {
                 using (var sqlCommand = new SqlCommand(query, sqlConnection))
                 {
+                    sqlCommand.Parameters.AddWithValue("@ClientID", baseFilters.ClientID);
+                    sqlCommand.Parameters.AddWithValue("@StartDate", baseFilters.StartDate);
+                    sqlCommand.Parameters.AddWithValue("@EndDate", baseFilters.EndDate);
                     sqlConnection.Open();
                     using (var sqlAdapter = new SqlDataAdapter(sqlCommand))
                     {
                         sqlAdapter.Fill(reportData);
                     }
                 }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing query: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+        public bool GetOrderProductsData(string orderIDs, out DataTable queryResultTable)
+        {
+            queryResultTable = new DataTable();
+            try
+            {
+                string query = $@"SELECT 
+                                    [op].OrderID, [op].Amount, [b].[Name] as BusinessName
+                                  FROM 
+                                    [OrderProducts] [op]
+                                  INNER JOIN 
+                                    [Products] [p] ON [p].[ProductID] = [op].[ProductID]
+                                  INNER JOIN 
+                                    [Businesses] [b] ON [b].[BusinessID] = [p].[BusinessID]
+                                  WHERE
+                                    [op].OrderID IN ({orderIDs})";
+
+                using (var sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlConnection.Open();
+                    using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(sqlCommand))
+                    {
+                        sqlAdapter.Fill(queryResultTable);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)

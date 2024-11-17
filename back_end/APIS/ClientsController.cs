@@ -1,4 +1,6 @@
-﻿using back_end.Domain;
+﻿using back_end.Application.Commands;
+using back_end.Application.Queries;
+using back_end.Domain;
 using back_end.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,6 +50,47 @@ namespace back_end.APIS
         {
             var userLogin = clientsHandler.Authenticate(UserName, UserPassword);
             return userLogin;
+        }
+
+        [HttpGet("{id}/ReportCompletedOrders")]
+        public ActionResult GenerateCompletedOrdersReport(
+            int id, string startDate, string endDate,
+            [FromServices] GenerateCompletedOrdersReport generateCompletedOrdersReport)
+        {
+            try
+            {
+
+
+                List<ReportCompletedOrderData> reportData;
+                string orderIDs;
+
+                if (!DateTime.TryParse(startDate, out var start) || !DateTime.TryParse(endDate, out var end))
+                {
+                    return BadRequest("Invalid date format.");
+                }
+
+                var baseFilters = new ReportBaseFilters
+                {
+                    ClientID = id,
+                    StartDate = start,
+                    EndDate = end
+                };
+                var success = generateCompletedOrdersReport.Execute(baseFilters, out reportData, out orderIDs);
+
+                if (success)
+                {
+                    return Ok(new { ReportData = reportData, OrderIDs = orderIDs });
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "Failed to generate the report.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

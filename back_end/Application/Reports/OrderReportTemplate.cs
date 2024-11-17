@@ -4,22 +4,29 @@ using System.Data;
 
 public abstract class OrderReportTemplate<T> where T : ReportOrderData
 {
-    private readonly IOrderHandler _orderHandler;
+    protected readonly IOrderHandler _orderHandler;
 
     public OrderReportTemplate(IOrderHandler orderHandler)
     {
         _orderHandler = orderHandler;
     }
 
-    public bool GetOrderReport(int clientID, out List<T> orderReport, out string orderIDs)
+    public bool GetOrderReport(ReportBaseFilters baseFilters,
+        out List<T> orderReport, out string orderIDs)
     {
         orderReport = new List<T>();
         orderIDs = string.Empty;
+        DataTable queryResultTable;
+
+        if (baseFilters == null || baseFilters.ClientID < 0)
+        {
+            Console.WriteLine("Error en el manejo de los filtros base del reporte...");
+            return false;
+        }
 
         try
         {
-            string query = GenerateQuery(clientID);
-            if (!_orderHandler.GetOrderReportData(query, out DataTable queryResultTable))
+            if (!ExecuteReportQuery(baseFilters, out queryResultTable))
             {
                 return false;
             }
@@ -33,8 +40,6 @@ public abstract class OrderReportTemplate<T> where T : ReportOrderData
             return false;
         }
     }
-
-    protected abstract string GenerateQuery(int clientID);
 
     private List<T> ProcessQueryResult(DataTable queryResultTable, out string orderIDs)
     {
@@ -52,5 +57,42 @@ public abstract class OrderReportTemplate<T> where T : ReportOrderData
         return orderReport;
     }
 
+    public List<ReportOrderProductData> GetOrderProducts(string orderIDs)
+    {
+        var orderProducts = new List<ReportOrderProductData>();
+        DataTable queryResultTable;
+
+        try
+        {
+            if (!_orderHandler.GetOrderProductsData(orderIDs, out queryResultTable))
+            {
+                return orderProducts;
+            }
+
+            foreach (DataRow row in queryResultTable.Rows)
+            {
+                var orderProductData = MapOrderProductData(row);
+                orderProducts.Add(orderProductData);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving order products: {ex.Message}");
+        }
+
+        return orderProducts;
+    }
+
+    private ReportOrderProductData MapOrderProductData(DataRow row)
+    {
+        return new ReportOrderProductData
+        {
+            OrderID = Convert.ToInt32(row["OrderID"]),
+            Amount = Convert.ToInt32(row["Amount"]),
+            BusinessName = row["BusinessName"] != DBNull.Value ? Convert.ToString(row["BusinessName"]) : ""
+        };
+    }
+
+    protected abstract bool ExecuteReportQuery(ReportBaseFilters baseFilters, out DataTable queryResultTable);
     protected abstract T MapOrderData(DataRow row);
 }
