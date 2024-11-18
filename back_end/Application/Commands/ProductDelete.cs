@@ -4,44 +4,60 @@ namespace back_end.Application.Commands
 {
     public class ProductDelete
     {
-        private readonly IProductHandler productHandler;
+        private readonly IProductDeleteHandler productDeleteHandler;
 
-        public ProductDelete(IProductHandler productHandler)
+        public ProductDelete(IProductDeleteHandler productHandler)
         {
-            this.productHandler = productHandler;
+            this.productDeleteHandler = productHandler;
         }
 
-        public bool DeleteProducts(List<int> productIds)
+        private void CheckIfAreProductsInActiveOrders(List<int> productIds)
         {
-            bool hardDeletedSuccessfull = false;
-            bool softDeletedSuccessfull = false;
-            List<int> productsInOrders = productHandler.GetInOrderProductsIds(productIds).Distinct().ToList();
-            List<int> productsInShoppingCarts = productHandler.GetInShoppingCartProductsIds(productIds).Distinct().ToList();
-            List<int> productsNotInOrders = productIds.Except(productsInOrders).ToList();
-            productHandler.OpenSqlConnection();
-            productHandler.BeginReadUncommittedTransaction();
+            List<int> activeOrdersProducts = productDeleteHandler.GetActiveOrderProductsIds(productIds).Distinct().ToList();
+            Exception cannotDeleteActiveOrdersProductsException = new Exception(
+                $"Cannot delete products that are in active orders. Conflicting product IDs: {activeOrdersProducts.ToString()}");
+            if (activeOrdersProducts.Count > 0)
+            {
+                cannotDeleteActiveOrdersProductsException.Data.Add("ProductIds", activeOrdersProducts);
+                throw cannotDeleteActiveOrdersProductsException;
+            }
+
+        }
+
+        private void ExecuteDeleteStatements(List<int> inactiveOrdersProducts, List<int> productsInShoppingCarts, List<int> productsNotInOrders)
+        {
+            if (inactiveOrdersProducts.Count > 0)
+                productDeleteHandler.SoftDelete(inactiveOrdersProducts);
+
+            if (productsNotInOrders.Count > 0)
+            {
+                if (productsInShoppingCarts.Count > 0)
+                    productDeleteHandler.DeleteFromShoppingCarts(productsInShoppingCarts);
+                productDeleteHandler.HardDelete(productsNotInOrders);
+            }
+        }
+
+        public void DeleteProducts(List<int> productIds)
+        {
+            productDeleteHandler.OpenSqlConnection();
+            productDeleteHandler.BeginSerializableTransaction();
+            CheckIfAreProductsInActiveOrders(productIds);
+            List<int> inactiveOrdersProducts = productDeleteHandler.GetInactiveOrderProductsIds(productIds).Distinct().ToList();
+            List<int> productsInShoppingCarts = productDeleteHandler.GetInShoppingCartProductsIds(productIds).Distinct().ToList();
+            List<int> productsNotInOrders = productIds.Except(inactiveOrdersProducts).ToList();
             try
             {
-                if (productsInOrders.Count > 0)
-                    softDeletedSuccessfull = productHandler.SoftDeleteProducts(productsInOrders);
-                else
-                    softDeletedSuccessfull = true;
-
-                if (productsNotInOrders.Count > 0)
-                    hardDeletedSuccessfull = productHandler.HardDeleteProducts(productsNotInOrders);
-                else
-                    hardDeletedSuccessfull = true;
+                ExecuteDeleteStatements(inactiveOrdersProducts, productsInShoppingCarts, productsNotInOrders);
             }
             catch (Exception ex)
             {
-                productHandler.RollbackTransaction();
-                productHandler.CloseSqlConnection();
-                Console.WriteLine($"Error deleting products: {ex.Message}. From method {ex.TargetSite}");
+                productDeleteHandler.RollbackTransaction();
+                productDeleteHandler.CloseSqlConnection();
+                Console.WriteLine($"Error deleting products: {ex.Message}");
                 throw;
             }
-            productHandler.CommitTransaction();
-            productHandler.CloseSqlConnection();
-            return hardDeletedSuccessfull && softDeletedSuccessfull;
+            productDeleteHandler.CommitTransaction();
+            productDeleteHandler.CloseSqlConnection();
         }
     }
 }
