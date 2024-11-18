@@ -78,14 +78,20 @@
                 &#10060; Error al borrar productos
             </div>
         </template>
-        <p class="my-4">
+        <p class="my-4" v-if="failedToDeleteProducts.length > 0">
             No se pudo realizar el borrado porque los siguientes productos están asociados a órdenes activas:
         </p>
-        <ul>
+        <ul v-if="failedToDeleteProducts.length > 0">
             <li v-for="product in failedToDeleteProducts" :key="product.productID">{{product.name}}</li>
         </ul>
-        <p class="my-4">
+        <p class="my-4" v-if="failedToDeleteProducts.length > 0">
             Intente de nuevo sin seleccionar los productos que están asociados a órdenes activas
+        </p>
+        <p class="my-4" v-else-if="isNetworkError">
+            No se pudo conectar con el servidor. Por favor, verifique su conexión a internet o intente de nuevo más tarde.
+        </p>
+        <p class="my-4" v-else>
+            Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.
         </p>
         <div class="d-flex justify-content-end">
             <b-button variant="btn btn-success btn-block" @click="refreshPage">Aceptar</b-button>
@@ -110,37 +116,12 @@ export default {
             showSuccessModal: false,
             showErrorModal: false,
             currentBusinessId: "",
-            products: [
-                {
-                    productID: 1,
-                    name: "Product 1",
-                    description: "Description for Product 1",
-                    category: "Category A",
-                    price: 100,
-                    stock: 20,
-                    weight: 1.5,
-                    isPerishable: true,
-                    dailyAmount: 5,
-                    daysAvailable: "Mon-Sun",
-                    businessID: null,
-                },
-                {
-                    productID: 2,
-                    name: "Product 2",
-                    description: "Description for Product 2",
-                    category: "Category B",
-                    price: 200,
-                    stock: 10,
-                    weight: 2.0,
-      
-                    daysAvailable: "Tue-Sat",
-                    businessID: null,
-                },
-            ],
+            products: [],
             selectAll: false,
             selectedProducts: [],
             showWarning: false,
             failedToDeleteProducts: [],
+            isNetworkError: false,
         };
     },
     methods: {
@@ -163,12 +144,18 @@ export default {
                 this.selectedProducts = []
             })
             .catch((error) => {
-                if (error.response && error.response.status === 409) {
-                    this.failedToDeleteProducts = this.products
-                        .filter(product => error.response.data.productsIdsFailedToDelete.includes(product.productID))
-                        .sort((a, b) => a.productID - b.productID);
+                console.log(error);
+                if (error.response) {
+                    if (error.response.status === 409) {
+                        this.failedToDeleteProducts = this.products
+                            .filter(product => error.response.data.productsIdsFailedToDelete.includes(product.productID))
+                            .sort((a, b) => a.productID - b.productID);
+                    } else if (error.response.status === 500) {
+                        this.failedToDeleteProducts = [];
+                    }
+                } else if (error.message && error.message.includes('Network Error')) {
+                    this.isNetworkError = true;
                 }
-                console.log("Error eliminando productos.");
                 this.showErrorModal = true;
             });
         },
