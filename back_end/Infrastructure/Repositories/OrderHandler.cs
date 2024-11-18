@@ -214,7 +214,7 @@ namespace back_end.Infrastructure.Repositories {
             }
         }
 
-        public List<OrderModel> GetOrdersExcludingCompleted()
+        public List<OrderModel> GetOrdersExcludingCompleted(int userID)
         {
             List<OrderModel> orders = new List<OrderModel>();
             string query = @"
@@ -223,12 +223,13 @@ namespace back_end.Infrastructure.Repositories {
                     Status, 
                     TotalCost
                 FROM Orders
-                WHERE Status != 'Completada'";
+                WHERE Status != 'Completada' AND ClientID = @UserID";
 
             try
             {
                 using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
                 {
+                    sqlCommand.Parameters.AddWithValue("@UserID", userID);
                     sqlConnection.Open();
 
                     using (SqlDataReader reader = sqlCommand.ExecuteReader())
@@ -257,5 +258,6 @@ namespace back_end.Infrastructure.Repositories {
             }
             return orders;
         }
+
     }
 }

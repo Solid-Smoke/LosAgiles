@@ -25,7 +25,7 @@
                 </b-list-group>
             </b-card>
 
-            <b-card class="ten-products mb-3" style="height: calc(50% - 1rem);">
+              <b-card class="ten-products mb-3" style="height: calc(50% - 1rem);">
                 <b-card-title>Últimos 10 Productos Comprados</b-card-title>
                 <b-list-group>
                     <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
@@ -90,8 +90,9 @@ export default {
       this.isSearchActive = true;
     },
     getOrdersInProgress() {
+    const userID = JSON.parse(localStorage.getItem('user'))?.[0]?.userID;
     axios
-        .get(`${BackendUrl}/Order/GetOrdersExcludingCompleted`)
+        .get(`${BackendUrl}/Order/GetOrdersExcludingCompleted/${userID}`)
         .then((response) => {
             console.log("Órdenes en progreso:", response.data);
             this.ordersInProgress = response.data;
@@ -126,7 +127,6 @@ export default {
     },
   },
   mounted() {
-    const clientID = JSON.parse(localStorage.getItem('user'))?.[0]?.userID;
     this.getProducts();
     this.getOrdersInProgress();
   },

@@ -12,9 +12,9 @@ namespace back_end.Application.Queries
             _orderHandler = orderHandler;
         }
 
-        public List<OrderModel> Execute()
+        public List<OrderModel> Execute(int userID)
         {
-            return _orderHandler.GetOrdersExcludingCompleted();
+            return _orderHandler.GetOrdersExcludingCompleted(userID);
         }
     }
 }

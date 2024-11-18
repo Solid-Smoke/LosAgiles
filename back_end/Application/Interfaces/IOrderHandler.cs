@@ -7,7 +7,7 @@ namespace back_end.Application.Interfaces
         List<OrderModel> GetPendingOrders();
         List<OrderModel> GetOrdersByClientID(string ClientID);
         List<OrderProductsModel> GetProductsByOrderID(string OrderID);
-        List<OrderModel> GetOrdersExcludingCompleted();
+        List<OrderModel> GetOrdersExcludingCompleted(int userID);
         bool ApproveOrder(string OrderID);
         bool RejectOrder(string OrderID);
         bool CreateOrder(CreateOrderModel orderData);
