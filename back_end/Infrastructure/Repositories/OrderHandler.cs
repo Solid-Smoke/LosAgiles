@@ -45,7 +45,6 @@ namespace back_end.Infrastructure.Repositories {
                 int? orderID = InsertInOrders(orderData);
                 if (orderID == null)
                     throw new Exception("Inserted OrderID is null");
-                Console.WriteLine("Inserted orderID in transaction: " + orderID);
                 bool insertedInOrderProducts = InsertInOrderProducts((int)orderID, orderData.Products);
                 bool InsertedInBusinessOrders = InsertInBusinessOrders((int)orderID, orderData.Products);
                 int rowsAffected = SubstractProductsStock(orderData.Products);

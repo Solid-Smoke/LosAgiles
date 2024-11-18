@@ -29,7 +29,6 @@ namespace back_end.Application.Commands
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 throw;
             }
         }
