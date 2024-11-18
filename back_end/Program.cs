@@ -47,6 +47,7 @@ builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
 
 //Orders dependencies
 builder.Services.AddScoped<GetPendingOrders>();
+builder.Services.AddScoped<GetApprovedOrders>();
 builder.Services.AddScoped<GetOrdersByClientID>();
 builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();

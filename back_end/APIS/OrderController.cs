@@ -23,6 +23,13 @@ namespace back_end.APIS
             return Ok(pendingOrders);
         }
 
+        [HttpGet("GetApprovedOrders")]
+        public ActionResult<List<OrderModel>> GetApprovedOrders(
+        [FromServices] GetApprovedOrders GetApprovedOrders) {
+            var approvedOrders = GetApprovedOrders.Execute();
+            return Ok(approvedOrders);
+        }
+
         [HttpGet("GetOrdersByClientID/{id}")]
         public ActionResult<List<OrderModel>> GetOrdersByClientID(string id,
         [FromServices] GetOrdersByClientID GetOrdersByClientID) {

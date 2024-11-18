@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <template v-if="isClient">
         <MainNavbar />
         <h1 class="display-4 text-center mb-4"><strong>Mis ordenes</strong></h1>
@@ -22,7 +22,7 @@
                             <td>{{ order.orderID }}</td>
                             <td>{{ formatDate(order.createdDate) }}</td>
                             <td>{{ order.deliveryDate ? formatDate(order.deliveryDate) : '-' }}</td>
-                            <td>{{ order.totalAmount }}</td>
+                            <td class="text-end pe-5">₡ {{ order.totalAmount }}</td>
                             <td>{{ order.status }}</td>
                             <td>
                                 <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
