@@ -60,29 +60,35 @@
         </div>
     </b-modal>
     <b-modal v-model="showSuccessModal" centered hide-footer>
-        <template #modal-title>
+        <template #title>
             <div class="text-center">
-                Éxito
+                
             </div>
         </template>
         <p class="my-4">
-            El borrado fue exitoso.
+            &#9989; El borrado fue exitoso.
         </p>
         <div class="d-flex justify-content-end">
-            <b-button variant="primary" @click="refreshPage">Aceptar</b-button>
+            <b-button variant="btn btn-success btn-block" @click="refreshPage">Aceptar</b-button>
         </div>
     </b-modal>
     <b-modal v-model="showErrorModal" centered hide-footer>
-        <template #modal-title>
+        <template #title>
             <div class="text-center">
-                Error
+                &#10060; Error al borrar productos
             </div>
         </template>
         <p class="my-4">
-            El borrado falló.
+            No se pudo realizar el borrado porque los siguientes productos están asociados a órdenes activas:
+        </p>
+        <ul>
+            <li v-for="product in failedToDeleteProducts" :key="product.productID">{{product.name}}</li>
+        </ul>
+        <p class="my-4">
+            Intente de nuevo sin seleccionar los productos que están asociados a órdenes activas
         </p>
         <div class="d-flex justify-content-end">
-            <b-button variant="primary" @click="refreshPage">Aceptar</b-button>
+            <b-button variant="btn btn-success btn-block" @click="refreshPage">Aceptar</b-button>
         </div>
     </b-modal>
 </template>
@@ -134,6 +140,7 @@ export default {
             selectAll: false,
             selectedProducts: [],
             showWarning: false,
+            failedToDeleteProducts: [],
         };
     },
     methods: {
@@ -150,12 +157,18 @@ export default {
         },
         deleteSelectedProducts() {
             this.showDeleteModal = false;
-            axios.delete(`${BackendUrl}/Products`, {data: { productIds: this.selectedProducts }})
+            axios.delete(`${BackendUrl}/Products`, {data: this.selectedProducts })
             .then(() => {
                 this.showSuccessModal = true;
                 this.selectedProducts = []
             })
-            .catch(() => {
+            .catch((error) => {
+                if (error.response && error.response.status === 409) {
+                    this.failedToDeleteProducts = this.products
+                        .filter(product => error.response.data.productsIdsFailedToDelete.includes(product.productID))
+                        .sort((a, b) => a.productID - b.productID);
+                }
+                console.log("Error eliminando productos.");
                 this.showErrorModal = true;
             });
         },
