@@ -32,7 +32,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="cart-buttons fixed-bottom">
+        <div class="inventory-buttons fixed-bottom">
         <button class="btn btn-op2">
             Eliminar emprendimientos seleccionados
         </button>
@@ -128,7 +128,7 @@
 .center-checkbox input {
     margin: 0 auto;
 }
-.cart-buttons {
+.inventory-buttons {
     position: fixed;
     bottom: 0;
     width: 100%;

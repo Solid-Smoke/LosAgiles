@@ -34,7 +34,7 @@
             </tbody>
         </table>
     </div>
-    <div class="cart-buttons fixed-bottom">
+    <div class="inventory-buttons fixed-bottom">
         <button class="btn btn-op2" @click="showDeleteModal = true">
             Eliminar productos seleccionados
         </button>
@@ -155,7 +155,7 @@ export default {
 .center-checkbox input {
     margin: 0 auto;
 }
-.cart-buttons {
+.inventory-buttons {
     position: fixed;
     bottom: 0;
     width: 100%;
