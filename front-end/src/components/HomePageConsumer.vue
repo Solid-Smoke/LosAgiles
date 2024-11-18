@@ -10,7 +10,7 @@
                   <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
                       <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 135px; height: 135px;" />
                       <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
-                      <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
+                      <b-card-text><strong>Precio: &#x20a1;{{ formatPrice(product.price) }}</strong></b-card-text>
                   </b-card>
                 </b-col>
             </b-row>
@@ -21,7 +21,7 @@
                 <b-card-title>Órdenes en Progreso</b-card-title>
                 <b-list-group>
                     <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
-                    <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID">Orden #{{ order.orderID }} - Estado: {{ order.status }}</b-list-group-item>
+                    <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID"><strong>Orden #</strong>{{ order.orderID }} | <strong>Estado: </strong>{{ order.status}} | <strong>Total: </strong>&#x20a1;{{ formatPrice(order.totalAmount) }}</b-list-group-item>
                 </b-list-group>
             </b-card>
 
@@ -29,7 +29,7 @@
                 <b-card-title>Últimos 10 Productos Comprados</b-card-title>
                 <b-list-group>
                     <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
-                    <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">{{ item.name }} - &#x20a1;{{ item.price }}</b-list-group-item>
+                    <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">{{ item.productName }} - &#x20a1;{{ item.price }}</b-list-group-item>
                 </b-list-group>
             </b-card>
         </b-col>
@@ -89,6 +89,17 @@ export default {
       this.currentPage = 1;
       this.isSearchActive = true;
     },
+    getOrdersInProgress() {
+    axios
+        .get(`${BackendUrl}/Order/GetOrdersExcludingCompleted`)
+        .then((response) => {
+            console.log("Órdenes en progreso:", response.data);
+            this.ordersInProgress = response.data;
+        })
+        .catch((error) => {
+            console.error('Error obteniendo órdenes en progreso:', error);
+        });
+    },
     getProductImage(productImageBase64) {
       if (!productImageBase64) {
         return 'https://imporpec.com.bo/images/image_not_available.gif';
@@ -101,6 +112,12 @@ export default {
       }
       return text;
     },
+    formatPrice(price) {
+      if (price !== null && price !== undefined) {
+        return new Intl.NumberFormat('en-US').format(price);
+      }
+      return price;
+    },
     goToProduct(productID) {
       this.$router.push({ name: 'IndividualProductPage', params: { id: productID } });
     },
@@ -109,17 +126,9 @@ export default {
     },
   },
   mounted() {
+    const clientID = JSON.parse(localStorage.getItem('user'))?.[0]?.userID;
     this.getProducts();
-  },
-  props: {
-    isAdmin: {
-      type: Boolean,
-      required: true,
-    },
-    isClient: {
-      type: Boolean,
-      required: true,
-    },
+    this.getOrdersInProgress();
   },
 };
 </script>
