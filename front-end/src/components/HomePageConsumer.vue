@@ -1,28 +1,23 @@
 <template>
 <MainNavbar/>
-
-<SearchBar :startSearchIndex="startSearchIndex" :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
+<SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count"  @resetSearch="getProducts" id="searchbar" />
 
 <b-container fluid class="px-4">
     <b-row>
         <b-col lg="8" md="8">
             <b-row>
                 <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
-                <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
-                    <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 250px; height: 250px;" />
-                    <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
-                    <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
-                </b-card>
+                  <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
+                      <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 135px; height: 135px;" />
+                      <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
+                      <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
+                  </b-card>
                 </b-col>
             </b-row>
-
-            <p v-if="paginatedProducts.length === 0" class="text-center mt-4"><strong>No hay productos disponibles.</strong></p>
-
-            <b-pagination v-model="currentPage" :total-rows="isSearchActive ? searchResultsCount : products.length" :per-page="productsPerPage" align="center" class="mt-3" @change="onPageChange"></b-pagination>
         </b-col>
 
         <b-col lg="4" md="4">
-            <b-card class="mb-4" style="height: auto;">
+            <b-card class="orders mb-3" style="height: calc(50% - 1rem);">
                 <b-card-title>Órdenes en Progreso</b-card-title>
                 <b-list-group>
                     <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
@@ -30,7 +25,7 @@
                 </b-list-group>
             </b-card>
 
-            <b-card style="height: auto;" class="mb-4">
+            <b-card class="ten-products mb-3" style="height: calc(50% - 1rem);">
                 <b-card-title>Últimos 10 Productos Comprados</b-card-title>
                 <b-list-group>
                     <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
@@ -38,6 +33,10 @@
                 </b-list-group>
             </b-card>
         </b-col>
+
+        <p v-if="paginatedProducts.length === 0" class="text-center mt-4"><strong>No hay productos disponibles.</strong></p>
+
+        <b-pagination v-model="currentPage" :total-rows="isSearchActive ? searchResultsCount : products.length" :per-page="productsPerPage" align="center" class="mt-3" @change="onPageChange"></b-pagination>
     </b-row>
 </b-container>
 </template>
@@ -45,8 +44,8 @@
 <script>
 import { BackendUrl } from '@/main';
 import MainNavbar from './MainNavbar.vue';
-import axios from 'axios';
 import SearchBar from './SearchBar.vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -130,13 +129,9 @@ export default {
   padding-right: 20%;
   padding-left: 20%;
   padding-bottom: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   background-color: #0DCAF0;
   width: 100%;
-}
-
-.b-container {
-  margin-top: 40px;
 }
 
 .product-card {
@@ -144,6 +139,14 @@ export default {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
+}
+
+.orders {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ten-products {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-card:hover {

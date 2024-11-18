@@ -6,7 +6,7 @@
     <template  v-else>
         <UnregisteredNavbar/>
 
-        <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" id="searchbar" />
+        <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count"  @resetSearch="getProducts" id="searchbar" />
 
         <b-container fluid class="px-5">
             <b-row class="justify-content-center">
@@ -14,7 +14,7 @@
                     <b-row>
                         <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
                             <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
-                                <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 250px; height: 250px;"/>
+                                <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 135px; height: 135px;"/>
                                 <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
                                 <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
                             </b-card>
@@ -118,13 +118,9 @@ export default {
   padding-right: 20%;
   padding-left: 20%;
   padding-bottom: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   background-color: #0DCAF0;
   width: 100%;
-}
-
-.b-container {
-  margin-top: 40px;
 }
 
 .product-card {
