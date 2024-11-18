@@ -32,7 +32,7 @@ namespace back_end.Infrastructure.Repositories
 
         public List<int> GetInShoppingCartProductsIds(List<int> productIds)
         {
-            return sqlConnection.Query<int>("SELECT ProductID FROM ShoppingCarts WHERE (ProductID IN @productIds)",
+            return sqlConnection.Query<int>("SELECT ProductID FROM ShoppingCarts WHERE ProductID IN @productIds",
                 new { productIds }).ToList();
         }
 

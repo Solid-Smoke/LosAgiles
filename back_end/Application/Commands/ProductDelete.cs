@@ -26,15 +26,13 @@ namespace back_end.Application.Commands
 
         private void ExecuteDeleteStatements(List<int> inactiveOrdersProducts, List<int> productsInShoppingCarts, List<int> productsNotInOrders)
         {
+            if (productsInShoppingCarts.Count > 0)
+                productDeleteHandler.DeleteFromShoppingCarts(productsInShoppingCarts);
             if (inactiveOrdersProducts.Count > 0)
                 productDeleteHandler.SoftDelete(inactiveOrdersProducts);
-
             if (productsNotInOrders.Count > 0)
-            {
-                if (productsInShoppingCarts.Count > 0)
-                    productDeleteHandler.DeleteFromShoppingCarts(productsInShoppingCarts);
                 productDeleteHandler.HardDelete(productsNotInOrders);
-            }
+            
         }
 
         public void DeleteProducts(List<int> productIds)
