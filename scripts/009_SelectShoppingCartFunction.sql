@@ -20,7 +20,7 @@ RETURN
 	INNER JOIN 
 		[Businesses] [b] ON [b].[BusinessID] = [p].[BusinessID]
 	WHERE 
-		[sp].[ClientID] = @Id
+		[sp].[ClientID] = @Id AND [p].[IsDeleted] = 0
 	GROUP BY 
 		[b].[Name], [p].[Name],  [sp].[Amount], [p].[Price], [p].[ProductID]
 		, [p].[Weight], [p].[BusinessID]

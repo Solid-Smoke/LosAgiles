@@ -16,10 +16,10 @@ namespace back_end.Infrastructure.Repositories
             this.sqlConnection = sqlConnection;
         }
 
-        public List<InventoryItem> getProductsByBusinessID(string businessID)
+        public List<InventoryItem> GetProductsByBusinessID(string businessID)
         {
             List<InventoryItem> businessData = new List<InventoryItem>();
-            string query = "SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID";
+            string query = "SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID AND IsDeleted = 0";
 
             using (SqlCommand command = new SqlCommand(query, sqlConnection))
             {
@@ -51,14 +51,14 @@ namespace back_end.Infrastructure.Repositories
             return businessData;
         }
 
-        private void runCommand(SqlCommand command)
+        private void RunCommand(SqlCommand command)
         {
             sqlConnection.Open();
             command.ExecuteNonQuery();
             sqlConnection.Close();
         }
 
-        private DataTable createTableResult(string query)
+        private DataTable CreateTableResult(string query)
         {
             SqlCommand selectCommand = new SqlCommand(query, sqlConnection);
             SqlDataAdapter tableAdapter = new SqlDataAdapter(selectCommand);
@@ -89,15 +89,15 @@ namespace back_end.Infrastructure.Repositories
             commandProduct.Parameters.AddWithValue("@BusinessID", product.BusinessID);
             commandProduct.Parameters.AddWithValue("@ProductImage", (object)product.ProductImage ?? DBNull.Value);
 
-            runCommand(commandProduct);
+            RunCommand(commandProduct);
             return true;
         }
 
         public List<ProductModel> GetAllProducts()
         {
             List<ProductModel> products = new List<ProductModel>();
-            string query = "SELECT * FROM Products";
-            DataTable tableQueryResult = createTableResult(query);
+            string query = "SELECT * FROM Products WHERE IsDeleted = 0";
+            DataTable tableQueryResult = CreateTableResult(query);
             foreach (DataRow column in tableQueryResult.Rows)
             {
                 products.Add(
@@ -120,8 +120,7 @@ namespace back_end.Infrastructure.Repositories
             return products;
         }
 
-
-        private List<T> dapperSelectQuery<T>(string query, object parameters)
+        private List<T> DapperSelectQuery<T>(string query, object parameters)
         {
             sqlConnection.Open();
             List<T> result = sqlConnection.Query<T>(query, parameters)
@@ -130,7 +129,7 @@ namespace back_end.Infrastructure.Repositories
             return result;
         }
 
-        private int dapperCountQuery(string query, object parameters)
+        private int DapperCountQuery(string query, object parameters)
         {
             sqlConnection.Open();
             int result = sqlConnection.Query<int>(query, parameters)
@@ -139,7 +138,7 @@ namespace back_end.Infrastructure.Repositories
             return result;
         }
 
-        public List<ProductsSearchModel> searchProducts(string searchText,
+        public List<ProductsSearchModel> SearchProducts(string searchText,
                 int startIndex, int maxResults)
         {
             string query = "SELECT Products.ProductID, " +
@@ -147,14 +146,14 @@ namespace back_end.Infrastructure.Repositories
                            "Businesses.Name AS BusinessName, ProductImage\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "WHERE IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
-                           "OR Products.Category LIKE @searchText\r\n" +
+                           "OR Products.Category LIKE @searchText)\r\n" +
                            "ORDER BY Products.ProductID\r\n" +
                            "OFFSET @startIndex ROWS\r\n" +
                            "FETCH NEXT @maxResults ROWS ONLY";
 
-            return dapperSelectQuery<ProductsSearchModel>(query,
+            return DapperSelectQuery<ProductsSearchModel>(query,
                 new
                 {
                     searchText = "%" + searchText + "%",
@@ -163,15 +162,15 @@ namespace back_end.Infrastructure.Repositories
                 });
         }
 
-        public int countProductsBySearch(string searchText)
+        public int CountProductsBySearch(string searchText)
         {
             string query = "SELECT count(*)\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE Products.[Name] LIKE @searchText\r\n" +
+                           "WHERE IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
-                           "OR Products.Category LIKE @searchText\r\n";
-            return dapperCountQuery(query,
+                           "OR Products.Category LIKE @searchText)\r\n";
+            return DapperCountQuery(query,
                 new { searchText = "%" + searchText + "%", });
         }
 
@@ -181,9 +180,9 @@ namespace back_end.Infrastructure.Repositories
                 SELECT p.*, b.Name AS BusinessName, dbo.ConvertDaysToFullNames(p.DaysAvailable) AS DaysAvailableFull
                 FROM Products p
                 INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
-                WHERE ProductID = {id}";
+                WHERE ProductID = {id} AND IsDeleted = 0";
 
-            DataTable tableQueryResult = createTableResult(query);
+            DataTable tableQueryResult = CreateTableResult(query);
 
             if (tableQueryResult.Rows.Count == 0)
             {

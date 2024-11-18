@@ -25,6 +25,17 @@ namespace back_end.Infrastructure.Repositories {
             return rowsAffected;
         }
 
+        private void CheckIfProductWasSoftDeleted(List<CreateOrderProductsModel> products)
+        {
+            foreach (var product in products)
+            {
+                int rowsSelected = sqlConnection.Query<int>("SELECT ProductID FROM Products WHERE ProductID = @ProductID AND IsDeleted = 1",
+                    new { product.ProductID }).ToList().Count;
+                if (rowsSelected > 0)
+                    throw new Exception("A product was deleted (soft delete) while creating the order, submit order aborted");
+            }
+        }
+
         public bool CreateOrder(CreateOrderModel orderData)
         {
             sqlConnection.Open();
@@ -34,10 +45,10 @@ namespace back_end.Infrastructure.Repositories {
                 int? orderID = InsertInOrders(orderData);
                 if (orderID == null)
                     throw new Exception("Inserted OrderID is null");
-                Console.WriteLine("Inserted orderID in transaction: " + orderID);
                 bool insertedInOrderProducts = InsertInOrderProducts((int)orderID, orderData.Products);
                 bool InsertedInBusinessOrders = InsertInBusinessOrders((int)orderID, orderData.Products);
                 int rowsAffected = SubstractProductsStock(orderData.Products);
+                CheckIfProductWasSoftDeleted(orderData.Products);
                 sqlConnection.Execute("COMMIT");
                 sqlConnection.Close();
                 return true;
@@ -46,7 +57,7 @@ namespace back_end.Infrastructure.Repositories {
             {
                 sqlConnection.Execute("ROLLBACK");
                 sqlConnection.Close();
-                throw new Exception(ex.ToString());
+                throw;
             }
         }
 
@@ -65,7 +76,11 @@ namespace back_end.Infrastructure.Repositories {
             var insertList = new List<object>();
             foreach (var product in products)
                 insertList.Add(new { product.ProductID, orderID, product.Ammount });
-            return sqlConnection.Execute("INSERT INTO OrderProducts (ProductId, OrderID, Amount) VALUES (@ProductId, @orderID, @Ammount)", insertList) > 0;
+            int rowsAffected = sqlConnection.Execute("INSERT INTO OrderProducts (ProductId, OrderID, Amount) VALUES (@ProductId, @orderID, @Ammount)", insertList);
+            if (rowsAffected != products.Count)
+                throw new Exception("A product of the order was deleted while saving the order products data");
+            else
+                return true;
         }
 
         private int InsertInOrders(CreateOrderModel orderData)
