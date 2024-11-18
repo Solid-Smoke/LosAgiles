@@ -11,7 +11,7 @@
             <thead class="table-header">
                 <tr>
                     <th scope="col">
-                        Seleccionar todos <input type="checkbox" v-model="selectAll" @change="toggleSelectAll">
+                        Seleccionar todos <input type="checkbox" v-model="selectAll" @change="toggleSelectAll(); handleProductSelection();">
                     </th>
                     <th scope="col">ID del Producto</th>
                     <th scope="col">Nombre</th>
@@ -23,7 +23,8 @@
             </thead>
             <tbody>
                 <tr v-for="product in products" :key="product.productID">
-                    <td class="table-cell center-checkbox"><input type="checkbox" v-model="selectedProducts" :value="product.productID"></td>
+                    <td class="table-cell center-checkbox"><input type="checkbox" v-model="selectedProducts" :value="product.productID"
+                        @change="handleProductSelection"></td>
                     <td class="table-cell">{{ product.productID }}</td>
                     <td class="table-cell">{{ product.name }}</td>
                     <td class="table-cell">{{ product.description }}</td>
@@ -35,7 +36,8 @@
         </table>
     </div>
     <div class="inventory-buttons fixed-bottom">
-        <button class="btn btn-op2" @click="showDeleteModal = true">
+        <p v-if="showWarning" class="text-danger">Seleccione los productos que desea eliminar</p>
+        <button class="btn btn-op2" @click="handleDeleteClick">
             Eliminar productos seleccionados
         </button>
     </div>
@@ -47,13 +49,40 @@
         </template>
         <p class="my-4">
             ¿Seguro que quieres eliminar los siguientes productos?
-            <ul>
-                <li v-for="product in products" :key="product.productID">-{{product.name}}</li>
-            </ul>
         </p>
+        <ul>
+            <li v-for="product in products.filter(p => selectedProducts.includes(p.productID))" :key="product.productID">{{product.name}}</li>
+        </ul>
+        
         <div class="d-flex justify-content-end">
             <b-button variant="danger" @click="deleteSelectedProducts" class="mr-2">Borrar</b-button>
             <b-button variant="secondary" @click="showDeleteModal = false">Cancelar</b-button>
+        </div>
+    </b-modal>
+    <b-modal v-model="showSuccessModal" centered hide-footer>
+        <template #modal-title>
+            <div class="text-center">
+                Éxito
+            </div>
+        </template>
+        <p class="my-4">
+            El borrado fue exitoso.
+        </p>
+        <div class="d-flex justify-content-end">
+            <b-button variant="primary" @click="refreshPage">Aceptar</b-button>
+        </div>
+    </b-modal>
+    <b-modal v-model="showErrorModal" centered hide-footer>
+        <template #modal-title>
+            <div class="text-center">
+                Error
+            </div>
+        </template>
+        <p class="my-4">
+            El borrado falló.
+        </p>
+        <div class="d-flex justify-content-end">
+            <b-button variant="primary" @click="refreshPage">Aceptar</b-button>
         </div>
     </b-modal>
 </template>
@@ -72,6 +101,8 @@ export default {
     data() {
         return {
             showDeleteModal: false,
+            showSuccessModal: false,
+            showErrorModal: false,
             currentBusinessId: "",
             products: [
                 {
@@ -95,14 +126,14 @@ export default {
                     price: 200,
                     stock: 10,
                     weight: 2.0,
-                    isPerishable: false,
-                    dailyAmount: null,
+      
                     daysAvailable: "Tue-Sat",
                     businessID: null,
                 },
             ],
             selectAll: false,
-            selectedProducts: []
+            selectedProducts: [],
+            showWarning: false,
         };
     },
     methods: {
@@ -119,14 +150,31 @@ export default {
         },
         deleteSelectedProducts() {
             this.showDeleteModal = false;
-            axios.delete(`${BackendUrl}/Products`, {data: this.selectedProducts})
-                .then(() => {
-                    this.selectedProducts = []
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
+            axios.delete(`${BackendUrl}/Products`, {data: { productIds: this.selectedProducts }})
+            .then(() => {
+                this.showSuccessModal = true;
+                this.selectedProducts = []
+            })
+            .catch(() => {
+                this.showErrorModal = true;
+            });
+        },
+        refreshPage() {
+            window.location.reload();
+        },
+        handleDeleteClick() {
+            if (this.selectedProducts.length === 0) {
+                this.showWarning = true;
+            } else {
+                this.showWarning = false;
+                this.showDeleteModal = true;
+            }
+        },
+        handleProductSelection() {
+            if (this.selectedProducts.length > 0) {
+                this.showWarning = false;
+            }
+        },
     },
     created() {
         this.currentBusinessId = this.$route.query.businessID;
@@ -147,7 +195,6 @@ export default {
 
 <style scoped>
 @import '../styles/GeneralStyle.css';
-@import '../styles/CartStyle.css';
 
 .center-checkbox {
     text-align: center;
