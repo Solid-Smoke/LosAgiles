@@ -8,11 +8,11 @@
                     <thead>
                         <tr>
                             <th scope="col"># de orden</th>
-                            <th scope="col">Fecha de creación</th>
+                            <th scope="col">Fecha de creaciÃ³n</th>
                             <th scope="col">Fecha de entrega</th>
                             <th scope="col">Monto total</th>
                             <th scope="col">Estado de la orden</th>
-                            <th scope="col">Dirección de entrega</th>
+                            <th scope="col">DirecciÃ³n de entrega</th>
                             <th scope="col">Productos</th>
                             <th scope="col">Acciones</th>
                         </tr>
@@ -25,15 +25,15 @@
                             <td>{{ order.totalAmount }}</td>
                             <td>{{ order.status }}</td>
                             <td>
-                                <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
+                                <button v-on:click="showAddress(order)" class="btn btn-info">Ver direcciÃ³n</button>
                             </td>
                             <td>
-                                <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                                <button v-on:click="getProductsByOrderID(order)" class="btn btn-info">
                                     Ver productos
                                 </button>
                             </td>
                             <td>
-                                <button v-on:click="OpenWarningCancelOrderModal(order)" class="btn btn-danger" :disabled="order.status !== 'Pendiente'">
+                                <button v-on:click="openWarningCancelOrderModal(order)" class="btn btn-danger" :disabled="order.status !== 'Pendiente'">
                                     Cancelar orden
                                 </button>
                             </td>
@@ -41,7 +41,7 @@
                     </tbody>
                 </table>
             </div>
-            <ActionModalWarning ref="warningCancelOrderModal" @confirmed="CancelOrder" />
+            <ActionModalWarning ref="warningCancelOrderModal" @confirmed="cancelOrder" />
         </template>
         <template v-else>
             <h3 class="text-center mb-4">Actualmente no tiene ordenes registradas</h3>
@@ -57,7 +57,7 @@
             </template>
         </b-modal>
 
-        <b-modal v-model="AddressModal" centered scrollable hide-footer title="Dirección de la orden">
+        <b-modal v-model="AddressModal" centered scrollable hide-footer title="DirecciÃ³n de la orden">
             <template v-if="true">
                 <p>{{ selectedAddress }}</p>
             </template>
@@ -113,7 +113,7 @@
                 this.selectedAddress = order.address;
                 this.AddressModal = true;
             },
-            GetUserOrders(userID) {
+            getUserOrders(userID) {
                 axios.get(`${BackendUrl}/Order/GetOrdersByClientID/${userID}`)
                 .then((response) => {
                     this.orders = response.data;
@@ -125,7 +125,7 @@
                     console.log(error);
                 });
             },
-            GetProductsByOrderID(order) {
+            getProductsByOrderID(order) {
                 axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
                 .then((response) => {
                     order.products = response.data;
@@ -136,11 +136,11 @@
                     console.log(error);
                 });
             },
-            OpenWarningCancelOrderModal(order) {
+            openWarningCancelOrderModal(order) {
                 this.orderIDToDelete = order.orderID;
-                this.$refs.warningCancelOrderModal.openModal("Está seguro de que desea cancelar la orden? (Esta accion es irreversible)");
+                this.$refs.warningCancelOrderModal.openModal("EstÃ¡ seguro de que desea cancelar la orden? (Esta accion es irreversible)");
             },
-            CancelOrder() {
+            cancelOrder() {
                 axios.put(`${BackendUrl}/Order/RejectOrder/${this.orderIDToDelete}`)
                     .then(() => {
                         window.location.reload();
@@ -159,7 +159,7 @@
         },
         mounted() {
             this.userID = this.getUserId();
-            this.GetUserOrders(this.userID);
+            this.getUserOrders(this.userID);
         },
         props: {
             isAdmin: {
