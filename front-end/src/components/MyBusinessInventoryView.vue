@@ -212,6 +212,14 @@ export default {
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
+
+.inventory-buttons .btn {
+    margin: 0 10px;
+    padding: 10px 20px;
+	border-radius: 20px;
+	font-weight: bold;
+}
+
 .table-responsive-sm {
     margin-bottom: 100px;
 }
