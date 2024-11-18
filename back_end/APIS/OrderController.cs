@@ -64,5 +64,13 @@ namespace back_end.APIS
         {
             return orderCommand.CreateOrder(orderData);
         }
+
+        [HttpGet("GetOrdersExcludingCompleted")]
+        public ActionResult<List<OrderModel>> GetOrdersExcludingCompleted(
+        [FromServices] GetOrdersExcludingCompleted getOrdersExcludingCompleted)
+        {
+            var orders = getOrdersExcludingCompleted.Execute();
+            return Ok(orders);
+        }
     }
 }

@@ -213,5 +213,49 @@ namespace back_end.Infrastructure.Repositories {
                 return false;
             }
         }
+
+        public List<OrderModel> GetOrdersExcludingCompleted()
+        {
+            List<OrderModel> orders = new List<OrderModel>();
+            string query = @"
+                SELECT 
+                    OrderID, 
+                    Status, 
+                    TotalCost
+                FROM Orders
+                WHERE Status != 'Completada'";
+
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlConnection.Open();
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            orders.Add(
+                                new OrderModel
+                                {
+                                    OrderID = Convert.ToInt32(reader["OrderID"]),
+                                    Status = reader["Status"].ToString(),
+                                    TotalAmount = Convert.ToInt32(reader["TotalCost"])
+                                });
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            return orders;
+        }
     }
 }
