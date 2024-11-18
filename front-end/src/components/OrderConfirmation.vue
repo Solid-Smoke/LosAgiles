@@ -26,13 +26,13 @@
                             <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
                         </td>
                         <td>
-                            <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                            <button v-on:click="getProductsByOrderID(order)" class="btn btn-info">
                                 Ver productos
                             </button>
                         </td>
                         <td>
-                            <button v-on:click="ApproveOrder(order)" class="btn btn-success">Aprobar</button> <span />
-                            <button v-on:click="RejectOrder(order)" class="btn btn-danger">Rechazar</button>
+                            <button v-on:click="approveOrder(order)" class="btn btn-success">Aprobar</button> <span />
+                            <button v-on:click="rejectOrder(order)" class="btn btn-danger">Rechazar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -63,12 +63,12 @@
                             <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
                         </td>
                         <td>
-                            <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                            <button v-on:click="getProductsByOrderID(order)" class="btn btn-info">
                                 Ver productos
                             </button>
                         </td>
                         <td>
-                            <button v-on:click="RejectOrder(order)" class="btn btn-danger">Cancelar</button>
+                            <button v-on:click="rejectOrder(order)" class="btn btn-danger">Cancelar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -143,7 +143,7 @@
                 this.selectedAddress = order.address;
                 this.AddressModal = true;
             },
-            GetPendingOrders() {
+            getPendingOrders() {
                 axios.get(`${BackendUrl}/Order/GetPendingOrders`)
                 .then((response) => {
                     this.pendingOrders = response.data;
@@ -152,7 +152,7 @@
                     console.log(error);
                 });
             },
-            GetApprovedOrders() {
+            getApprovedOrders() {
                 axios.get(`${BackendUrl}/Order/GetApprovedOrders`)
                     .then((response) => {
                         this.approvedOrders = response.data;
@@ -161,7 +161,7 @@
                         console.log(error);
                     });
             },
-            GetProductsByOrderID(order) {
+            getProductsByOrderID(order) {
                 axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
                 .then((response) => {
                     order.products = response.data;
@@ -172,7 +172,7 @@
                     console.log(error);
                 });
             },
-            ApproveOrder(order) {
+            approveOrder(order) {
                 axios.put(`${BackendUrl}/Order/ApproveOrder/${order.orderID}`)
                 .then(() => {
                     window.location.reload();
@@ -181,7 +181,7 @@
                     console.log(error);
                 });
             },
-            RejectOrder(order) {
+            rejectOrder(order) {
                 axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
                     .then(() => {
                         window.location.reload();
@@ -199,8 +199,8 @@
             }
         },
         mounted() {
-            this.GetPendingOrders();
-            this.GetApprovedOrders();
+            this.getPendingOrders();
+            this.getApprovedOrders();
         },
         props: {
             isAdmin: {
