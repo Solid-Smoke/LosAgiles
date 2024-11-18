@@ -16,7 +16,7 @@
                             <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
                                 <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 135px; height: 135px;"/>
                                 <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
-                                <b-card-text><strong>Precio: &#x20a1;{{ product.price }}</strong></b-card-text>
+                                <b-card-text><strong>Precio: &#x20a1;{{ formatPrice(product.price) }}</strong></b-card-text>
                             </b-card>
                         </b-col>
                     </b-row>
@@ -89,6 +89,12 @@ export default {
         return text.substring(0, maxLength) + '...';
       }
       return text;
+    },
+    formatPrice(price) {
+      if (price !== null && price !== undefined) {
+        return new Intl.NumberFormat('en-US').format(price);
+      }
+      return price;
     },
     goToProduct(productID) {
       this.$router.push({ name: 'IndividualProductPage', params: { id: productID } });
