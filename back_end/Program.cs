@@ -60,6 +60,7 @@ builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(
 // Admin dependencies
 builder.Services.AddScoped<IAdminHandler, AdminHandler>();
 builder.Services.AddScoped<GetMonthlyRevenueQuery>();
+builder.Services.AddScoped<GetMonthlyShippingExpensesQuery>();
 
 var app = builder.Build();
 
