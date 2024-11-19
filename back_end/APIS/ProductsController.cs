@@ -11,14 +11,14 @@ namespace back_end.APIS
     public class ProductsController : ControllerBase
     {
         private readonly ProductCommand _productCommand;
-        private readonly ProductDelete _productDeleteCommand;
+        private readonly IProductDelete _productDeleteCommand;
         private readonly IProductQuery productQuery;
 
-        public ProductsController(IProductQuery productQuery, IProductHandler productHandler, IProductDeleteHandler productDeleteHandler)
+        public ProductsController(IProductQuery productQuery, IProductHandler productHandler, IProductDelete productDeleteCommand)
         {
             this.productQuery = productQuery;
-            this._productDeleteCommand = new ProductDelete(productDeleteHandler);
             this._productCommand = new ProductCommand(productHandler);
+            this._productDeleteCommand = productDeleteCommand;
         }
 
         [HttpPost]

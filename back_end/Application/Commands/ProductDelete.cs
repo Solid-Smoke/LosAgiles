@@ -20,10 +20,10 @@ namespace back_end.Application.Commands
         private void CheckIfAreProductsInActiveOrders(List<int> productIds)
         {
             List<int> activeOrdersProducts = productDeleteHandler.GetActiveOrderProductsIds(productIds).Distinct().ToList();
-            Exception cannotDeleteActiveOrdersProductsException = new Exception(
-                $"Cannot delete products that are in active orders. Conflicting product IDs: {activeOrdersProducts.ToString()}");
             if (activeOrdersProducts.Count > 0)
             {
+                Exception cannotDeleteActiveOrdersProductsException = new Exception(
+                    $"Cannot delete products that are in active orders. Conflicting product IDs: {activeOrdersProducts.ToString()}");
                 cannotDeleteActiveOrdersProductsException.Data.Add("ProductIds", activeOrdersProducts);
                 throw cannotDeleteActiveOrdersProductsException;
             }
