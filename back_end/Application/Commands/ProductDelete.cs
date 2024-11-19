@@ -52,7 +52,7 @@ namespace back_end.Application.Commands
             {
                 DeleteProducts(productIds);
             }
-            catch (Exception ex)
+            catch
             {
                 productDeleteHandler.RollbackTransaction();
                 productDeleteHandler.CloseSqlConnection();
