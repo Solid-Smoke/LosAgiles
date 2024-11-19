@@ -36,7 +36,14 @@ builder.Services.AddScoped<GetShoppingCartInvalidItems>();
 builder.Services.AddScoped<AddItemToShoppingCart>();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
+builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 builder.Services.AddScoped<IBusinessHandler, BusinessHandler>();
+builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
+builder.Services.AddScoped<IProductDelete, ProductDelete>();
+builder.Services.AddScoped<IBusinessDeleteHandler, BusinessDeleteHandler>();
+builder.Services.AddScoped<IBusinessDelete, BusinessDelete>();
+builder.Services.AddScoped<BusinessDelete>();
+
 
 //Shopping Cart Dependencies
 builder.Services.AddScoped<GetBusinessByEmployeeID>();
@@ -54,8 +61,6 @@ builder.Services.AddScoped<ApproveOrder>();
 builder.Services.AddScoped<RejectOrder>();
 builder.Services.AddScoped<IOrderHandler, OrderHandler>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
-builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
-builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
 
 var app = builder.Build();
 
