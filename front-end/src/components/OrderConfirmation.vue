@@ -144,7 +144,7 @@
                 this.AddressModal = true;
             },
             getPendingOrders() {
-                axios.get(`${BackendUrl}/Order/GetPendingOrders`)
+                axios.get(`${BackendUrl}/Order/PendingOrders`)
                 .then((response) => {
                     this.pendingOrders = response.data;
                 })
@@ -153,7 +153,7 @@
                 });
             },
             getApprovedOrders() {
-                axios.get(`${BackendUrl}/Order/GetApprovedOrders`)
+                axios.get(`${BackendUrl}/Order/ApprovedOrders`)
                     .then((response) => {
                         this.approvedOrders = response.data;
                     })
@@ -162,7 +162,7 @@
                     });
             },
             getProductsByOrderID(order) {
-                axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
+                axios.get(`${BackendUrl}/Order/ProductsByOrderID/${order.orderID}`)
                 .then((response) => {
                     order.products = response.data;
                     this.selectedProducts = order.products;
@@ -173,7 +173,7 @@
                 });
             },
             approveOrder(order) {
-                axios.put(`${BackendUrl}/Order/ApproveOrder/${order.orderID}`)
+                axios.put(`${BackendUrl}/Order/${order.orderID}/Approval`)
                 .then(() => {
                     window.location.reload();
                 })
@@ -182,7 +182,7 @@
                 });
             },
             rejectOrder(order) {
-                axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
+                axios.put(`${BackendUrl}/Order/${order.orderID}/Rejection`)
                     .then(() => {
                         window.location.reload();
                     })
