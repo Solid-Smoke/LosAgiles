@@ -53,6 +53,8 @@ builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();
 builder.Services.AddScoped<RejectOrder>();
 builder.Services.AddScoped<IOrderHandler, OrderHandler>();
+builder.Services.AddScoped<GetOrdersExcludingCompleted>();
+builder.Services.AddScoped<GetLastTenPurchased>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
