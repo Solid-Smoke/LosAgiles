@@ -61,5 +61,30 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new business.");
             }
         }
+
+        [HttpDelete("{businessId}")]
+        public async Task<ActionResult<bool>> DeleteBusiness(int businessId, [FromServices] BusinessDelete _businessDeleteCommand)
+        {
+            List<int> productsIdsFailedToDelete;
+            try
+            {
+                _businessDeleteCommand.DeleteBusiness(businessId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Data.Contains("ProductIds"))
+                {
+                    productsIdsFailedToDelete = (List<int>)ex.Data["ProductIds"];
+                    return Conflict(new
+                    {
+                        message = "No se pudo eliminar el emprendimiento, porque algunos de sus productos están asociados a órdenes activas",
+                        productsIdsFailedToDelete
+                    });
+                }
+                else
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Error eliminando productos.");
+            }
+        }
     }
 }
