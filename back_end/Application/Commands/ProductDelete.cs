@@ -37,21 +37,25 @@ namespace back_end.Application.Commands
 
         public void DeleteProducts(List<int> productIds)
         {
-            productDeleteHandler.OpenSqlConnection();
-            productDeleteHandler.BeginSerializableTransaction();
             CheckIfAreProductsInActiveOrders(productIds);
             List<int> inactiveOrdersProducts = productDeleteHandler.GetInactiveOrderProductsIds(productIds).Distinct().ToList();
             List<int> productsInShoppingCarts = productDeleteHandler.GetInShoppingCartProductsIds(productIds).Distinct().ToList();
             List<int> productsNotInOrders = productIds.Except(inactiveOrdersProducts).ToList();
+            ExecuteDeleteStatements(inactiveOrdersProducts, productsInShoppingCarts, productsNotInOrders);
+        }
+
+        public void Execute(List<int> productIds)
+        {
+            productDeleteHandler.OpenSqlConnection();
+            productDeleteHandler.BeginSerializableTransaction();
             try
             {
-                ExecuteDeleteStatements(inactiveOrdersProducts, productsInShoppingCarts, productsNotInOrders);
+                DeleteProducts(productIds);
             }
             catch (Exception ex)
             {
                 productDeleteHandler.RollbackTransaction();
                 productDeleteHandler.CloseSqlConnection();
-                Console.WriteLine($"Error deleting products: {ex.Message}");
                 throw;
             }
             productDeleteHandler.CommitTransaction();
