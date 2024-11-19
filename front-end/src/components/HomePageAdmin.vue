@@ -51,8 +51,70 @@ export default {
       gananciasData: [],
       gastosData: [],
       ordersInProgress: [],
-    }
-  }
+      months: [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", 
+        "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      ],
+      barColors: [
+        "#42A5F5", "#66BB6A", "#FF7043", "#AB47BC", "#FFEB3B", "#FF4081", 
+        "#26C6DA", "#8D6E63", "#FF5252", "#5C6BC0", "#26A69A", "#FFB74D"
+      ],
+    };
+  },
+  methods: {
+    getGanancias() {
+      axios
+        .get(`${BackendUrl}/admin/Monthly/Revenue`)
+        .then((response) => {
+          this.gananciasData = response.data;
+          this.renderGananciasChart();
+        })
+        .catch((error) => {
+          console.error("Error obteniendo ganancias:", error);
+        });
+    },
+    renderGananciasChart() {
+        const gananciasMonths = this.months.map((month, index) => {
+            const data = this.gananciasData.find((d) => parseInt(d.month) - 1 === index);
+            return data ? data.total : 0;
+        });
+
+        const ctx = document.getElementById("gananciasChart").getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: this.months,
+                datasets: [{
+                    data: gananciasMonths,
+                    backgroundColor: this.barColors,
+                    borderColor: "#42A5F5",
+                    fill: true,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            },
+        });
+    },
+    formatPrice(price) {
+      return new Intl.NumberFormat("en-US").format(price);
+    },
+  },
+  mounted() {
+    this.getGanancias();
+  },
 };
 </script>
 
