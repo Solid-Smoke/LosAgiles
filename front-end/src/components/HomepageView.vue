@@ -7,7 +7,7 @@
     <HomePageAdmin/>
   </template>
 
-  <template  v-else>
+  <template  v-if="!isAdmin && !isClient">
       <UnregisteredNavbar/>
 
       <SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count"  @resetSearch="getProducts" id="searchbar" />
