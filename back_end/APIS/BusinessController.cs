@@ -63,7 +63,7 @@ namespace back_end.APIS
         }
 
         [HttpDelete("{businessId}")]
-        public async Task<ActionResult<bool>> DeleteBusiness(int businessId, [FromServices] BusinessDelete _businessDeleteCommand)
+        public async Task<ActionResult<bool>> DeleteBusiness(int businessId, [FromServices] IBusinessDelete _businessDeleteCommand)
         {
             List<int> productsIdsFailedToDelete;
             try

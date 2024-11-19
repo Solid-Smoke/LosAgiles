@@ -42,7 +42,6 @@ builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
 builder.Services.AddScoped<IProductDelete, ProductDelete>();
 builder.Services.AddScoped<IBusinessDeleteHandler, BusinessDeleteHandler>();
 builder.Services.AddScoped<IBusinessDelete, BusinessDelete>();
-builder.Services.AddScoped<BusinessDelete>();
 
 
 //Shopping Cart Dependencies
