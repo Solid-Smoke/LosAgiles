@@ -10,11 +10,13 @@
     {
         private readonly GetMonthlyRevenueQuery _getMonthlyRevenueQuery;
         private readonly GetMonthlyShippingExpensesQuery _getMonthlyShippingExpenseQuery;
+        private readonly GetOrdersInProgressQuery _getOrdersInProgressQuery;
 
-        public AdminController(GetMonthlyRevenueQuery getMonthlyRevenueQuery, GetMonthlyShippingExpensesQuery getMonthlyShippingExpenseQuery)
+        public AdminController(GetMonthlyRevenueQuery getMonthlyRevenueQuery, GetMonthlyShippingExpensesQuery getMonthlyShippingExpenseQuery, GetOrdersInProgressQuery getOrdersInProgressQuery)
         {
             _getMonthlyRevenueQuery = getMonthlyRevenueQuery;
             _getMonthlyShippingExpenseQuery = getMonthlyShippingExpenseQuery;
+            _getOrdersInProgressQuery = getOrdersInProgressQuery;
         }
 
         [HttpGet("Monthly/Revenue")]
@@ -36,6 +38,19 @@
             try
             {
                 return Ok(_getMonthlyShippingExpenseQuery.Execute());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+        [HttpGet("Orders/In/Progress")]
+        public ActionResult<List<OrderModel>> GetOrdersInProgress()
+        {
+            try
+            {
+                return Ok(_getOrdersInProgressQuery.Execute());
             }
             catch (Exception ex)
             {

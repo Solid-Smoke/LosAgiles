@@ -6,5 +6,6 @@ namespace back_end.Application.Interfaces
     {
         List<MonthlyDataModel> GetMonthlyRevenue();
         List<MonthlyDataModel> GetMonthlyShippingExpense();
+        List<OrderModel> GetOrdersInProgress();
     }
 }

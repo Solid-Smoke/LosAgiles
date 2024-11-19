@@ -61,4 +61,30 @@ public class AdminHandler : IAdminHandler
 
         return result;
     }
+
+    public List<OrderModel> GetOrdersInProgress()
+    {
+        var result = new List<OrderModel>();
+        var query = "SELECT TOP 10 OrderID, Status, TotalCost FROM Orders WHERE Status != 'Completada' AND Status != 'Rechazada' ORDER BY CreatedDate ASC";
+
+        using (var command = new SqlCommand(query, _sqlConnection))
+        {
+            _sqlConnection.Open();
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    result.Add(new OrderModel
+                    {
+                        OrderID = Convert.ToInt32(reader["OrderID"]),
+                        Status = reader["Status"].ToString(),
+                        TotalAmount = Convert.ToInt32(reader["TotalCost"])
+                    });
+                }
+            }
+            _sqlConnection.Close();
+        }
+
+        return result;
+    }
 }
