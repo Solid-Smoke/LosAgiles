@@ -83,5 +83,13 @@ namespace back_end.APIS
             var orders = orderHandler.GetOrdersExcludingCompleted(userID);
             return Ok(orders);
         }
+
+        [HttpGet("GetLastTenPurchased/{userID}")]
+        public ActionResult<List<OrderProductsModel>> GetLastTenPurchased(int userID, [FromServices] GetLastTenPurchased getLastTenPurchased)
+        {
+            var products = getLastTenPurchased.Execute(userID);
+            return Ok(products);
+        }
+
     }
 }
