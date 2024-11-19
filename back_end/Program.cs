@@ -54,7 +54,10 @@ builder.Services.AddScoped<RejectOrder>();
 builder.Services.AddScoped<IOrderHandler, OrderHandler>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
+
+//Product dependencies
 builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
+builder.Services.AddScoped<IProductDelete, ProductDelete>();
 
 var app = builder.Build();
 

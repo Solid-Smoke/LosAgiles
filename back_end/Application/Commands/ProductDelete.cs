@@ -2,7 +2,13 @@
 
 namespace back_end.Application.Commands
 {
-    public class ProductDelete
+    public interface IProductDelete
+    {
+        void DeleteProducts(List<int> productIds);
+        void Execute(List<int> productIds);
+    }
+
+    public class ProductDelete : IProductDelete
     {
         private readonly IProductDeleteHandler productDeleteHandler;
 
@@ -32,7 +38,7 @@ namespace back_end.Application.Commands
                 productDeleteHandler.SoftDelete(inactiveOrdersProducts);
             if (productsNotInOrders.Count > 0)
                 productDeleteHandler.HardDelete(productsNotInOrders);
-            
+
         }
 
         public void DeleteProducts(List<int> productIds)
