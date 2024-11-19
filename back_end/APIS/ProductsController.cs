@@ -107,7 +107,7 @@ namespace back_end.APIS
             List<int> productsIdsFailedToDelete = new List<int>();
             try
             {
-                _productDeleteCommand.DeleteProducts(productsIds);
+                _productDeleteCommand.Execute(productsIds);
                 return productsIdsFailedToDelete;
             }
             catch (Exception ex)
