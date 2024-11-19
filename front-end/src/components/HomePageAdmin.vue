@@ -91,6 +91,16 @@ export default {
           console.error("Error obteniendo gastos de envíos:", error);
         });
     },
+    getOrdersInProgress() {
+      axios
+        .get(`${BackendUrl}/admin/Orders/In/Progress`)
+        .then((response) => {
+          this.ordersInProgress = response.data;
+        })
+        .catch((error) => {
+          console.error("Error obteniendo órdenes en progreso:", error);
+        });
+    },
     renderRevenueChart() {
         const gananciasMonths = this.months.map((month, index) => {
             const data = this.gananciasData.find((d) => parseInt(d.month) - 1 === index);
@@ -168,6 +178,7 @@ export default {
   mounted() {
     this.getRevenue();
     this.getShippingExpenses();
+    this.getOrdersInProgress();
   },
 };
 </script>
