@@ -47,7 +47,6 @@ builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
 
 //Orders dependencies
 builder.Services.AddScoped<GetPendingOrders>();
-builder.Services.AddScoped<GetApprovedOrders>();
 builder.Services.AddScoped<GetOrdersByClientID>();
 builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();
@@ -57,6 +56,10 @@ builder.Services.AddScoped<GetOrdersExcludingCompleted>();
 builder.Services.AddScoped<GetLastTenPurchased>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
+
+// Admin dependencies
+builder.Services.AddScoped<IAdminHandler, AdminHandler>();
+builder.Services.AddScoped<GetMonthlyRevenueQuery>();
 
 var app = builder.Build();
 
