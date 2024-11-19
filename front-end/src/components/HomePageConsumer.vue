@@ -17,21 +17,33 @@
         </b-col>
 
         <b-col lg="4" md="4">
-            <b-card class="orders mb-3" style="height: calc(50% - 1rem);">
-                <b-card-title>Órdenes en Progreso</b-card-title>
-                <b-list-group>
-                    <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
-                    <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID"><strong>Orden #</strong>{{ order.orderID }} | <strong>Estado: </strong>{{ order.status}} | <strong>Total: </strong>&#x20a1;{{ formatPrice(order.totalAmount) }}</b-list-group-item>
-                </b-list-group>
-            </b-card>
+          <b-card class="orders mb-3" style="height: calc(50% - 1rem); overflow-y: scroll;">
+            <b-card-title>Órdenes en Progreso</b-card-title>
+            <b-list-group>
+              <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
+              <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID">
+                <div class="d-flex justify-content-between" style="width: 100%;">
+                  <span style="width: 30%"><strong>Orden #</strong>{{ order.orderID }}</span>
+                  <span style="width: 40%"><strong>Estado:</strong> {{ order.status }}</span>
+                  <span style="width: 30%"><strong>Total:</strong> &#x20a1;{{ formatPrice(order.totalAmount) }}</span>
+                </div>
+              </b-list-group-item>
+            </b-list-group>
+          </b-card>
 
-              <b-card class="ten-products mb-3" style="height: calc(50% - 1rem);">
-                <b-card-title>Últimos 10 Productos Comprados</b-card-title>
-                <b-list-group>
-                    <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
-                    <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">{{ item.productName }} - &#x20a1;{{ item.price }}</b-list-group-item>
-                </b-list-group>
-            </b-card>
+          <b-card class="ten-products mb-3" style="height: calc(50% - 1rem); overflow-y: scroll;">
+            <b-card-title>Últimos 10 Productos Comprados</b-card-title>
+            <b-list-group>
+              <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
+              <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">
+                <div class="d-flex justify-content-between" style="width: 100%;">
+                  <span style="width: 35%"><strong>Producto:</strong> {{ item.productName }}</span>
+                  <span style="width: 30%"><strong>Cantidad:</strong> {{ item.amount }}</span>
+                  <span style="width: 35%"><strong>Precio:</strong> &#x20a1;{{ formatPrice(item.price) }}</span>
+                </div>
+              </b-list-group-item>
+            </b-list-group>
+          </b-card>
         </b-col>
 
         <p v-if="paginatedProducts.length === 0" class="text-center mt-4"><strong>No hay productos disponibles.</strong></p>
@@ -89,17 +101,28 @@ export default {
       this.currentPage = 1;
       this.isSearchActive = true;
     },
-    getOrdersInProgress() {
-    const userID = JSON.parse(localStorage.getItem('user'))?.[0]?.userID;
-    axios
-        .get(`${BackendUrl}/Order/GetOrdersExcludingCompleted/${userID}`)
-        .then((response) => {
-            console.log("Órdenes en progreso:", response.data);
-            this.ordersInProgress = response.data;
-        })
-        .catch((error) => {
-            console.error('Error obteniendo órdenes en progreso:', error);
-        });
+    getOrdersInProgress(userID) {
+      axios
+          .get(`${BackendUrl}/Order/GetOrdersExcludingCompleted/${userID}`)
+          .then((response) => {
+              console.log("Órdenes en progreso:", response.data);
+              this.ordersInProgress = response.data;
+          })
+          .catch((error) => {
+              console.error('Error obteniendo órdenes en progreso:', error);
+          });
+    },
+    getLastTenPurchased(userID) {
+      console.log("Obteniendo últimos 10 productos comprados para usuario:", userID);
+      axios
+          .get(`${BackendUrl}/Order/GetLastTenPurchased/${userID}`)
+          .then((response) => {
+              console.log("Respuesta del backend (Últimos 10 productos):", response.data);
+              this.lastTenPurchased = response.data;
+          })
+          .catch((error) => {
+              console.error("Error obteniendo productos comprados:", error);
+          });
     },
     getProductImage(productImageBase64) {
       if (!productImageBase64) {
@@ -127,8 +150,10 @@ export default {
     },
   },
   mounted() {
+    const userID = JSON.parse(localStorage.getItem('user'))?.[0]?.userID;
     this.getProducts();
-    this.getOrdersInProgress();
+    this.getOrdersInProgress(userID);
+    this.getLastTenPurchased(userID);
   },
 };
 </script>
@@ -172,5 +197,10 @@ export default {
 b-card {
   height: auto;
   margin-bottom: 20px;
+}
+
+.scrollable-card {
+  overflow-y: auto;
+  max-height: 400px;
 }
 </style>
