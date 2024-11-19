@@ -6,14 +6,14 @@
           <b-col lg="6" md="6" sm="12" class="mb-4">
               <b-card style="margin-top: 20px;">
                   <b-card-title>Ganancias por Mes</b-card-title>
-                  <canvas id="gananciasChart"></canvas>
+                  <canvas id="revenueChart"></canvas>
               </b-card>
           </b-col>
 
           <b-col lg="6" md="6" sm="12" class="mb-4">
               <b-card style="margin-top: 20px;">
                   <b-card-title>Gasto en Envíos</b-card-title>
-                  <canvas id="gastoEnviosChart"></canvas>
+                  <canvas id="shippingExpensesChart"></canvas>
               </b-card>
           </b-col>
 
@@ -69,24 +69,35 @@ export default {
     };
   },
   methods: {
-    getGanancias() {
+    getRevenue() {
       axios
         .get(`${BackendUrl}/admin/Monthly/Revenue`)
         .then((response) => {
           this.gananciasData = response.data;
-          this.renderGananciasChart();
+          this.renderRevenueChart();
         })
         .catch((error) => {
           console.error("Error obteniendo ganancias:", error);
         });
     },
-    renderGananciasChart() {
+    getShippingExpenses() {
+      axios
+        .get(`${BackendUrl}/admin/Shipping/Expenses`)
+        .then((response) => {
+          this.gastosData = response.data;
+          this.renderShippingExpensesChart();
+        })
+        .catch((error) => {
+          console.error("Error obteniendo gastos de envíos:", error);
+        });
+    },
+    renderRevenueChart() {
         const gananciasMonths = this.months.map((month, index) => {
             const data = this.gananciasData.find((d) => parseInt(d.month) - 1 === index);
             return data ? data.total : 0;
         });
 
-        const ctx = document.getElementById("gananciasChart").getContext('2d');
+        const ctx = document.getElementById("revenueChart").getContext('2d');
 
         new Chart(ctx, {
             type: 'bar',
@@ -115,12 +126,48 @@ export default {
             },
         });
     },
+    renderShippingExpensesChart() {
+        const gastoEnviosMonths = this.months.map((month, index) => {
+            const data = this.gastosData.find((d) => parseInt(d.month) - 1 === index);
+            return data ? data.total : 0; 
+        });
+
+        const ctx = document.getElementById("shippingExpensesChart").getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: this.months,
+            datasets: [{
+                data: gastoEnviosMonths,
+                backgroundColor: this.barColors,
+                borderColor: "#FF7043",
+                fill: true,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        },
+    });
+    },
     formatPrice(price) {
       return new Intl.NumberFormat("en-US").format(price);
     },
   },
   mounted() {
-    this.getGanancias();
+    this.getRevenue();
+    this.getShippingExpenses();
   },
 };
 </script>
