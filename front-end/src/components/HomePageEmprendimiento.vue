@@ -45,7 +45,7 @@
                 <div class="d-flex justify-content-between" style="width: 100%;">
                 <span style="width: 30%">#{{ order.orderID }}</span>
                 <span style="width: 40%">{{ order.status }}</span>
-                <span style="width: 30%">&#x20a1;{{order.totalAmount }}</span>
+                <span style="width: 30%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
                 </div>
             </b-list-group-item>
             </b-list-group>
@@ -114,6 +114,16 @@ methods: {
         console.error("Error al obtener las ganancias mensuales:", error);
         });
     },
+    getOrdersInProgress(businessID) {
+    axios
+        .get(`${BackendUrl}/Business/${businessID}/OrdersInProgress`)
+        .then((response) => {
+        this.ordersInProgress = response.data;
+        })
+        .catch((error) => {
+        console.error("Error al obtener las órdenes en progreso:", error);
+        });
+    },
     renderRevenueChart() {
     const allMonths = this.months.map((month, index) => ({
         month: index + 1,
@@ -180,6 +190,7 @@ mounted() {
     if (businessID) {
         this.fetchBusinessData(businessID);
         this.getMonthlyRevenue(businessID);
+        this.getOrdersInProgress(businessID);
     } else {
         console.error("No se proporcionó un ID de negocio válido.");
     }
