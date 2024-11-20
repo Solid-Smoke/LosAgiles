@@ -56,7 +56,7 @@ namespace back_end.Infrastructure.Repositories
 
         public void DeleteBusinessAddress(int businessId)
         {
-            sqlConnection.Execute("DELETE FROM BusinessAddresses WHERE BusinessID = @businessId", new { businessId });
+            sqlConnection.Execute("DELETE FROM BusinessesAddresses WHERE BusinessID = @businessId", new { businessId });
         }
 
         public bool CheckIfAProductWasSoftDeleted(int businessId)
