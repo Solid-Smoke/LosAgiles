@@ -155,5 +155,29 @@ namespace back_end.Infrastructure.Repositories
                 _connection.Close();
             }
         }
+        public BusinessModel getBusinessByID(int businessID)
+        {
+            string query = "SELECT * FROM [dbo].[Businesses] WHERE BusinessID = @BusinessID";
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@BusinessID", businessID);
+
+            DataTable tableQueryResult = createTableResult(command);
+
+            if (tableQueryResult.Rows.Count == 0)
+            {
+                return null;
+            }
+
+            var column = tableQueryResult.Rows[0];
+            return new BusinessModel
+            {
+                BusinessID = Convert.ToInt32(column["BusinessID"]),
+                Name = Convert.ToString(column["Name"]),
+                IDNumber = Convert.ToString(column["IDNumber"]),
+                Email = Convert.ToString(column["Email"]),
+                Telephone = Convert.ToString(column["Telephone"]),
+                Permissions = Convert.ToString(column["Permissions"]),
+            };
+        }
     }
 }

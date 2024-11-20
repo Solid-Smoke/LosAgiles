@@ -8,5 +8,6 @@ namespace back_end.Application.interfaces
         List<BusinessModel> getBusinessByEmployeeID(string employeeID);
         List<BusinessAddressModel> getBusinessAddressByBusinessID(string businessID);
         bool insertNewBusiness(CompleteBusinessModel newBusiness);
+        BusinessModel getBusinessByID(int businessID);
     }
 }
