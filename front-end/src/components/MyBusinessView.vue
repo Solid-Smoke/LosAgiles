@@ -66,7 +66,7 @@
     <b-modal v-model="showErrorModal" centered hide-footer>
         <template #title>
             <div class="text-center">
-                &#10060; Error al borrar productos
+                &#10060; Error al borrar emprendimiento
             </div>
         </template>
         <p class="my-4" v-if="failedToDeleteProducts.length > 0">
