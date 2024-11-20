@@ -21,7 +21,7 @@ namespace back_end.Application.Reports
                                 [Orders] [o]
                             WHERE
                                 [o].ClientID = @ClientID 
-                                AND [o].ReceivedDate BETWEEN @StartDate AND @EndDate
+                                AND [o].StatusChangeDate BETWEEN @StartDate AND @EndDate
                                 AND [o].Status = 'Completada'";
             return _reportHandler.FetchReportOrderData(query, baseFilters);
         }
