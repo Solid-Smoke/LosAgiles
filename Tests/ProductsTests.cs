@@ -15,7 +15,7 @@ namespace back_end.Tests
     public class ProductTests
     {
         private Mock<IProductHandler> _mockProductHandler;
-        private Mock<IProductDeleteHandler> _mockProductDeleteHandler;
+        private Mock<IProductDelete> _mockProductDeleteCommand;
         private ProductCommand _productCommand;
         private ProductQuery _productQuery;
         private ProductsController _productsController;
@@ -24,10 +24,10 @@ namespace back_end.Tests
         public void Setup()
         {
             _mockProductHandler = new Mock<IProductHandler>();
-            _mockProductDeleteHandler = new Mock<IProductDeleteHandler>();
+            _mockProductDeleteCommand = new Mock<IProductDelete>();
             _productCommand = new ProductCommand(_mockProductHandler.Object);
             _productQuery = new ProductQuery(_mockProductHandler.Object);
-            _productsController = new ProductsController(_productQuery, _mockProductHandler.Object, _mockProductDeleteHandler.Object);
+            _productsController = new ProductsController(_productQuery, _mockProductHandler.Object, _mockProductDeleteCommand.Object);
         }
 
         [Test]
