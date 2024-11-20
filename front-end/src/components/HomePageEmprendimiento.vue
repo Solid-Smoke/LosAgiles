@@ -16,7 +16,7 @@
     <b-col lg="6" md="6" class="mb-4">
         <b-card class="text-center custom-summary-card">
         <b-card-title>Ganancias Totales</b-card-title>
-        <h3>&#x20a1;{{ totalRevenue }}</h3>
+        <h3 style="color: green;">&#x20a1;{{ formatPrice(totalRevenue) }}</h3>
         </b-card>
     </b-col>
     </b-row>
@@ -99,11 +99,87 @@ methods: {
             this.businessName = "Error al cargar el nombre del negocio";
         });
     },
+    getMonthlyRevenue(businessID) {
+    axios
+        .get(`${BackendUrl}/Business/${businessID}/MonthlyRevenue`)
+        .then((response) => {
+        this.revenueData = response.data;
+        this.totalRevenue = response.data.reduce(
+            (acc, item) => acc + item.total,
+            0
+        );
+        this.renderRevenueChart();
+        })
+        .catch((error) => {
+        console.error("Error al obtener las ganancias mensuales:", error);
+        });
+    },
+    renderRevenueChart() {
+    const allMonths = this.months.map((month, index) => ({
+        month: index + 1,
+        total: 0,
+    }));
+    this.revenueData.forEach((data) => {
+        const monthIndex = allMonths.findIndex(
+        (month) => month.month === parseInt(data.month)
+        );
+        if (monthIndex !== -1) {
+        allMonths[monthIndex].total = data.total;
+        }
+    });
+    const ctx = document
+        .getElementById("monthlyRevenueChart")
+        .getContext("2d");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+        labels: allMonths.map((data) => this.months[data.month - 1]),
+        datasets: [
+            {
+            label: "",
+            data: allMonths.map((data) => data.total),
+            backgroundColor: [
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56",
+                "#4BC0C0",
+                "#9966FF",
+                "#FF9F40",
+                "#E7E9ED",
+                "#76A346",
+                "#D35400",
+                "#8E44AD",
+                "#3498DB",
+                "#2ECC71",
+            ],
+            },
+        ],
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+            display: false,
+            },
+        },
+        scales: {
+            y: {
+            beginAtZero: true,
+            },
+        },
+        },
+    });
+    },
+    formatPrice(price) {
+    return new Intl.NumberFormat("en-US").format(price);
+    },
 },
 mounted() {
     const businessID = this.$route.params.businessID;
     if (businessID) {
         this.fetchBusinessData(businessID);
+        this.getMonthlyRevenue(businessID);
     } else {
         console.error("No se proporcionó un ID de negocio válido.");
     }
@@ -123,7 +199,7 @@ h1 {
     min-height: 400px;
 }
 .custom-summary-card {
-    min-height: 150px;
+    min-height: 125px;
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
