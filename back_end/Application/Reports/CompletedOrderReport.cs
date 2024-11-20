@@ -1,17 +1,18 @@
 ﻿using back_end.Application.Interfaces;
 using back_end.Domain;
+using back_end.Infrastructure.Repositories;
 using System.Data;
 
 namespace back_end.Application.Reports
 {
     public class CompletedOrderReport : OrderReportTemplate<ReportCompletedOrderData>
     {
-        public CompletedOrderReport(IOrderHandler orderHandler)
-            : base(orderHandler)
+        public CompletedOrderReport(IReportHandler reportHandler)
+            : base(reportHandler)
         {
         }
 
-        protected override bool ExecuteReportQuery(ReportBaseFilters baseFilters, out DataTable queryResultTable)
+        protected override DataTable ExecuteReportQuery(ReportBaseFilters baseFilters)
         {
             string query = @"SELECT 
                                 [o].OrderID, [o].CreatedDate, [o].DeliveryDate, [o].ReceivedDate,
@@ -22,7 +23,7 @@ namespace back_end.Application.Reports
                                 [o].ClientID = @ClientID 
                                 AND [o].ReceivedDate BETWEEN @StartDate AND @EndDate
                                 AND [o].Status = 'Completada'";
-            return _orderHandler.GetReportOrderData(query, baseFilters, out queryResultTable);
+            return _reportHandler.FetchReportOrderData(query, baseFilters);
         }
 
         protected override ReportCompletedOrderData MapOrderData(DataRow row)

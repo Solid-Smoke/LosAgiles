@@ -11,7 +11,5 @@ namespace back_end.Application.Interfaces
         bool ApproveOrder(string OrderID);
         bool RejectOrder(string OrderID);
         bool CreateOrder(CreateOrderModel orderData);
-        public bool GetReportOrderData(string query, ReportBaseFilters baseFilters, out DataTable reportData);
-        public bool GetOrderProductsData(string orderIDs, out DataTable queryResultTable);
     }
 }

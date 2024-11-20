@@ -1,89 +1,83 @@
 ﻿using back_end.Application.Interfaces;
 using back_end.Domain;
 using System.Data;
+using System.Data.SqlClient;
+using System.Text;
 
 public abstract class OrderReportTemplate<T> where T : ReportOrderData
 {
-    protected readonly IOrderHandler _orderHandler;
+    protected readonly IReportHandler _reportHandler;
 
-    public OrderReportTemplate(IOrderHandler orderHandler)
+    public OrderReportTemplate(IReportHandler reportHandler)
     {
-        _orderHandler = orderHandler;
+        _reportHandler = reportHandler;
     }
 
-    public bool GetOrderReport(ReportBaseFilters baseFilters,
-        out List<T> orderReport, out string orderIDs)
+    public List<T> FetchReportOrders(ReportBaseFilters baseFilters)
     {
-        orderReport = new List<T>();
-        orderIDs = string.Empty;
-        DataTable queryResultTable;
-
-        if (baseFilters == null || baseFilters.ClientID < 0)
-        {
-            Console.WriteLine("Error en el manejo de los filtros base del reporte...");
-            return false;
-        }
+        if (baseFilters == null)
+            throw new ArgumentNullException(nameof(baseFilters), "Base filters cannot be null.");
+        if (baseFilters.ClientID < 0)
+            throw new ArgumentException("ClientID must be a non-negative value.", nameof(baseFilters));
+        if (baseFilters.StartDate > baseFilters.EndDate)
+            throw new ArgumentException("StartDate cannot be later than EndDate.", nameof(baseFilters));
 
         try
         {
-            if (!ExecuteReportQuery(baseFilters, out queryResultTable))
-            {
-                return false;
-            }
-
-            orderReport = ProcessQueryResult(queryResultTable, out orderIDs);
-            return true;
+            DataTable queryResultTable = ExecuteReportQuery(baseFilters);
+            return ProcessQueryResult(queryResultTable);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-            return false;
+            throw new InvalidOperationException("An error occurred while fetching orders (FetchReportOrders).", ex);
         }
     }
 
-    private List<T> ProcessQueryResult(DataTable queryResultTable, out string orderIDs)
+    public List<ReportOrderProductData> FetchOrderProducts(string orderIDs)
     {
-        var orderReport = new List<T>();
-        var orderIdList = new List<int>();
-
-        foreach (DataRow row in queryResultTable.Rows)
-        {
-            var orderData = MapOrderData(row);
-            orderReport.Add(orderData);
-            orderIdList.Add(orderData.OrderID);
-        }
-
-        orderIDs = string.Join(",", orderIdList);
-        return orderReport;
-    }
-
-    public bool GetOrderProducts(string orderIDs, out List<ReportOrderProductData> orderProducts)
-    {
-        orderProducts = new List<ReportOrderProductData>();
-        DataTable queryResultTable;
-
+        List<ReportOrderProductData> orderProducts = new List<ReportOrderProductData>();
         try
         {
-            if (!_orderHandler.GetOrderProductsData(orderIDs, out queryResultTable))
-            {
-                return false;
-            }
+            DataTable queryResultTable = _reportHandler.FetchOrderProductsData(orderIDs);
 
             foreach (DataRow row in queryResultTable.Rows)
             {
                 var orderProductData = MapOrderProductData(row);
                 orderProducts.Add(orderProductData);
             }
-
-            return true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error retrieving order products: {ex.Message}");
-            return false;
+            throw new InvalidOperationException("An error occurred while fetching order products (FetchOrderProducts).", ex);
         }
+        return orderProducts;
+    }
+    public string GetOrderIDsFromReport(IEnumerable<T> reportData)
+    {
+        if (reportData == null || reportData.Count() < 0)
+            throw new ArgumentException("The report cannot be null or empty.", nameof(reportData));
+
+        var resultBuilder = new StringBuilder();
+        foreach (var item in reportData)
+        {
+            if (resultBuilder.Length > 0)
+                resultBuilder.Append(",");
+            resultBuilder.Append(item.OrderID);
+        }
+        return resultBuilder.ToString();
     }
 
+    private List<T> ProcessQueryResult(DataTable queryResultTable)
+    {
+        var orderReport = new List<T>();
+
+        foreach (DataRow row in queryResultTable.Rows)
+        {
+            var orderData = MapOrderData(row);
+            orderReport.Add(orderData);
+        }
+        return orderReport;
+    }
     private ReportOrderProductData MapOrderProductData(DataRow row)
     {
         return new ReportOrderProductData
@@ -94,6 +88,6 @@ public abstract class OrderReportTemplate<T> where T : ReportOrderData
         };
     }
 
-    protected abstract bool ExecuteReportQuery(ReportBaseFilters baseFilters, out DataTable queryResultTable);
+    protected abstract DataTable ExecuteReportQuery(ReportBaseFilters baseFilters);
     protected abstract T MapOrderData(DataRow row);
 }

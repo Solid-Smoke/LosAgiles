@@ -51,43 +51,5 @@ namespace back_end.APIS
             var userLogin = clientsHandler.Authenticate(UserName, UserPassword);
             return userLogin;
         }
-
-        [HttpGet("{id}/ReportCompletedOrders")]
-        public ActionResult GenerateCompletedOrdersReport(
-            int id, string startDate, string endDate,
-            [FromServices] GenerateCompletedOrdersReport generateCompletedOrdersReport)
-        {
-            try
-            {
-                List<ReportCompletedOrderData> reportData;
-
-                if (!DateTime.TryParse(startDate, out var start) || !DateTime.TryParse(endDate, out var end))
-                {
-                    return BadRequest("Invalid date format.");
-                }
-
-                var baseFilters = new ReportBaseFilters
-                {
-                    ClientID = id,
-                    StartDate = start,
-                    EndDate = end
-                };
-                var success = generateCompletedOrdersReport.Execute(baseFilters, out reportData);
-
-                if (success)
-                {
-                    return Ok(reportData);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError,
-                        "Failed to generate the report.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
     }
 }
