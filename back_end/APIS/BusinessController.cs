@@ -94,5 +94,19 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener las ganancias mensuales: {ex.Message}");
             }
         }
+
+        [HttpGet("{businessID}/OrdersInProgress")]
+        public ActionResult<List<OrderModel>> GetOrdersInProgress(int businessID, [FromServices] GetOrdersInProgressByBusinessID ordersInProgressQuery)
+        {
+            try
+            {
+                var orders = ordersInProgressQuery.Execute(businessID);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener las órdenes en progreso: {ex.Message}");
+            }
+        }
     }
 }

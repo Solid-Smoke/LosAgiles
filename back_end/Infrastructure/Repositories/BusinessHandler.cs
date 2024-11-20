@@ -209,5 +209,37 @@ namespace back_end.Infrastructure.Repositories
 
             return revenues;
         }
+
+        public List<OrderModel> GetOrdersInProgressByBusinessID(int businessID)
+        {
+            string query = @"
+                SELECT o.OrderID, o.Status, o.CreatedDate, o.DeliveryDate, 
+                       o.ClientID, o.DeliveryAddress, o.TotalCost
+                FROM [dbo].[Orders] o
+                JOIN [dbo].[BusinessOrders] bo ON o.OrderID = bo.OrderID
+                WHERE bo.BusinessID = @BusinessID AND o.Status <> 'Completada'";
+
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@BusinessID", businessID);
+
+            DataTable tableQueryResult = createTableResult(command);
+
+            List<OrderModel> orders = new List<OrderModel>();
+            foreach (DataRow row in tableQueryResult.Rows)
+            {
+                orders.Add(new OrderModel
+                {
+                    OrderID = Convert.ToInt32(row["OrderID"]),
+                    Status = Convert.ToString(row["Status"]),
+                    CreatedDate = Convert.ToDateTime(row["CreatedDate"]),
+                    DeliveryDate = row["DeliveryDate"] == DBNull.Value ? null : Convert.ToDateTime(row["DeliveryDate"]),
+                    ClientID = row["ClientID"] == DBNull.Value ? null : Convert.ToInt32(row["ClientID"]),
+                    DeliveryAddress = row["DeliveryAddress"] == DBNull.Value ? null : Convert.ToInt32(row["DeliveryAddress"]),
+                    TotalAmount = Convert.ToInt32(row["TotalCost"])
+                });
+            }
+
+            return orders;
+        }
     }
 }

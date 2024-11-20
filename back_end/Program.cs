@@ -38,6 +38,7 @@ builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
 builder.Services.AddScoped<IBusinessHandler, BusinessHandler>();
 builder.Services.AddScoped<GetMonthlyRevenueByBusinessID>();
+builder.Services.AddScoped<GetOrdersInProgressByBusinessID>();
 
 //Shopping Cart Dependencies
 builder.Services.AddScoped<GetBusinessByEmployeeID>();
