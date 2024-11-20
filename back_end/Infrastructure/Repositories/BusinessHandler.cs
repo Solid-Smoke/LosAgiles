@@ -179,5 +179,35 @@ namespace back_end.Infrastructure.Repositories
                 Permissions = Convert.ToString(column["Permissions"]),
             };
         }
+
+        public List<MonthlyRevenueModel> GetMonthlyRevenueByBusinessID(int businessID)
+        {
+            string query = @"
+                SELECT 
+                    MONTH(o.CreatedDate) AS Month, 
+                    SUM(o.TotalCost) AS Total
+                FROM [dbo].[Orders] o
+                JOIN [dbo].[BusinessOrders] bo ON o.OrderID = bo.OrderID
+                WHERE bo.BusinessID = @BusinessID AND o.Status <> 'Completada'
+                GROUP BY MONTH(o.CreatedDate)
+                ORDER BY MONTH(o.CreatedDate)";
+
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@BusinessID", businessID);
+
+            DataTable tableQueryResult = createTableResult(command);
+
+            List<MonthlyRevenueModel> revenues = new List<MonthlyRevenueModel>();
+            foreach (DataRow row in tableQueryResult.Rows)
+            {
+                revenues.Add(new MonthlyRevenueModel
+                {
+                    Month = Convert.ToInt32(row["Month"]),
+                    Total = Convert.ToDecimal(row["Total"]),
+                });
+            }
+
+            return revenues;
+        }
     }
 }

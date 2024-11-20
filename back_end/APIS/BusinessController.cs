@@ -80,5 +80,19 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener el negocio: {ex.Message}");
             }
         }
+
+        [HttpGet("{businessID}/MonthlyRevenue")]
+        public ActionResult<List<MonthlyRevenueModel>> GetMonthlyRevenue(int businessID, [FromServices] GetMonthlyRevenueByBusinessID monthlyRevenueQuery)
+        {
+            try
+            {
+                var revenue = monthlyRevenueQuery.Execute(businessID);
+                return Ok(revenue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener las ganancias mensuales: {ex.Message}");
+            }
+        }
     }
 }
