@@ -56,6 +56,10 @@ builder.Services.AddScoped<IOrderHandler, OrderHandler>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
+//Reports Dependencies
+builder.Services.AddScoped<GenerateCompletedOrdersReport>();
+builder.Services.AddScoped<IReportHandler, ReportHandler>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
