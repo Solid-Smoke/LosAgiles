@@ -146,7 +146,7 @@ namespace back_end.Infrastructure.Repositories
                            "Businesses.Name AS BusinessName, ProductImage\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
+                           "WHERE Products.IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
                            "OR Products.Category LIKE @searchText)\r\n" +
                            "ORDER BY Products.ProductID\r\n" +
@@ -167,7 +167,7 @@ namespace back_end.Infrastructure.Repositories
             string query = "SELECT count(*)\r\n" +
                            "FROM Products LEFT JOIN Businesses\r\n" +
                            "ON Businesses.BusinessID = Products.BusinessID\r\n" +
-                           "WHERE IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
+                           "WHERE Products.IsDeleted = 0 AND (Products.[Name] LIKE @searchText\r\n" +
                            "OR Businesses.[Name] LIKE @searchText\r\n" +
                            "OR Products.Category LIKE @searchText)\r\n";
             return DapperCountQuery(query,
