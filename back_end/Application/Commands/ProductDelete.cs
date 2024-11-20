@@ -27,7 +27,6 @@ namespace back_end.Application.Commands
                 cannotDeleteActiveOrdersProductsException.Data.Add("ProductIds", activeOrdersProducts);
                 throw cannotDeleteActiveOrdersProductsException;
             }
-
         }
 
         private void ExecuteDeleteStatements(List<int> inactiveOrdersProducts, List<int> productsInShoppingCarts, List<int> productsNotInOrders)
@@ -38,11 +37,23 @@ namespace back_end.Application.Commands
                 productDeleteHandler.SoftDelete(inactiveOrdersProducts);
             if (productsNotInOrders.Count > 0)
                 productDeleteHandler.HardDelete(productsNotInOrders);
-
         }
 
         public void DeleteProducts(List<int> productIds)
         {
+            if (productIds == null || productIds.Count == 0)
+            {
+                throw new ArgumentException("The product list for deleting cannot be empty");
+            }
+
+            foreach (var productId in productIds)
+            {
+                if (productId <= 0)
+                {
+                    throw new ArgumentException("Product IDs have to be greater than zero");
+                }
+            }
+
             CheckIfAreProductsInActiveOrders(productIds);
             List<int> inactiveOrdersProducts = productDeleteHandler.GetInactiveOrderProductsIds(productIds).Distinct().ToList();
             List<int> productsInShoppingCarts = productDeleteHandler.GetInShoppingCartProductsIds(productIds).Distinct().ToList();
