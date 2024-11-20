@@ -28,6 +28,8 @@ namespace back_end.Application.Commands
 
         public void DeleteBusiness(int businessId)
         {
+            if (businessId < 1)
+                throw new ArgumentException("businessId must be greater than 1");
             businessDeleteHandler.OpenSqlConnection();
             businessDeleteHandler.BeginTransaction();
             businessDeleteHandler.SetTransactionIsolationLevel("SERIALIZABLE");
