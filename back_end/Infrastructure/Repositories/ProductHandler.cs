@@ -180,7 +180,7 @@ namespace back_end.Infrastructure.Repositories
                 SELECT p.*, b.Name AS BusinessName, dbo.ConvertDaysToFullNames(p.DaysAvailable) AS DaysAvailableFull
                 FROM Products p
                 INNER JOIN Businesses b ON p.BusinessID = b.BusinessID 
-                WHERE ProductID = {id} AND IsDeleted = 0";
+                WHERE ProductID = {id} AND p.IsDeleted = 0";
 
             DataTable tableQueryResult = CreateTableResult(query);
 
