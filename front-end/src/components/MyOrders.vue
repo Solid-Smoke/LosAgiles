@@ -114,7 +114,7 @@
                 this.AddressModal = true;
             },
             getUserOrders(userID) {
-                axios.get(`${BackendUrl}/Order/GetOrdersByClientID/${userID}`)
+                axios.get(`${BackendUrl}/Order/OrdersByClientID/${userID}`)
                 .then((response) => {
                     this.orders = response.data;
                     if (this.orders[0]) {
@@ -126,7 +126,7 @@
                 });
             },
             getProductsByOrderID(order) {
-                axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
+                axios.get(`${BackendUrl}/Order/ProductsByOrderID/${order.orderID}`)
                 .then((response) => {
                     order.products = response.data;
                     this.selectedProducts = order.products;
@@ -141,7 +141,7 @@
                 this.$refs.warningCancelOrderModal.openModal("Está seguro de que desea cancelar la orden? (Esta accion es irreversible)");
             },
             cancelOrder() {
-                axios.put(`${BackendUrl}/Order/RejectOrder/${this.orderIDToDelete}`)
+                axios.put(`${BackendUrl}/Order/${this.orderIDToDelete}/Rejection`)
                     .then(() => {
                         window.location.reload();
                     })
