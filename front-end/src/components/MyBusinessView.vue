@@ -6,12 +6,13 @@
             <thead class="table-header">
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Cédula Asociada</th>
-                    <th scope="col">Información de Contacto</th>
+                    <th scope="col">Cï¿½dula Asociada</th>
+                    <th scope="col">Informaciï¿½n de Contacto</th>
                     <th scope="col">Permisos</th>
-                    <th scope="col">Ubicación</th>
+                    <th scope="col">Ubicaciï¿½n</th>
                     <th scope="col">Ver Inventario</th>
                     <th scope="col">Agregar Producto</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -23,7 +24,7 @@
                     </td>
                     <td class="table-cell">{{ business.permissions }}</td>
                     <td class="table-cell-button">
-                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicación</button>
+                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicaciï¿½n</button>
                     </td>
                     <td class="table-cell-button">
                         <a @click="viewInventory(business)" class="link-blue">Inventario</a>
@@ -31,12 +32,62 @@
                     <td class="table-cell-button">
                         <a @click="openProductModal(business.businessID)" class="link-blue">Agregar Producto</a>
                     </td>
+                    <td class="table-cell-button">
+                        <b-button variant="danger" v-on:click="showConfirmDeleteBusinessModal(business)">Eliminar</b-button>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
     <AddProductView ref="addProductModal" />
     <ActionModalConfirm ref="confirmBusinesstModal" />
+    <b-modal v-model="showDeleteModal" centered hide-footer>
+        <template #title>
+            <div class="text-center">
+                &#128465; Â¡ATENCIÃ“N!
+            </div>
+        </template>
+        <p class="my-4">
+            Â¿Seguro que quieres eliminar el emprendimiento {{ businessToDelete.name }}?
+        </p>
+        <div class="d-flex justify-content-end">
+            <b-button variant="danger" @click="deleteBusiness" class="mr-2">Borrar</b-button>
+            <b-button variant="secondary" @click="showDeleteModal = false">Cancelar</b-button>
+        </div>
+    </b-modal>
+    <b-modal v-model="showSuccessModal" centered hide-footer>
+        <p class="my-4">
+            &#9989; El borrado fue exitoso.
+        </p>
+        <div class="d-flex justify-content-end">
+            <b-button variant="btn btn-success btn-block" @click="refreshPage">Aceptar</b-button>
+        </div>
+    </b-modal>
+    <b-modal v-model="showErrorModal" centered hide-footer>
+        <template #title>
+            <div class="text-center">
+                &#10060; Error al borrar productos
+            </div>
+        </template>
+        <p class="my-4" v-if="failedToDeleteProducts.length > 0">
+            No se pudo realizar el borrado porque los siguientes productos del emprendimiento estÃ¡n asociados a Ã³rdenes activas:
+        </p>
+        <ul v-if="failedToDeleteProducts.length > 0">
+            <li v-for="product in failedToDeleteProducts" :key="product.productID">{{ product.name }}</li>
+        </ul>
+        <p class="my-4" v-if="failedToDeleteProducts.length > 0">
+            Complete o cancele las Ã³rdenes activas del emprendimiento a borrar y vuelva a intentarlo.
+        </p>
+        <p class="my-4" v-else-if="isNetworkError">
+            No se pudo conectar con el servidor. Por favor, verifique su conexiÃ³n a internet o intente de nuevo mÃ¡s tarde.
+        </p>
+        <p class="my-4" v-else>
+            OcurriÃ³ un error inesperado. Por favor, intÃ©ntelo de nuevo mÃ¡s tarde.
+        </p>
+        <div class="d-flex justify-content-end">
+            <b-button variant="btn btn-success btn-block" @click="refreshPage">Aceptar</b-button>
+        </div>
+    </b-modal>
 </template>
 
 <script>
@@ -75,6 +126,11 @@
                         permissions: '',
                     },
                 ],
+                showDeleteModal: false,
+                showSuccessModal: false,
+                showErrorModal: false,
+                businessToDelete: {},
+                failedToDeleteProducts: []
             };
         },
         methods: {
@@ -90,7 +146,7 @@
             showContactInfo(business) {
                 const message = `Contacto de ${business.name}\n
                                  , Correo: ${business.email}\n
-                                 , Número Telefónico: ${business.telephone}`;
+                                 , Nï¿½mero Telefï¿½nico: ${business.telephone}`;
                 this.$refs.confirmBusinesstModal.openModal(message);
             },
             async loadLocation(business) {
@@ -99,17 +155,17 @@
                     const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
                     this.address = response.data[0];
                 } catch (error) {
-                    console.error("Error al cargar la ubicación: ", error);
+                    console.error("Error al cargar la ubicaciï¿½n: ", error);
                 }
             },
             async showLocation(business) {
                 await this.loadLocation(business);
-                const message = `Ubicación de ${business.name}\n` +
+                const message = `Ubicaciï¿½n de ${business.name}\n` +
                                 `, Provincia: ${this.address.province}\n` +
-                                `, Cantón: ${this.address.canton}\n` +
+                                `, Cantï¿½n: ${this.address.canton}\n` +
                                 `, Distrito: ${this.address.district}\n` +    
-                                `, Código Postal: ${this.address.postalCode}\n` +
-                                `, Otras Señales: ${this.address.otherSigns}`;
+                                `, Cï¿½digo Postal: ${this.address.postalCode}\n` +
+                                `, Otras Seï¿½ales: ${this.address.otherSigns}`;
 
                 this.$refs.confirmBusinesstModal.openModal(message);
                 
@@ -124,6 +180,36 @@
             },
             openProductModal(businessID) { 
                 this.$refs.addProductModal.openModal(businessID);
+            },
+            showConfirmDeleteBusinessModal(business) {
+                this.businessToDelete = business;
+                this.showDeleteModal = true;
+            },
+            async deleteBusiness() {
+                try {
+                    await axios.delete(`${BackendUrl}/Business/${this.businessToDelete.businessID}`);
+                    this.showDeleteModal = false;
+                    this.showSuccessModal = true;
+                } catch (error) {
+                    console.error("Error al borrar el negocio: ", error);
+                    if (error.response) {
+                        if (error.response.status === 409) {
+                            const failedProductIds = error.response.data.productsIdsFailedToDelete;
+                            const response = await axios.get(`${BackendUrl}/Products/Business/${this.businessToDelete.businessID.toString()}`);
+                            const allProducts = response.data;
+                            this.failedToDeleteProducts = allProducts.filter(product => failedProductIds.includes(product.productID));
+                        } else if (error.response.status === 500) {
+                            this.failedToDeleteProducts = [];
+                        }
+                    } else if (error.message && error.message.includes('Network Error')) {
+                        this.isNetworkError = true;
+                    }
+                    this.showDeleteModal = false;
+                    this.showErrorModal = true;
+                }
+            },
+            refreshPage() {
+                window.location.reload();
             },
         },
         created() {

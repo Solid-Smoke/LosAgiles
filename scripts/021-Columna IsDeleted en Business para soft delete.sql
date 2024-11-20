@@ -1,0 +1,3 @@
+USE LosAgilesDB
+ALTER TABLE Businesses ADD IsDeleted BIT NOT NULL DEFAULT 0
+GO
