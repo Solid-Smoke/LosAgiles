@@ -138,7 +138,7 @@ export default {
         },
         deleteSelectedProducts() {
             this.showDeleteModal = false;
-            axios.delete(`${BackendUrl}/Products`, {data: this.selectedProducts })
+            axios.delete(`${BackendUrl}/Products/BatchDelete`, {data: this.selectedProducts })
             .then(() => {
                 this.showSuccessModal = true;
                 this.selectedProducts = []

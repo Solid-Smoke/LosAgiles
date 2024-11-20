@@ -101,7 +101,7 @@ namespace back_end.APIS
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("BatchDelete")]
         public async Task<ActionResult<List<int>>> DeleteProducts([FromBody] List<int> productsIds)
         {
             List<int> productsIdsFailedToDelete = new List<int>();
