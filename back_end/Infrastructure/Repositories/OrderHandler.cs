@@ -244,5 +244,101 @@ namespace back_end.Infrastructure.Repositories {
                 return false;
             }
         }
+
+        public List<OrderModel> GetOrdersExcludingCompleted(int userID)
+        {
+            List<OrderModel> orders = new List<OrderModel>();
+            string query = @"
+                SELECT 
+                    OrderID, 
+                    Status, 
+                    TotalCost
+                FROM Orders
+                WHERE Status != 'Completada' AND ClientID = @UserID";
+
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@UserID", userID);
+                    sqlConnection.Open();
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            orders.Add(
+                                new OrderModel
+                                {
+                                    OrderID = Convert.ToInt32(reader["OrderID"]),
+                                    Status = reader["Status"].ToString(),
+                                    TotalAmount = Convert.ToInt32(reader["TotalCost"])
+                                });
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            return orders;
+        }
+
+        public List<OrderProductsModel> GetLastTenPurchased(int userID)
+        {
+            List<OrderProductsModel> lastTenProducts = new List<OrderProductsModel>();
+            string query = @"
+                SELECT TOP 10 
+                    p.ProductID, 
+                    p.Name AS ProductName, 
+                    op.Amount, 
+                    p.Price
+                FROM OrderProducts op
+                INNER JOIN Orders o ON op.OrderID = o.OrderID
+                INNER JOIN Products p ON op.ProductID = p.ProductID
+                WHERE o.ClientID = @UserID
+                ORDER BY o.CreatedDate DESC";
+
+            try
+            {
+                using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@UserID", userID);
+                    sqlConnection.Open();
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lastTenProducts.Add(
+                                new OrderProductsModel
+                                {
+                                    ProductID = Convert.ToInt32(reader["ProductID"]),
+                                    ProductName = reader["ProductName"].ToString(),
+                                    Amount = Convert.ToInt32(reader["Amount"]),
+                                    Price = Convert.ToDecimal(reader["Price"])
+                                });
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            return lastTenProducts;
+        }
     }
 }
