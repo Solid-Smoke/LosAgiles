@@ -62,32 +62,53 @@ import axios from "axios";
 import { Chart } from "chart.js/auto";
 
 export default {
-    components: {
-        MainNavbar,
+components: {
+    MainNavbar,
+},
+data() {
+    return {
+        businessName: "",
+        revenueData: [],
+        ordersInProgress: [],
+        totalRevenue: 0,
+        months: [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre",
+        ],
+    };
+},
+methods: {
+    fetchBusinessData(businessID) {
+    axios
+        .get(`${BackendUrl}/Business/${businessID}`)
+        .then((response) => {
+            this.businessName = response.data.name || "Nombre no disponible";
+        })
+        .catch((error) => {
+            console.error("Error al obtener datos del negocio:", error);
+            this.businessName = "Error al cargar el nombre del negocio";
+        });
     },
-    data() {
-        return {
-            businessName: "",
-            revenueData: [],
-            ordersInProgress: [],
-            totalRevenue: 0,
-            months: [
-                "Enero",
-                "Febrero",
-                "Marzo",
-                "Abril",
-                "Mayo",
-                "Junio",
-                "Julio",
-                "Agosto",
-                "Septiembre",
-                "Octubre",
-                "Noviembre",
-                "Diciembre",
-            ],
-        };
+},
+mounted() {
+    const businessID = this.$route.params.businessID;
+    if (businessID) {
+        this.fetchBusinessData(businessID);
+    } else {
+        console.error("No se proporcionó un ID de negocio válido.");
     }
-}
+},
+};
 </script>
 
 <style scoped>
