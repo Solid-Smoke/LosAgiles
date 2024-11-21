@@ -4,10 +4,10 @@ using back_end.Domain;
 
 namespace back_end.Application.Queries {
     public class GenerateAllPendingOrdersReport {
-        private readonly PendingOrderReport pendingOrderReport;
+        private readonly AllPendingOrderReport pendingOrderReport;
         public GenerateAllPendingOrdersReport(
             IReportHandler reportHandler) {
-            pendingOrderReport = new PendingOrderReport(reportHandler);
+            pendingOrderReport = new AllPendingOrderReport(reportHandler);
         }
 
         public List<AdminReportOrderData> Execute(ReportBaseFilters baseFilters) {

@@ -7,8 +7,8 @@ using System.Data;
 using System.Globalization;
 
 namespace back_end.Application.Reports {
-    public class PendingOrderReport : OrderReportTemplate<AdminReportOrderData> {
-        public PendingOrderReport(IReportHandler reportHandler)
+    public class AllPendingOrderReport : OrderReportTemplate<AdminReportOrderData> {
+        public AllPendingOrderReport(IReportHandler reportHandler)
             : base(reportHandler) {
         }
 
