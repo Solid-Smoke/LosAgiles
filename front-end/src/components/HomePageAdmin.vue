@@ -31,9 +31,9 @@
                       </b-list-group-item>
                       <b-list-group-item v-for="(order, index) in ordersInProgress" :key="index">
                         <div class="d-flex justify-content-between" style="width: 100%;">
-                          <span  style="width: 35%">#{{ order.orderID }}</span>
-                          <span  style="width: 35%">{{ order.status }}</span>
-                          <span  style="width: 35%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
+                          <span  style="width: 30%">#{{ order.orderID }}</span>
+                          <span  style="width: 40%">{{ order.status }}</span>
+                          <span  style="width: 30%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
                         </div>
                       </b-list-group-item>
                   </b-list-group>
