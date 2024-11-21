@@ -185,12 +185,13 @@ namespace back_end.Infrastructure.Repositories
             string query = @"
                 SELECT 
                     MONTH(o.CreatedDate) AS Month, 
-                    SUM(o.TotalCost) AS Total
+                    SUM(op.Amount * p.Price) AS Total
                 FROM [dbo].[Orders] o
-                JOIN [dbo].[BusinessOrders] bo ON o.OrderID = bo.OrderID
-                WHERE bo.BusinessID = @BusinessID AND o.Status <> 'Completada'
+                JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
+                JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
+                WHERE p.BusinessID = @BusinessID AND o.Status <> 'Completada'
                 GROUP BY MONTH(o.CreatedDate)
-                ORDER BY MONTH(o.CreatedDate)";
+                ORDER BY MONTH(o.CreatedDate);";
 
             SqlCommand command = new SqlCommand(query, _connection);
             command.Parameters.AddWithValue("@BusinessID", businessID);
@@ -213,11 +214,25 @@ namespace back_end.Infrastructure.Repositories
         public List<OrderModel> GetOrdersInProgressByBusinessID(int businessID)
         {
             string query = @"
-                SELECT o.OrderID, o.Status, o.CreatedDate, o.DeliveryDate, 
-                       o.ClientID, o.DeliveryAddress, o.TotalCost
+                SELECT 
+                    o.OrderID,
+                    o.Status,
+                    o.CreatedDate,
+                    o.DeliveryDate,
+                    o.ClientID,
+                    o.DeliveryAddress,
+                    SUM(op.Amount * p.Price) AS TotalCost
                 FROM [dbo].[Orders] o
-                JOIN [dbo].[BusinessOrders] bo ON o.OrderID = bo.OrderID
-                WHERE bo.BusinessID = @BusinessID AND o.Status <> 'Completada'";
+                JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
+                JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
+                WHERE p.BusinessID = @BusinessID AND o.Status <> 'Completada'
+                GROUP BY 
+                    o.OrderID,
+                    o.Status,
+                    o.CreatedDate,
+                    o.DeliveryDate,
+                    o.ClientID,
+                    o.DeliveryAddress";
 
             SqlCommand command = new SqlCommand(query, _connection);
             command.Parameters.AddWithValue("@BusinessID", businessID);
