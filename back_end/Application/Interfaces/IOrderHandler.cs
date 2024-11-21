@@ -1,10 +1,12 @@
 ﻿using back_end.Domain;
+using System.Data;
 
 namespace back_end.Application.Interfaces
 {
     public interface IOrderHandler
     {
         List<OrderModel> GetPendingOrders();
+        List<OrderModel> GetApprovedOrders();
         List<OrderModel> GetOrdersByClientID(string ClientID);
         List<OrderProductsModel> GetProductsByOrderID(string OrderID);
         List<OrderModel> GetOrdersExcludingCompleted(int userID);
