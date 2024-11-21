@@ -3,9 +3,9 @@ using back_end.Application.Reports;
 using back_end.Domain;
 
 namespace back_end.Application.Queries {
-    public class GenerateAllCompletedOrderReport {
+    public class GenerateAllCompletedOrdersReport {
         private readonly AllCompletedOrderReport allCompletedOrderReport;
-        public GenerateAllCompletedOrderReport(
+        public GenerateAllCompletedOrdersReport(
             IReportHandler reportHandler) {
             allCompletedOrderReport = new AllCompletedOrderReport(reportHandler);
         }

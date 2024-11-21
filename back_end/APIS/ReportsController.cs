@@ -157,8 +157,8 @@ namespace back_end.APIS
 
         [HttpGet("CompletedOrders")]
         public ActionResult GenerateAllCompletedOrdersReport(
-    string startDate, string endDate,
-    [FromServices] GenerateAllCompletedOrderReport generateAllCompletedOrderReport) {
+            string startDate, string endDate,
+            [FromServices] GenerateAllCompletedOrdersReport generateAllCompletedOrderReport) {
             try {
 
                 if (!DateTime.TryParse(startDate, out var start) || !DateTime.TryParse(endDate, out var end)) {
