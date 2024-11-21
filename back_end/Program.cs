@@ -61,6 +61,8 @@ builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
 builder.Services.AddScoped<GenerateAllCancelledOrdersReport>();
 builder.Services.AddScoped<GenerateAllCancelledOrderReportPDF>();
+builder.Services.AddScoped<GenerateAllPendingOrdersReport>();
+builder.Services.AddScoped<GenerateAllPendingOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 
 var app = builder.Build();
