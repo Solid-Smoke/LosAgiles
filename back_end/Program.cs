@@ -59,6 +59,8 @@ builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(
 //Reports Dependencies
 builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
+builder.Services.AddScoped<GenerateAllCancelledOrdersReport>();
+builder.Services.AddScoped<GenerateAllCancelledOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 
 var app = builder.Build();
