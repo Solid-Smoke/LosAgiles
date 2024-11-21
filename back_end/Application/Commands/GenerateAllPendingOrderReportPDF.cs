@@ -6,11 +6,11 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllPendingOrderReportPDF
     {
-        private readonly PendingOrderReport pendingOrderReport;
+        private readonly AllPendingOrderReport pendingOrderReport;
         public GenerateAllPendingOrderReportPDF(
             IReportHandler reportHandler)
         {
-            pendingOrderReport = new PendingOrderReport(reportHandler);
+            pendingOrderReport = new AllPendingOrderReport(reportHandler);
         }
 
         public byte[] Execute(ReportBaseFilters baseFilters)
