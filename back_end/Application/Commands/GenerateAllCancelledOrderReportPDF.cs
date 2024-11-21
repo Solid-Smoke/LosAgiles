@@ -6,11 +6,11 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllCancelledOrderReportPDF
     {
-        private readonly CancelledOrderReport cancelledOrderReport;
+        private readonly AllCancelledOrderReport cancelledOrderReport;
         public GenerateAllCancelledOrderReportPDF(
             IReportHandler reportHandler)
         {
-            cancelledOrderReport = new CancelledOrderReport(reportHandler);
+            cancelledOrderReport = new AllCancelledOrderReport(reportHandler);
         }
 
         public byte[] Execute(ReportBaseFilters baseFilters)
