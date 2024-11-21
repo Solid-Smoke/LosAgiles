@@ -57,6 +57,10 @@ builder.Services.AddScoped<GetLastTenPurchased>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
+//Reports Dependencies
+builder.Services.AddScoped<GenerateCompletedOrdersReport>();
+builder.Services.AddScoped<IReportHandler, ReportHandler>();
+
 // Admin dependencies
 builder.Services.AddScoped<IAdminHandler, AdminHandler>();
 builder.Services.AddScoped<GetMonthlyRevenueQuery>();
