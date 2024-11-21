@@ -4,10 +4,10 @@ using back_end.Domain;
 
 namespace back_end.Application.Queries {
     public class GenerateAllCancelledOrdersReport {
-        private readonly CancelledOrderReport cancelledOrderReport;
+        private readonly AllCancelledOrderReport cancelledOrderReport;
         public GenerateAllCancelledOrdersReport(
             IReportHandler reportHandler) {
-            cancelledOrderReport = new CancelledOrderReport(reportHandler);
+            cancelledOrderReport = new AllCancelledOrderReport(reportHandler);
         }
 
         public List<AdminReportOrderData> Execute(ReportBaseFilters baseFilters) {

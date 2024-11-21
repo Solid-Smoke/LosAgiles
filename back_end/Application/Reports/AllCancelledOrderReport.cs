@@ -7,8 +7,8 @@ using System.Data;
 using System.Globalization;
 
 namespace back_end.Application.Reports {
-    public class CancelledOrderReport : OrderReportTemplate<AdminReportOrderData> {
-        public CancelledOrderReport(IReportHandler reportHandler)
+    public class AllCancelledOrderReport : OrderReportTemplate<AdminReportOrderData> {
+        public AllCancelledOrderReport(IReportHandler reportHandler)
             : base(reportHandler) {
         }
 
