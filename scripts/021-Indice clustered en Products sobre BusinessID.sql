@@ -41,19 +41,27 @@ GO
 SET IDENTITY_INSERT Products2 OFF;
 GO
 
-
 -- Paso 2: Crear el índice
-ALTER TABLE [dbo].[ShoppingCarts] DROP CONSTRAINT [FK_ShoppingCarts_ProductID];
-ALTER TABLE [dbo].[OrderProducts] DROP CONSTRAINT [FK__OrderProd__Produ__70DDC3D8];
-ALTER TABLE [dbo].[Products] DROP CONSTRAINT [PK__Products__B40CC6EDB654FAAB];
+DECLARE @sql NVARCHAR(MAX);
+SELECT @sql = 'ALTER TABLE [dbo].[ShoppingCarts] DROP CONSTRAINT ' + QUOTENAME(name)
+FROM sys.foreign_keys
+WHERE parent_object_id = OBJECT_ID('dbo.ShoppingCarts') AND referenced_object_id = OBJECT_ID('dbo.Products');
+EXEC sp_executesql @sql;
+SELECT @sql = 'ALTER TABLE [dbo].[OrderProducts] DROP CONSTRAINT ' + QUOTENAME(name)
+FROM sys.foreign_keys
+WHERE parent_object_id = OBJECT_ID('dbo.OrderProducts') AND referenced_object_id = OBJECT_ID('dbo.Products');
+EXEC sp_executesql @sql;
+SELECT @sql = 'ALTER TABLE [dbo].[Products] DROP CONSTRAINT ' + QUOTENAME(name)
+FROM sys.key_constraints
+WHERE parent_object_id = OBJECT_ID('dbo.Products') AND type = 'PK';
+EXEC sp_executesql @sql;
 CREATE CLUSTERED INDEX [IX_BusinessID] ON [dbo].[Products]
 (
-	[BusinessID] ASC
+    [BusinessID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY];
 ALTER TABLE [dbo].[Products] ADD CONSTRAINT [PK_Products] PRIMARY KEY NONCLUSTERED ([ProductID]);
 ALTER TABLE [dbo].[ShoppingCarts] ADD CONSTRAINT [FK_ShoppingCarts_ProductID] FOREIGN KEY ([ProductID]) REFERENCES [dbo].[Products]([ProductID]);
 ALTER TABLE [dbo].[OrderProducts] ADD CONSTRAINT [FK__OrderProd__Produ__70DDC3D8] FOREIGN KEY ([ProductID]) REFERENCES [dbo].[Products]([ProductID]);
-
 
 -- Paso 3: Probar el índice
 exec sp_executesql N'SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID',N'@BusinessID nvarchar(1)',@BusinessID=N'1'
