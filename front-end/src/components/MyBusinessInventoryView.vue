@@ -62,7 +62,7 @@
     <b-modal v-model="showSuccessModal" centered hide-footer>
         <template #title>
             <div class="text-center">
-                
+                &#9989; Producto borrado
             </div>
         </template>
         <p class="my-4">

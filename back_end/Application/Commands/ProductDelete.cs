@@ -63,6 +63,18 @@ namespace back_end.Application.Commands
 
         public void Execute(List<int> productIds)
         {
+            if (productIds == null || productIds.Count == 0)
+            {
+                throw new ArgumentException("The product list for deleting cannot be empty");
+            }
+
+            foreach (var productId in productIds)
+            {
+                if (productId <= 0)
+                {
+                    throw new ArgumentException("Product IDs have to be greater than zero");
+                }
+            }
             productDeleteHandler.OpenSqlConnection();
             productDeleteHandler.BeginSerializableTransaction();
             try

@@ -1,8 +1,9 @@
-﻿using back_end.Domain;
+﻿using back_end.Application.Interfaces;
+using back_end.Domain;
+using Dapper;
 using System.Data;
 using System.Data.SqlClient;
-using back_end.Application.Interfaces;
-using Dapper;
+using System.Reflection.PortableExecutable;
 
 namespace back_end.Infrastructure.Repositories {
     public class OrderHandler : IOrderHandler {
@@ -85,14 +86,19 @@ namespace back_end.Infrastructure.Repositories {
 
         private int InsertInOrders(CreateOrderModel orderData)
         {
-            
+
             return sqlConnection.QuerySingle<int>(
                 "INSERT INTO Orders (CreatedDate, ClientID, DeliveryAddress, DeliveryDate, DeliveryCost, SubtotalCost, TotalCost)\r\n" +
                 "OUTPUT INSERTED.OrderID\r\n" +
                 "VALUES (getdate(), @clientID, @deliveryAddressID, @deliveryDate, @deliveryCost, @subtotalCost, @totalCost)",
-                new { 
-                    orderData.ClientID, deliveryAddressID = orderData.DeliveryAddress.AddressID, orderData.DeliveryDate, orderData.DeliveryCost,
-                    orderData.SubtotalCost, orderData.TotalCost
+                new
+                {
+                    orderData.ClientID,
+                    deliveryAddressID = orderData.DeliveryAddress.AddressID,
+                    orderData.DeliveryDate,
+                    orderData.DeliveryCost,
+                    orderData.SubtotalCost,
+                    orderData.TotalCost
                 }
             );
         }
@@ -174,7 +180,7 @@ namespace back_end.Infrastructure.Repositories {
                                     OrderID = Convert.ToInt32(reader["OrderID"]),
                                     CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
                                     DeliveryDate = reader["DeliveryDate"] != DBNull.Value
-                                    ? Convert.ToDateTime(reader["DeliveryDate"]) : (DateTime?)null,
+                                    ? Convert.ToDateTime(reader["DeliveryDate"]) : null,
                                     TotalAmount = Convert.ToInt32(reader["TotalAmount"]),
                                     Status = reader["Status"].ToString(),
                                     Address = reader["Address"].ToString()
@@ -259,5 +265,6 @@ namespace back_end.Infrastructure.Repositories {
                 return false;
             }
         }
+
     }
 }
