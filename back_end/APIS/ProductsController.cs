@@ -88,11 +88,6 @@ namespace back_end.APIS
             try
             {
                 var products = productQuery.GetProductsByBusinessID(businessID);
-                if (products == null || products.Count == 0)
-                {
-                    return NotFound("No se encontraron productos para el Business ID especificado.");
-                }
-
                 return new JsonResult(products);
             }
             catch (Exception)
