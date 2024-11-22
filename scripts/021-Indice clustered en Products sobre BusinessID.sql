@@ -1,7 +1,10 @@
 USE LosAgilesDB
 GO
 
---Crear copia de Products para probar el índice
+-- Este script esta hecho para ejecutarse por pasos, pero igual funciona si se ejecuta todo en un mismo lote. Lo de los pasos es para
+-- demostrar la utilidad del indice
+
+-- Paso 1: Crear copia de Products para probar el índice
 CREATE TABLE [dbo].[Products2](
 	[ProductID] [int] IDENTITY(1,1) NOT NULL,
 	[Description] [varchar](512) NOT NULL,
@@ -39,7 +42,7 @@ SET IDENTITY_INSERT Products2 OFF;
 GO
 
 
---Crear el índice
+-- Paso 2: Crear el índice
 ALTER TABLE [dbo].[ShoppingCarts] DROP CONSTRAINT [FK_ShoppingCarts_ProductID];
 ALTER TABLE [dbo].[OrderProducts] DROP CONSTRAINT [FK__OrderProd__Produ__70DDC3D8];
 ALTER TABLE [dbo].[Products] DROP CONSTRAINT [PK__Products__B40CC6EDB654FAAB];
@@ -52,11 +55,11 @@ ALTER TABLE [dbo].[ShoppingCarts] ADD CONSTRAINT [FK_ShoppingCarts_ProductID] FO
 ALTER TABLE [dbo].[OrderProducts] ADD CONSTRAINT [FK__OrderProd__Produ__70DDC3D8] FOREIGN KEY ([ProductID]) REFERENCES [dbo].[Products]([ProductID]);
 
 
---Probar el índice
+-- Paso 3: Probar el índice
 exec sp_executesql N'SELECT * FROM [dbo].[Products] WHERE [BusinessID] = @BusinessID',N'@BusinessID nvarchar(1)',@BusinessID=N'1'
 exec sp_executesql N'SELECT * FROM [dbo].[Products2] WHERE [BusinessID] = @BusinessID',N'@BusinessID nvarchar(1)',@BusinessID=N'1'
 
---Borrar la tabla copia
+-- Paso 4: Borrar la tabla copia que era solo para la prueba
 DELETE FROM Products2
 GO
 DROP TABLE Products2
