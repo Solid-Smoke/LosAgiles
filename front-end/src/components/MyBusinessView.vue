@@ -56,6 +56,11 @@
         </div>
     </b-modal>
     <b-modal v-model="showSuccessModal" centered hide-footer>
+        <template #title>
+            <div class="text-center">
+                &#9989; Emprendimiento borrado
+            </div>
+        </template>
         <p class="my-4">
             &#9989; El borrado fue exitoso.
         </p>
