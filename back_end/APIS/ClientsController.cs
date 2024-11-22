@@ -1,4 +1,6 @@
-﻿using back_end.Domain;
+﻿using back_end.Application.Commands;
+using back_end.Application.Queries;
+using back_end.Domain;
 using back_end.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 

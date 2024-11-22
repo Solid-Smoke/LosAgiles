@@ -16,28 +16,35 @@ namespace back_end.APIS
             this.orderCommand = orderCommand;
         }   
 
-        [HttpGet("GetPendingOrders")]
+        [HttpGet("PendingOrders")]
         public ActionResult<List<OrderModel>> GetPendingOrders(
         [FromServices] GetPendingOrders GetPendingOrders) {
             var pendingOrders = GetPendingOrders.Execute();
             return Ok(pendingOrders);
         }
 
-        [HttpGet("GetOrdersByClientID/{id}")]
+        [HttpGet("ApprovedOrders")]
+        public ActionResult<List<OrderModel>> GetApprovedOrders(
+        [FromServices] GetApprovedOrders GetApprovedOrders) {
+            var approvedOrders = GetApprovedOrders.Execute();
+            return Ok(approvedOrders);
+        }
+
+        [HttpGet("OrdersByClientID/{id}")]
         public ActionResult<List<OrderModel>> GetOrdersByClientID(string id,
         [FromServices] GetOrdersByClientID GetOrdersByClientID) {
             var ClientOrders = GetOrdersByClientID.Execute(id);
             return Ok(ClientOrders);
         }
 
-        [HttpGet("GetProductsByOrderID/{id}")]
+        [HttpGet("ProductsByOrderID/{id}")]
         public ActionResult<List<OrderProductsModel>> GetProductsByOrderID(string id,
         [FromServices] GetProductsByOrderID GetProductsByOrderID) {
             var productsInOrder = GetProductsByOrderID.Execute(id);
             return Ok(productsInOrder);
         }
 
-        [HttpPut("ApproveOrder/{id}")]
+        [HttpPut("{id}/Approval")]
         public IActionResult ApproveOrder(string id,
         [FromServices] ApproveOrder ApproveOrder) {
             var wasApproved = ApproveOrder.Execute(id);
@@ -48,7 +55,7 @@ namespace back_end.APIS
             }
         }
 
-        [HttpPut("RejectOrder/{id}")]
+        [HttpPut("{id}/Rejection")]
         public IActionResult RejectOrder(string id,
         [FromServices] RejectOrder RejectOrder) {
             var wasRejected = RejectOrder.Execute(id);

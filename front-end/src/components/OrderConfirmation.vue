@@ -1,37 +1,74 @@
-<template>
+﻿<template>
     <template v-if="isAdmin">
         <AdminNavbar />
-        <h1 class="display-4 text-center mb-4"><strong>Revisi�n de ordenes</strong></h1>
+        <h1 class="display-4 text-center mb-4"><strong>Revisión de ordenes</strong></h1>
+        <h2 class="text-center mb-3"><strong>Órdenes Pendientes</strong></h2>
         <div class="table-responsive-sm">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th scope="col"># de orden</th>
                         <th scope="col">Comprador</th>
-                        <th scope="col">Fecha de creaci�n</th>
+                        <th scope="col">Fecha de creación</th>
                         <th scope="col">Monto total</th>
-                        <th scope="col">Direcci�n de entrega</th>
+                        <th scope="col">Dirección de entrega</th>
                         <th scope="col">Productos</th>
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="order in orders" :key="order.orderID">
+                    <tr v-for="order in pendingOrders" :key="order.orderID">
                         <td>{{ order.orderID }}</td>
                         <td>{{ order.buyer }}</td>
                         <td>{{ formatDate(order.createdDate) }}</td>
-                        <td>{{ order.totalAmount }}</td>
+                        <td class="text-end pe-5">₡ {{ order.totalAmount }}</td>
                         <td>
-                            <button v-on:click="showAddress(order)" class="btn btn-info">Ver direcci�n</button>
+                            <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
                         </td>
                         <td>
-                            <button v-on:click="GetProductsByOrderID(order)" class="btn btn-info">
+                            <button v-on:click="getProductsByOrderID(order)" class="btn btn-info">
                                 Ver productos
                             </button>
                         </td>
                         <td>
-                            <button v-on:click="ApproveOrder(order)" class="btn btn-success">Aprobar</button> <span />
-                            <button v-on:click="RejectOrder(order)" class="btn btn-danger">Rechazar</button>
+                            <button v-on:click="approveOrder(order)" class="btn btn-success">Aprobar</button> <span />
+                            <button v-on:click="rejectOrder(order)" class="btn btn-danger">Rechazar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> <br />
+
+        <h2 class="text-center mb-3"><strong>Órdenes Aprobadas</strong></h2>
+        <div class="table-responsive-sm">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"># de orden</th>
+                        <th scope="col">Comprador</th>
+                        <th scope="col">Fecha de creación</th>
+                        <th scope="col">Monto total</th>
+                        <th scope="col">Dirección de entrega</th>
+                        <th scope="col">Productos</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="order in approvedOrders" :key="order.orderID">
+                        <td>{{ order.orderID }}</td>
+                        <td>{{ order.buyer }}</td>
+                        <td>{{ formatDate(order.createdDate) }}</td>
+                        <td class="text-end pe-5">₡ {{ order.totalAmount }}</td>
+                        <td>
+                            <button v-on:click="showAddress(order)" class="btn btn-info">Ver dirección</button>
+                        </td>
+                        <td>
+                            <button v-on:click="getProductsByOrderID(order)" class="btn btn-info">
+                                Ver productos
+                            </button>
+                        </td>
+                        <td>
+                            <button v-on:click="rejectOrder(order)" class="btn btn-danger">Cancelar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -48,7 +85,7 @@
             </template>
         </b-modal>
 
-        <b-modal v-model="AddressModal" centered scrollable hide-footer title="Direcci�n de la orden">
+        <b-modal v-model="AddressModal" centered scrollable hide-footer title="Dirección de la orden">
             <template v-if="true">
                 <p>{{ selectedAddress }}</p>
             </template>
@@ -56,7 +93,7 @@
     </template>
     <template v-else>
         <h1 class="display-4 text-center mb-4"><strong>403 Forbidden</strong></h1>
-        <h3 class="text-center mb-4">P�gina solo administradores <br /><a href="/">Regresar</a></h3>
+        <h3 class="text-center mb-4">Página solo administradores <br /><a href="/">Regresar</a></h3>
     </template>
 </template>
 
@@ -75,7 +112,19 @@
                 AddressModal: false,
                 selectedProducts: [],
                 selectedAddress: null,
-                orders: [
+                pendingOrders: [
+                    {
+                        orderID: 0,
+                        buyer: '',
+                        createdDate: '',
+                        totalAmount: 0,
+                        Address: '',
+                        products: [
+                            { productName: '', amount: 0 }
+                        ],
+                    },
+                ],
+                approvedOrders: [
                     {
                         orderID: 0,
                         buyer: '',
@@ -94,17 +143,26 @@
                 this.selectedAddress = order.address;
                 this.AddressModal = true;
             },
-            GetPendingOrders() {
-                axios.get(`${BackendUrl}/Order/GetPendingOrders`)
+            getPendingOrders() {
+                axios.get(`${BackendUrl}/Order/PendingOrders`)
                 .then((response) => {
-                    this.orders = response.data;
+                    this.pendingOrders = response.data;
                 })
                 .catch((error) => {
                     console.log(error);
                 });
             },
-            GetProductsByOrderID(order) {
-                axios.get(`${BackendUrl}/Order/GetProductsByOrderID/${order.orderID}`)
+            getApprovedOrders() {
+                axios.get(`${BackendUrl}/Order/ApprovedOrders`)
+                    .then((response) => {
+                        this.approvedOrders = response.data;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+            getProductsByOrderID(order) {
+                axios.get(`${BackendUrl}/Order/ProductsByOrderID/${order.orderID}`)
                 .then((response) => {
                     order.products = response.data;
                     this.selectedProducts = order.products;
@@ -114,8 +172,8 @@
                     console.log(error);
                 });
             },
-            ApproveOrder(order) {
-                axios.put(`${BackendUrl}/Order/ApproveOrder/${order.orderID}`)
+            approveOrder(order) {
+                axios.put(`${BackendUrl}/Order/${order.orderID}/Approval`)
                 .then(() => {
                     window.location.reload();
                 })
@@ -123,8 +181,8 @@
                     console.log(error);
                 });
             },
-            RejectOrder(order) {
-                axios.put(`${BackendUrl}/Order/RejectOrder/${order.orderID}`)
+            rejectOrder(order) {
+                axios.put(`${BackendUrl}/Order/${order.orderID}/Rejection`)
                     .then(() => {
                         window.location.reload();
                     })
@@ -141,7 +199,8 @@
             }
         },
         mounted() {
-            this.GetPendingOrders();
+            this.getPendingOrders();
+            this.getApprovedOrders();
         },
         props: {
             isAdmin: {
