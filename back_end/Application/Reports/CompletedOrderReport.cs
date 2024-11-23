@@ -8,9 +8,7 @@ namespace back_end.Application.Reports
     public class CompletedOrderReport : OrderReportTemplate<ReportCompletedOrderData>
     {
         public CompletedOrderReport(IReportHandler reportHandler)
-            : base(reportHandler)
-        {
-        }
+            : base(reportHandler) { }
 
         public override byte[] GeneratePdf(List<ReportCompletedOrderData> reportData, ReportBaseFilters baseFilters)
         {

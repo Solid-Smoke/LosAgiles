@@ -7,5 +7,6 @@ namespace back_end.Application.Interfaces
     {
         public DataTable FetchReportOrderData(string query, ReportBaseFilters baseFilters);
         public DataTable FetchOrderProductsData(string orderIDs);
+        public DataTable FetchEarningsReport(int year, int? businessId = null);
     }
 }

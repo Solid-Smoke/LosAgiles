@@ -1,8 +1,5 @@
 ﻿using back_end.Application.Interfaces;
-using back_end.Application.Reports;
 using back_end.Domain;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using System.Data;
 using System.Text;
 
