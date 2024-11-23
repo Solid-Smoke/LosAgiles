@@ -6,11 +6,12 @@ namespace back_end.Application.Commands
 {
     public class GenerateCompletedOrderReportPDF
     {
-        private readonly CompletedOrderReport completedOrderReport;
+        private readonly OrderReportTemplate<ReportCompletedOrderData> _orderReportTemplate;
+
         public GenerateCompletedOrderReportPDF(
-            IReportHandler reportHandler)
+            OrderReportTemplate<ReportCompletedOrderData> orderReportTemplate)
         {
-            completedOrderReport = new CompletedOrderReport(reportHandler);
+            _orderReportTemplate = orderReportTemplate;
         }
 
         public byte[] Execute(ReportBaseFilters baseFilters)
@@ -21,12 +22,14 @@ namespace back_end.Application.Commands
                 throw new ArgumentException("ClientID must be a non-negative value.", nameof(baseFilters));
             if (baseFilters.StartDate > baseFilters.EndDate)
                 throw new ArgumentException("StartDate cannot be later than EndDate.", nameof(baseFilters));
-            List<ReportCompletedOrderData> reportData = completedOrderReport.FetchReportOrders(baseFilters);
+
+            List<ReportCompletedOrderData> reportData = _orderReportTemplate.FetchReportOrders(baseFilters);
 
             if (reportData.Count > 0)
             {
-                string orderIDs = completedOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
-                List<ReportOrderProductData> orderProducts = completedOrderReport.FetchOrderProducts(orderIDs);
+                string orderIDs = _orderReportTemplate.GetOrderIDsFromReport(reportData.AsEnumerable());
+                List<ReportOrderProductData> orderProducts = _orderReportTemplate.FetchOrderProducts(orderIDs);
+
                 foreach (var completedOrder in reportData)
                 {
                     var productsForCurrentOrder = orderProducts
@@ -39,8 +42,10 @@ namespace back_end.Application.Commands
 
                     completedOrder.Amount = productsForCurrentOrder.Sum(product => product.Amount);
                 }
+                return _orderReportTemplate.GeneratePdf(reportData, baseFilters);
             }
-            return completedOrderReport.GeneratePdf(reportData);
+
+            return new byte[0];
         }
     }
 }
