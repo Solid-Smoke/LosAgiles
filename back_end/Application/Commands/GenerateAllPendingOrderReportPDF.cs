@@ -6,11 +6,11 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllPendingOrderReportPDF
     {
-        private readonly AllPendingOrderReport pendingOrderReport;
+        private readonly OrderReportTemplate<AdminReportOrderData> _pendingOrderReport;
         public GenerateAllPendingOrderReportPDF(
-            IReportHandler reportHandler)
+            OrderReportTemplate<AdminReportOrderData> reportHandler)
         {
-            pendingOrderReport = new AllPendingOrderReport(reportHandler);
+            _pendingOrderReport = reportHandler;
         }
 
         public byte[] Execute(ReportBaseFilters baseFilters)
@@ -19,12 +19,12 @@ namespace back_end.Application.Commands
                 throw new ArgumentNullException(nameof(baseFilters), "Base filters cannot be null.");
             if (baseFilters.StartDate > baseFilters.EndDate)
                 throw new ArgumentException("StartDate cannot be later than EndDate.", nameof(baseFilters));
-            List<AdminReportOrderData> reportData = pendingOrderReport.FetchReportOrders(baseFilters);
+            List<AdminReportOrderData> reportData = _pendingOrderReport.FetchReportOrders(baseFilters);
 
             if (reportData.Count > 0)
             {
-                string orderIDs = pendingOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
-                List<ReportOrderProductData> orderProducts = pendingOrderReport.FetchOrderProducts(orderIDs);
+                string orderIDs = _pendingOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
+                List<ReportOrderProductData> orderProducts = _pendingOrderReport.FetchOrderProducts(orderIDs);
                 foreach (var pendingOrder in reportData)
                 {
                     var productsForCurrentOrder = orderProducts
@@ -37,8 +37,9 @@ namespace back_end.Application.Commands
 
                     pendingOrder.Amount = productsForCurrentOrder.Sum(product => product.Amount);
                 }
+                return _pendingOrderReport.GeneratePdf(reportData, baseFilters);
             }
-            return pendingOrderReport.GeneratePdf(reportData);
+            return new byte[0];
         }
     }
 }
