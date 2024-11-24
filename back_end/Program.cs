@@ -71,6 +71,7 @@ builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
 builder.Services.AddScoped<AllCancelledOrderReport>();
 builder.Services.AddScoped<AllPendingOrderReport>();
+builder.Services.AddScoped<AllCompletedOrderReport>();
 builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>>(provider => {
     return provider.GetRequiredService<AllCancelledOrderReport>();
 });

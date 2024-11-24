@@ -12,51 +12,42 @@ namespace back_end.Application.Reports {
             : base(reportHandler) {
         }
 
-        public override byte[] GeneratePdf(List<AdminReportOrderData> reportData) {
-            using (var memoryStream = new MemoryStream()) {
-                var document = new Document(PageSize.A4.Rotate(), 50, 50, 25, 25); // Recordar dar una explicacion de que son los numeros
-                PdfWriter.GetInstance(document, memoryStream);
-                document.Open();
+        public override byte[] GeneratePdf(List<AdminReportOrderData> reportData, ReportBaseFilters baseFilters) {
+            using (var pdfManager = new PDFManager()) {
+                pdfManager.AddTitle("Pedidos Completados por Tiempo");
+                pdfManager.AddParagraph($"Generado el: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                pdfManager.AddParagraph($"Fecha inicial del reporte: " + baseFilters.StartDate.ToShortDateString());
+                pdfManager.AddParagraph($"Fecha final del reporte: " + baseFilters.EndDate.ToShortDateString());
 
-                var titleFont = FontFactory.GetFont(FontFactory.TIMES_BOLD, 18);
-                var tableFont = FontFactory.GetFont(FontFactory.TIMES, 12);
+                var columnWidths = new float[] { 10, 15, 15, 15, 15, 15, 15, 15, 15, 15 };
+                pdfManager.CreateTable(10, columnWidths);
 
-                document.Add(new Paragraph("Pedidos Completados por Tiempo", titleFont));
-                document.Add(new Paragraph($"Generado el: {DateTime.Now:dd/MM/yyy HH:mm:ss}", tableFont));
-                document.Add(new Paragraph("\n"));
-
-                var table = new PdfPTable(10) { WidthPercentage = 100 }; // 10 columnas
-                table.SetWidths(new float[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
-
-                AddCellToHeader(table, "Número de orden");
-                AddCellToHeader(table, "ID de usuario");
-                AddCellToHeader(table, "Emprendimientos asociados");
-                AddCellToHeader(table, "Cantidad de items en la compra");
-                AddCellToHeader(table, "Fecha de creación");
-                AddCellToHeader(table, "Fecha de envío");
-                AddCellToHeader(table, "Fecha de recibido");
-                AddCellToHeader(table, "Costo total de los items");
-                AddCellToHeader(table, "Costo de envío");
-                AddCellToHeader(table, "Costo total de la compra");
+                pdfManager.AddTableHeader("Número de orden");
+                pdfManager.AddTableHeader("ID de usuario");
+                pdfManager.AddTableHeader("Emprendimientos asociados");
+                pdfManager.AddTableHeader("Cantidad de items en la compra");
+                pdfManager.AddTableHeader("Fecha de creación");
+                pdfManager.AddTableHeader("Fecha de envío");
+                pdfManager.AddTableHeader("Fecha de recibido");
+                pdfManager.AddTableHeader("Costo total de los items");
+                pdfManager.AddTableHeader("Costo de envío");
+                pdfManager.AddTableHeader("Costo total de la compra");
 
                 foreach (var order in reportData) {
-                    AddCellToBody(table, order.OrderID.ToString(), tableFont);
-                    AddCellToBody(table, order.UserID.ToString(), tableFont);
-                    AddCellToBody(table, order.BusinessName ?? "N/A", tableFont);
-                    AddCellToBody(table, order.Amount.ToString(), tableFont);
-                    AddCellToBody(table, order.CreatedDate?.ToString("dd/MM/yyy") ?? "N/A", tableFont);
-                    AddCellToBody(table, order.DeliveryDate?.ToString("dd/MM/yyy") ?? "N/A", tableFont);
-                    AddCellToBody(table, order.ReceivedDate?.ToString("dd/MM/yyy") ?? "N/A", tableFont);
-                    AddCellToBody(table, order.SubtotalCost.ToString("C", new CultureInfo("es-CR")), tableFont);
-                    AddCellToBody(table, order.DeliveryCost.ToString("C", new CultureInfo("es-CR")), tableFont);
-                    AddCellToBody(table, order.TotalCost.ToString("C", new CultureInfo("es-CR")), tableFont);
-
+                    pdfManager.AddTableBodyCell(order.OrderID.ToString());
+                    pdfManager.AddTableBodyCell(order.UserID.ToString());
+                    pdfManager.AddTableBodyCell(order.BusinessName ?? "N/A");
+                    pdfManager.AddTableBodyCell(order.Amount.ToString());
+                    pdfManager.AddTableBodyCell(order.CreatedDate?.ToString("dd/MM/yyyy") ?? "N/A");
+                    pdfManager.AddTableBodyCell(order.DeliveryDate?.ToString("dd/MM/yyyy") ?? "N/A");
+                    pdfManager.AddTableBodyCell(order.ReceivedDate?.ToString("dd/MM/yyyy") ?? "N/A");
+                    pdfManager.AddTableBodyCell("CRC " + order.SubtotalCost.ToString("#,##0.00", new CultureInfo("es-CR")));
+                    pdfManager.AddTableBodyCell("CRC " + order.DeliveryCost.ToString("#,##0.00", new CultureInfo("es-CR")));
+                    pdfManager.AddTableBodyCell("CRC " + order.TotalCost.ToString("#,##0.00", new CultureInfo("es-CR")));
                 }
 
-                document.Add(table);
-                document.Close();
-
-                return memoryStream.ToArray();
+                pdfManager.AddTableToDocument();
+                return pdfManager.GeneratePdf();
             }
         }
 

@@ -6,11 +6,11 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllCompletedOrderReportPDF
     {
-        private readonly AllCompletedOrderReport allCompletedOrderReport;
+        private readonly AllCompletedOrderReport _allCompletedOrderReport;
         public GenerateAllCompletedOrderReportPDF(
-            IReportHandler reportHandler)
+            AllCompletedOrderReport reportHandler)
         {
-            allCompletedOrderReport = new AllCompletedOrderReport(reportHandler);
+            _allCompletedOrderReport = reportHandler;
         }
 
         public byte[] Execute(ReportBaseFilters baseFilters)
@@ -19,12 +19,12 @@ namespace back_end.Application.Commands
                 throw new ArgumentNullException(nameof(baseFilters), "Base filters cannot be null.");
             if (baseFilters.StartDate > baseFilters.EndDate)
                 throw new ArgumentException("StartDate cannot be later than EndDate.", nameof(baseFilters));
-            List<AdminReportOrderData> reportData = allCompletedOrderReport.FetchReportOrders(baseFilters);
+            List<AdminReportOrderData> reportData = _allCompletedOrderReport.FetchReportOrders(baseFilters);
 
             if (reportData.Count > 0)
             {
-                string orderIDs = allCompletedOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
-                List<ReportOrderProductData> orderProducts = allCompletedOrderReport.FetchOrderProducts(orderIDs);
+                string orderIDs = _allCompletedOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
+                List<ReportOrderProductData> orderProducts = _allCompletedOrderReport.FetchOrderProducts(orderIDs);
                 foreach (var completedOrder in reportData)
                 {
                     var productsForCurrentOrder = orderProducts
@@ -37,8 +37,9 @@ namespace back_end.Application.Commands
 
                     completedOrder.Amount = productsForCurrentOrder.Sum(product => product.Amount);
                 }
+                return _allCompletedOrderReport.GeneratePdf(reportData, baseFilters);
             }
-            return allCompletedOrderReport.GeneratePdf(reportData);
+            return new byte[0];
         }
     }
 }
