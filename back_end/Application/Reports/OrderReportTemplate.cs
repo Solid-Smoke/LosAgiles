@@ -1,4 +1,5 @@
 ﻿using back_end.Application.Interfaces;
+using back_end.Application.Reports;
 using back_end.Domain;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -87,29 +88,8 @@ public abstract class OrderReportTemplate<T> where T : ReportOrderData
             BusinessName = row["BusinessName"] != DBNull.Value ? Convert.ToString(row["BusinessName"]) : ""
         };
     }
-    protected void AddCellToHeader(PdfPTable table, string text)
-    {
-        var font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-        var cell = new PdfPCell(new Phrase(text, font))
-        {
-            BackgroundColor = BaseColor.LIGHT_GRAY,
-            HorizontalAlignment = iTextSharp.text.Element.ALIGN_CENTER,
-            Padding = 5
-        };
-        table.AddCell(cell);
-    }
 
-    protected void AddCellToBody(PdfPTable table, string text, iTextSharp.text.Font font)
-    {
-        var cell = new PdfPCell(new Phrase(text, font))
-        {
-            HorizontalAlignment = iTextSharp.text.Element.ALIGN_CENTER,
-            Padding = 5
-        };
-        table.AddCell(cell);
-    }
-
-    public abstract byte[] GeneratePdf(List<T> reportData);
+    public abstract byte[] GeneratePdf(List<T> reportData, ReportBaseFilters baseFilters);
     protected abstract DataTable ExecuteReportQuery(ReportBaseFilters baseFilters);
     protected abstract T MapOrderData(DataRow row);
 }
