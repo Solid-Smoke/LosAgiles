@@ -61,10 +61,16 @@ builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(
 //Reports Dependencies
 builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
+builder.Services.AddScoped<GenerateAllCancelledOrdersReport>();
+builder.Services.AddScoped<GenerateAllCancelledOrderReportPDF>();
+builder.Services.AddScoped<GenerateAllPendingOrdersReport>();
+builder.Services.AddScoped<GenerateAllPendingOrderReportPDF>();
 builder.Services.AddScoped<GenerateAdminEarningsReport>();
 builder.Services.AddScoped<GenerateEarningsReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllPendingOrderReport>();
 builder.Services.AddScoped<EarningsReportTemplate<ReportEarningsFilters>, AdminEarningsReport>();
 
 var app = builder.Build();
