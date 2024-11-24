@@ -23,6 +23,8 @@ import IndividualProductPage from './components/IndividualProductPage.vue';
 import MetodoPago from './components/MetodoPago.vue';
 import OrderConfirmation from './components/OrderConfirmation.vue';
 import CreateOrder from './components/CreateOrder.vue';
+import RejectsReport from './components/AdminRejectsReport.vue';
+import PendingReport from './components/AdminPendingReport.vue';
 
 import MyOrders from './components/MyOrders.vue';
 
@@ -50,6 +52,8 @@ const router = createRouter({
         { path: "/ConfirmarOrdenes", name: "Confirmacion de ordenes", component: OrderConfirmation },
         { path: "/Orden", name: "Orden", component: CreateOrder },
         { path: "/MisOrdenes", name: "Mis ordenes", component: MyOrders },
+        { path: "/AdminReports/Cancelled", name: "Ordenes canceladas", component: RejectsReport },
+        { path: "/AdminReports/Pending", name: "Ordenes pendientes", component: PendingReport },
     ],
 });
 

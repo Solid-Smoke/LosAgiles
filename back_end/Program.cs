@@ -2,6 +2,8 @@ using back_end.Application.Commands;
 using back_end.Application.interfaces;
 using back_end.Application.Interfaces;
 using back_end.Application.Queries;
+using back_end.Application.Reports;
+using back_end.Domain;
 using back_end.Infrastructure.Repositories;
 using System.Data.SqlClient;
 
@@ -66,6 +68,9 @@ builder.Services.AddScoped<GenerateAllPendingOrderReportPDF>();
 builder.Services.AddScoped<GenerateAllCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateAllCompletedOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
+builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllPendingOrderReport>();
 
 var app = builder.Build();
 

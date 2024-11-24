@@ -6,11 +6,11 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllCancelledOrderReportPDF
     {
-        private readonly AllCancelledOrderReport cancelledOrderReport;
+        private readonly OrderReportTemplate<AdminReportOrderData> _cancelledOrderReport;
         public GenerateAllCancelledOrderReportPDF(
-            IReportHandler reportHandler)
+            OrderReportTemplate<AdminReportOrderData> reportHandler)
         {
-            cancelledOrderReport = new AllCancelledOrderReport(reportHandler);
+            _cancelledOrderReport = reportHandler;
         }
 
         public byte[] Execute(ReportBaseFilters baseFilters)
@@ -19,12 +19,12 @@ namespace back_end.Application.Commands
                 throw new ArgumentNullException(nameof(baseFilters), "Base filters cannot be null.");
             if (baseFilters.StartDate > baseFilters.EndDate)
                 throw new ArgumentException("StartDate cannot be later than EndDate.", nameof(baseFilters));
-            List<AdminReportOrderData> reportData = cancelledOrderReport.FetchReportOrders(baseFilters);
+            List<AdminReportOrderData> reportData = _cancelledOrderReport.FetchReportOrders(baseFilters);
 
             if (reportData.Count > 0)
             {
-                string orderIDs = cancelledOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
-                List<ReportOrderProductData> orderProducts = cancelledOrderReport.FetchOrderProducts(orderIDs);
+                string orderIDs = _cancelledOrderReport.GetOrderIDsFromReport(reportData.AsEnumerable());
+                List<ReportOrderProductData> orderProducts = _cancelledOrderReport.FetchOrderProducts(orderIDs);
                 foreach (var cancelledOrder in reportData)
                 {
                     var productsForCurrentOrder = orderProducts
@@ -37,8 +37,9 @@ namespace back_end.Application.Commands
 
                     cancelledOrder.Amount = productsForCurrentOrder.Sum(product => product.Amount);
                 }
+                return _cancelledOrderReport.GeneratePdf(reportData, baseFilters);
             }
-            return cancelledOrderReport.GeneratePdf(reportData);
+            return new byte[0];
         }
     }
 }
