@@ -6,9 +6,9 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllPendingOrderReportPDF
     {
-        private readonly OrderReportTemplate<AdminReportOrderData> _pendingOrderReport;
+        private readonly AllPendingOrderReport _pendingOrderReport;
         public GenerateAllPendingOrderReportPDF(
-            OrderReportTemplate<AdminReportOrderData> reportHandler)
+            AllPendingOrderReport reportHandler)
         {
             _pendingOrderReport = reportHandler;
         }
