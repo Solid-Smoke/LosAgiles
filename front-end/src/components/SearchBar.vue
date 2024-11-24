@@ -1,6 +1,6 @@
 <template>
     <b-nav-form>
-        <b-form-input placeholder="Buscar producto, categoría o empresa..." v-model="searchText" :state="inputIsValid" aria-describedby="input-live-feedback" />
+        <b-form-input id="product-search-bar" placeholder="Buscar producto, categoría o empresa..." v-model="searchText" :state="inputIsValid" aria-describedby="input-live-feedback" />
 
         <b-button size="sm" class="my-2 my-sm-0" type="submit" @click="onSearchClick" >Buscar</b-button>
        
