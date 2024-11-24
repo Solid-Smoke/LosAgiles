@@ -69,8 +69,11 @@ builder.Services.AddScoped<GenerateAllCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateAllCompletedOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
-builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
-builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllPendingOrderReport>();
+builder.Services.AddScoped<AllCancelledOrderReport>();
+builder.Services.AddScoped<AllPendingOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>>(provider => {
+    return provider.GetRequiredService<AllCancelledOrderReport>();
+});
 
 var app = builder.Build();
 
