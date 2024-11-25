@@ -15,10 +15,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:8080");
-            policy.WithOrigins("https://agile-buy.netlify.app/");
-            policy.AllowAnyMethod();
-            policy.AllowAnyHeader();
+            policy.WithOrigins("http://localhost:8080", "https://agile-buy.netlify.app")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
         });
 });
 
