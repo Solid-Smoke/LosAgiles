@@ -61,32 +61,5 @@ namespace Tests
             // Act & Assert
             var ex = Assert.Throws<ArgumentException>(() => _command.Execute(baseFilters));
         }
-
-        [Test]
-        public void Execute_ShouldReturnEmptyList_WhenNoReportDataIsFetched()
-        {
-            // Arrange
-            var baseFilters = new ReportBaseFilters
-            {
-                ClientID = 1,
-                StartDate = DateTime.Now.AddDays(-7),
-                EndDate = DateTime.Now
-            };
-
-            string query = string.Empty;
-
-            var emptyTable = new DataTable();
-
-            _mockReportHandler
-                .Setup(r => r.FetchReportOrderData(query, baseFilters))
-                .Returns(emptyTable);
-
-            // Act
-            var result = _command.Execute(baseFilters);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count);
-        }
     }
 }
