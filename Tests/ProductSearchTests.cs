@@ -19,27 +19,27 @@ namespace Tests
         }
 
         [Test]
-        public void countProductsBySearchWorksWithNullSearchText()
+        public void CountProductsBySearchWorksWithNullSearchText()
         {
             const int handlerCountProductsBySearchMockReturn = 3;
             productHandlerMock.Setup(handler =>
-                handler.countProductsBySearch(It.IsAny<string>())).Returns(handlerCountProductsBySearchMockReturn);
+                handler.CountProductsBySearch(It.IsAny<string>())).Returns(handlerCountProductsBySearchMockReturn);
 
-            int productCount = productQuery.countProductsBySearch(null);
+            int productCount = productQuery.CountProductsBySearch(null);
             Assert.AreEqual(productCount, handlerCountProductsBySearchMockReturn);
         }
 
         [Test]
-        public void searchProductsDoesntCallHandlerWithNegativeStartIndex()
+        public void SearchProductsDoesntCallHandlerWithNegativeStartIndex()
         {
             productHandlerMock.Setup(handler =>
-                handler.searchProducts(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                handler.SearchProducts(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(new List<ProductsSearchModel>());
             int startIndex = -2;
             int maxResults = 10;
             string searchText = "Example search";
 
-            Assert.Throws<ArgumentException>(() => productQuery.searchProducts(startIndex, maxResults, searchText));
+            Assert.Throws<ArgumentException>(() => productQuery.SearchProducts(startIndex, maxResults, searchText));
         }
     }
 }

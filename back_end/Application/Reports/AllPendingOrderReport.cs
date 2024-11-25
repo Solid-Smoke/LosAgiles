@@ -33,8 +33,8 @@ namespace back_end.Application.Reports {
                 pdfManager.AddTableHeader("Costo total de la compra");
 
                 foreach (var order in reportData) {
-                    pdfManager.AddTableBodyCell(order.UserID.ToString());
                     pdfManager.AddTableBodyCell(order.OrderID.ToString());
+                    pdfManager.AddTableBodyCell(order.UserID.ToString());
                     pdfManager.AddTableBodyCell(order.BusinessName ?? "N/A");
                     pdfManager.AddTableBodyCell(order.Amount.ToString());
                     pdfManager.AddTableBodyCell(order.CreatedDate?.ToString("dd/MM/yyyy") ?? "N/A");

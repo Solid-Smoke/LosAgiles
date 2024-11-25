@@ -6,9 +6,9 @@ namespace back_end.Application.Commands
 {
     public class GenerateAllCancelledOrderReportPDF
     {
-        private readonly OrderReportTemplate<AdminReportOrderData> _cancelledOrderReport;
+        private readonly AllCancelledOrderReport _cancelledOrderReport;
         public GenerateAllCancelledOrderReportPDF(
-            OrderReportTemplate<AdminReportOrderData> reportHandler)
+            AllCancelledOrderReport reportHandler)
         {
             _cancelledOrderReport = reportHandler;
         }

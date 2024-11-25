@@ -138,7 +138,7 @@ namespace back_end.Infrastructure.Repositories
                 SELECT [p].[ProductID], [p].[Stock]
                 FROM [Products] [p]
                 JOIN [ShoppingCarts] [sc] ON [p].[ProductID] = [sc].ProductID
-                WHERE [sc].ClientID = @ClientId";
+                WHERE [sc].ClientID = @ClientId AND [p].IsDeleted = 0";
 
             List<ShoppingCartItemDataModel> invalidProducts = new List<ShoppingCartItemDataModel>();
 

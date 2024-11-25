@@ -1,4 +1,5 @@
 ﻿using back_end.Application.Commands;
+using back_end.Application.interfaces;
 using back_end.Application.Queries;
 using back_end.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +60,76 @@ namespace back_end.APIS
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new business.");
+            }
+        }
+
+        [HttpDelete("{businessId}")]
+        public async Task<ActionResult<bool>> DeleteBusiness(int businessId, [FromServices] IBusinessDelete _businessDeleteCommand)
+        {
+            List<int> productsIdsFailedToDelete;
+            try
+            {
+                _businessDeleteCommand.DeleteBusiness(businessId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Data.Contains("ProductIds"))
+                {
+                    productsIdsFailedToDelete = (List<int>)ex.Data["ProductIds"];
+                    return Conflict(new
+                    {
+                        message = "No se pudo eliminar el emprendimiento, porque algunos de sus productos están asociados a órdenes activas",
+                        productsIdsFailedToDelete
+                    });
+                }
+                else
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Error eliminando productos.");
+            }
+        }
+        [HttpGet("{businessID}")]
+        public ActionResult<BusinessModel> GetBusinessByID(int businessID, [FromServices] IBusinessHandler businessHandler)
+        {
+            try
+            {
+                var business = businessHandler.getBusinessByID(businessID);
+                if (business == null)
+                {
+                    return NotFound($"No se encontró un negocio con el ID {businessID}");
+                }
+                return Ok(business);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener el negocio: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{businessID}/MonthlyRevenue")]
+        public ActionResult<List<MonthlyRevenueModel>> GetMonthlyRevenue(int businessID, [FromServices] GetMonthlyRevenueByBusinessID monthlyRevenueQuery)
+        {
+            try
+            {
+                var revenue = monthlyRevenueQuery.Execute(businessID);
+                return Ok(revenue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener las ganancias mensuales: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{businessID}/OrdersInProgress")]
+        public ActionResult<List<OrderModel>> GetOrdersInProgress(int businessID, [FromServices] GetOrdersInProgressByBusinessID ordersInProgressQuery)
+        {
+            try
+            {
+                var orders = ordersInProgressQuery.Execute(businessID);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al obtener las órdenes en progreso: {ex.Message}");
             }
         }
     }

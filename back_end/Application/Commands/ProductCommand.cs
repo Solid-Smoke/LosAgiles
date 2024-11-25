@@ -13,7 +13,7 @@ namespace back_end.Application.Commands
             this.productHandler = productHandler;
         }
 
-        public async Task<bool> createProduct(ProductModel product, HttpRequest request)
+        public async Task<bool> CreateProduct(ProductModel product, HttpRequest request)
         {
             ValidateProduct(product);
             await ProcessProductImage(product, request);
