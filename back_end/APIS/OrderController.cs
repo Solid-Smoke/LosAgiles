@@ -91,14 +91,14 @@ namespace back_end.APIS
             }
         }
 
-        [HttpGet("GetOrdersExcludingCompleted/{userID}")]
+        [HttpGet("Orders/Excluding/Completed/{userID}")]
         public ActionResult<List<OrderModel>> GetOrdersExcludingCompleted(int userID, [FromServices] IOrderHandler orderHandler)
         {
             var orders = orderHandler.GetOrdersExcludingCompleted(userID);
             return Ok(orders);
         }
 
-        [HttpGet("GetLastTenPurchased/{userID}")]
+        [HttpGet("Last/Ten/Purchased/{userID}")]
         public ActionResult<List<OrderProductsModel>> GetLastTenPurchased(int userID, [FromServices] GetLastTenPurchased getLastTenPurchased)
         {
             var products = getLastTenPurchased.Execute(userID);

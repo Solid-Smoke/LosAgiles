@@ -1,56 +1,70 @@
 <template>
-<MainNavbar/>
-<SearchBar :startSearchIndex="startSearchIndex"  :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count"  @resetSearch="getProducts" id="searchbar" />
+  <MainNavbar/>
+  <SearchBar :startSearchIndex="startSearchIndex" :maxResults="productsPerPage" @search-made="isSearchActive = true; currentPage = 1;" @products-retrieved="updateProducts" @products-counted="(count) => searchResultsCount = count" @resetSearch="getProducts" id="searchbar" />
 
-<b-container fluid class="px-4">
-    <b-row>
-        <b-col lg="8" md="8">
-            <b-row>
-                <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
-                  <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
-                      <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 135px; height: 135px;" />
-                      <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
-                      <b-card-text><strong>Precio: &#x20a1;{{ formatPrice(product.price) }}</strong></b-card-text>
-                  </b-card>
-                </b-col>
-            </b-row>
-        </b-col>
+  <b-container fluid class="px-4">
+      <b-row>
+          <b-col lg="8" md="8">
+              <b-row>
+                  <b-col lg="3" md="4" sm="6" v-for="product in paginatedProducts" :key="product.productID">
+                    <b-card :title="product.name" img-alt="Product Image" img-top class="product-card mb-3" @click="goToProduct(product.productID)">
+                        <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid d-block mx-auto product-image" style="width: 135px; height: 135px;" />
+                        <b-card-text class="product-description">{{ truncateDescription(product.description, 128) }}</b-card-text>
+                        <b-card-text><strong>Precio: &#x20a1;{{ formatPrice(product.price) }}</strong></b-card-text>
+                    </b-card>
+                  </b-col>
+              </b-row>
+          </b-col>
 
-        <b-col lg="4" md="4">
-          <b-card class="orders mb-3" style="height: calc(50% - 1rem); overflow-y: scroll;">
-            <b-card-title>Órdenes en Progreso</b-card-title>
-            <b-list-group>
-              <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
-              <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID">
-                <div class="d-flex justify-content-between" style="width: 100%;">
-                  <span style="width: 30%"><strong>Orden #</strong>{{ order.orderID }}</span>
-                  <span style="width: 40%"><strong>Estado:</strong> {{ order.status }}</span>
-                  <span style="width: 30%"><strong>Total:</strong> &#x20a1;{{ formatPrice(order.totalAmount) }}</span>
-                </div>
-              </b-list-group-item>
-            </b-list-group>
-          </b-card>
+          <b-col lg="4" md="4">
+            <b-card class="orders mb-3" style="height: calc(50% - 1rem); overflow-y: scroll;">
+              <b-card-title>Órdenes en Progreso</b-card-title>
+              <b-list-group>
+                <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
+                <b-list-group-item v-if="ordersInProgress.length !== 0">
+                  <div class="d-flex justify-content-between">
+                    <span style="width: 30%"><strong>Orden</strong></span>
+                    <span style="width: 40%; text-align: center"><strong>Estado</strong></span>
+                    <span style="width: 30%; text-align: right"><strong>Total</strong></span>
+                  </div>
+                </b-list-group-item>
+                <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID">
+                  <div class="d-flex justify-content-between" style="width: 100%;">
+                    <span style="width: 30%">#{{ order.orderID }}</span>
+                    <span style="width: 40%; text-align: center">{{ order.status }}</span>
+                    <span style="width: 30%; text-align: right">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
+                  </div>
+                </b-list-group-item>
+              </b-list-group>
+            </b-card>
 
-          <b-card class="ten-products mb-3" style="height: calc(50% - 1rem); overflow-y: scroll;">
-            <b-card-title>Últimos 10 Productos Comprados</b-card-title>
-            <b-list-group>
-              <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
-              <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">
-                <div class="d-flex justify-content-between" style="width: 100%;">
-                  <span style="width: 35%"><strong>Producto:</strong> {{ item.productName }}</span>
-                  <span style="width: 30%"><strong>Cantidad:</strong> {{ item.amount }}</span>
-                  <span style="width: 35%"><strong>Precio:</strong> &#x20a1;{{ formatPrice(item.price) }}</span>
-                </div>
-              </b-list-group-item>
-            </b-list-group>
-          </b-card>
-        </b-col>
+            <b-card class="ten-products mb-3" style="height: calc(50% - 1rem); overflow-y: scroll;">
+              <b-card-title>Últimos 10 Productos Comprados</b-card-title>
+              <b-list-group>
+                <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
+                <b-list-group-item v-if="lastTenPurchased.length !== 0">
+                  <div class="d-flex justify-content-between">
+                    <span style="width: 30%"><strong>Producto</strong></span>
+                    <span style="width: 40%; text-align: center"><strong>Cantidad</strong></span>
+                    <span style="width: 30%; text-align: right"><strong>Precio Unitario</strong></span>
+                  </div>
+                </b-list-group-item>
+                <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">
+                  <div class="d-flex justify-content-between" style="width: 100%;">
+                    <span style="width: 30%;"> {{ item.productName }}</span>
+                    <span style="width: 40%; text-align: center"> {{ item.amount }}</span>
+                    <span style="width: 30%; text-align: right">&#x20a1;{{ formatPrice(item.price) }}</span>
+                  </div>
+                </b-list-group-item>
+              </b-list-group>
+            </b-card>
+          </b-col>
 
-        <p v-if="paginatedProducts.length === 0" class="text-center mt-4"><strong>No hay productos disponibles.</strong></p>
+          <p v-if="paginatedProducts.length === 0" class="text-center mt-4"><strong>No hay productos disponibles.</strong></p>
 
-        <b-pagination v-model="currentPage" :total-rows="isSearchActive ? searchResultsCount : products.length" :per-page="productsPerPage" align="center" class="mt-3" @change="onPageChange"></b-pagination>
-    </b-row>
-</b-container>
+          <b-pagination v-model="currentPage" :total-rows="isSearchActive ? searchResultsCount : products.length" :per-page="productsPerPage" align="center" class="mt-3" @change="onPageChange"></b-pagination>
+      </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -103,7 +117,7 @@ export default {
     },
     getOrdersInProgress(userID) {
       axios
-          .get(`${BackendUrl}/Order/GetOrdersExcludingCompleted/${userID}`)
+          .get(`${BackendUrl}/Order/Orders/Excluding/Completed/${userID}`)
           .then((response) => {
               console.log("Órdenes en progreso:", response.data);
               this.ordersInProgress = response.data;
@@ -115,7 +129,7 @@ export default {
     getLastTenPurchased(userID) {
       console.log("Obteniendo últimos 10 productos comprados para usuario:", userID);
       axios
-          .get(`${BackendUrl}/Order/GetLastTenPurchased/${userID}`)
+          .get(`${BackendUrl}/Order/Last/Ten/Purchased/${userID}`)
           .then((response) => {
               console.log("Respuesta del backend (Últimos 10 productos):", response.data);
               this.lastTenPurchased = response.data;
