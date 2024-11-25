@@ -293,7 +293,7 @@ namespace back_end.Infrastructure.Repositories {
                                 {
                                     OrderID = Convert.ToInt32(reader["OrderID"]),
                                     Status = reader["Status"].ToString(),
-                                    TotalAmount = Convert.ToInt32(reader["TotalCost"])
+                                    TotalAmount = Convert.ToDecimal(reader["TotalCost"])
                                 });
                         }
                     }

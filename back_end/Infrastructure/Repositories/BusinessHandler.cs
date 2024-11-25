@@ -250,7 +250,7 @@ namespace back_end.Infrastructure.Repositories
                     DeliveryDate = row["DeliveryDate"] == DBNull.Value ? null : Convert.ToDateTime(row["DeliveryDate"]),
                     ClientID = row["ClientID"] == DBNull.Value ? null : Convert.ToInt32(row["ClientID"]),
                     DeliveryAddress = row["DeliveryAddress"] == DBNull.Value ? null : Convert.ToInt32(row["DeliveryAddress"]),
-                    TotalAmount = Convert.ToInt32(row["TotalCost"])
+                    TotalAmount = Convert.ToDecimal(row["TotalCost"])
                 });
             }
 
