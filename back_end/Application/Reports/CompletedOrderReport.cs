@@ -1,7 +1,7 @@
 ﻿using back_end.Application.Interfaces;
 using back_end.Domain;
-using back_end.Infrastructure.Repositories;
 using System.Data;
+using System.Globalization;
 
 namespace back_end.Application.Reports
 {
@@ -11,6 +11,49 @@ namespace back_end.Application.Reports
             : base(reportHandler)
         {
         }
+
+        public override byte[] GeneratePdf(List<ReportCompletedOrderData> reportData, ReportBaseFilters baseFilters)
+        {
+            using (var pdfManager = new PDFManager())
+            {
+                pdfManager.AddTitle("Pedidos Completados por Tiempo");
+                pdfManager.AddParagraph($"Generado el: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                pdfManager.AddParagraph($"Fecha inicial del reporte: " + baseFilters.StartDate.ToShortDateString());
+                pdfManager.AddParagraph($"Fecha final del reporte: " + baseFilters.EndDate.ToShortDateString());
+
+                var columnWidths = new float[] { 10, 15, 15, 15, 15, 15, 15, 15, 15 };
+                pdfManager.CreateTable(9, columnWidths);
+
+                pdfManager.AddTableHeader("Número de orden");
+                pdfManager.AddTableHeader("Emprendimientos asociados");
+                pdfManager.AddTableHeader("Cantidad de items en la compra");
+                pdfManager.AddTableHeader("Fecha de creación");
+                pdfManager.AddTableHeader("Fecha de envío");
+                pdfManager.AddTableHeader("Fecha de recibido");
+                pdfManager.AddTableHeader("Costo total de los items");
+                pdfManager.AddTableHeader("Costo de envío");
+                pdfManager.AddTableHeader("Costo total de la compra");
+
+                foreach (var order in reportData)
+                {
+                    pdfManager.AddTableBodyCell(order.OrderID.ToString());
+                    pdfManager.AddTableBodyCell(order.BusinessName ?? "N/A");
+                    pdfManager.AddTableBodyCell(order.Amount.ToString());
+                    pdfManager.AddTableBodyCell(order.CreatedDate?.ToString("dd/MM/yyyy") ?? "N/A");
+                    pdfManager.AddTableBodyCell(order.DeliveryDate?.ToString("dd/MM/yyyy") ?? "N/A");
+                    pdfManager.AddTableBodyCell(order.ReceivedDate?.ToString("dd/MM/yyyy") ?? "N/A");
+                    pdfManager.AddTableBodyCell("CRC " + order.SubtotalCost.ToString("#,##0.00", new CultureInfo("es-CR")));
+                    pdfManager.AddTableBodyCell("CRC " + order.DeliveryCost.ToString("#,##0.00", new CultureInfo("es-CR")));
+                    pdfManager.AddTableBodyCell("CRC " + order.TotalCost.ToString("#,##0.00", new CultureInfo("es-CR")));
+
+                }
+
+                pdfManager.AddTableToDocument();
+
+                return pdfManager.GeneratePdf();
+            }
+        }
+
 
         protected override DataTable ExecuteReportQuery(ReportBaseFilters baseFilters)
         {

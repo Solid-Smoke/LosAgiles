@@ -2,7 +2,7 @@
 using back_end.Application.Reports;
 using back_end.Domain;
 
-namespace back_end.Application.Commands
+namespace back_end.Application.Queries
 {
     public class GenerateCompletedOrdersReport
     {
