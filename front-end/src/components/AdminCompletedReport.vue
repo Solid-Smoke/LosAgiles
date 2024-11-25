@@ -1,7 +1,7 @@
 <template>
     <template v-if="isAdmin">
         <AdminNavbar />
-        <h1 class="display-4 text-center mb-4"><strong>Generador de reportes de ordenes pendientes</strong></h1>
+        <h1 class="display-4 text-center mb-4"><strong>Generador de reportes de ordenes completadas</strong></h1>
         <div>
             <div class="text-center">
                 <label><strong>Periodo de reporte:</strong></label> <span />
@@ -29,6 +29,7 @@
                             <th scope="col">Cantidad de Items en la compra</th>
                             <th scope="col">Fecha de creación</th>
                             <th scope="col">Fecha de envío</th>
+                            <th scope="col">Fecha de recibido</th>
                             <th scope="col">Costo total de los items</th>
                             <th scope="col">Costo de envío</th>
                             <th scope="col">Costo total de los compra</th>
@@ -42,6 +43,7 @@
                             <td>{{ order.amount }}</td>
                             <td>{{ formatDate(order.createdDate) }}</td>
                             <td>{{ order.deliveryDate ? formatDate(order.deliveryDate) : '-' }}</td>
+                            <td>{{ order.receivedDate ? formatDate(order.receivedDate) : '-' }}</td>
                             <td class="text-end pe-5">₡ {{ order.subtotalCost }}</td>
                             <td class="text-end pe-5">₡ {{ order.deliveryCost }}</td>
                             <td class="text-end pe-5">₡ {{ order.totalCost }}</td>
@@ -89,6 +91,7 @@
                         amount: 0,
                         createdDate: '',
                         deliveryDate: '',
+                        receivedDate: '',
                         subtotalCost: 0,
                         deliveryCost: 0,
                         totalCost: 0,
@@ -103,7 +106,7 @@
                 }
             },
             generateReport() {
-                axios.get(`${BackendUrl}/Reports/PendingOrders`, {
+                axios.get(`${BackendUrl}/Reports/CompletedOrders`, {
                     params: {
                         startDate: this.startDate,
                         endDate: this.endDate
@@ -127,7 +130,7 @@
                 this.$refs.warningPDFModal.openModal("Seguro de que desea generar un report en PDF?");
             },
             generatePDF() {
-                axios.get(`${BackendUrl}/Reports/PendingOrders/pdf`, {
+                axios.get(`${BackendUrl}/Reports/CompletedOrders/pdf`, {
                     params: {
                         startDate: this.currentReportStartDate,
                         endDate: this.currentReportEndDate
@@ -138,7 +141,7 @@
                     const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = `AllPendingOrdersReport(${new Date().toLocaleDateString()}).pdf`;
+                    link.download = `AllCompletedOrdersReport(${new Date().toLocaleDateString()}).pdf`;
 
                     document.body.appendChild(link);
                     link.click();

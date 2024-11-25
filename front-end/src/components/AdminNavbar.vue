@@ -14,6 +14,7 @@
                     <b-nav-item-dropdown text="Reportes">
                         <b-dropdown-item href="/AdminReports/Cancelled">Canceladas</b-dropdown-item>
                         <b-dropdown-item href="/AdminReports/Pending">Pendientes</b-dropdown-item>
+                        <b-dropdown-item href="/AdminReports/Completed">Completadas</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
 

@@ -154,5 +154,51 @@ namespace back_end.APIS
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("CompletedOrders")]
+        public ActionResult GenerateAllCompletedOrdersReport(
+            string startDate, string endDate,
+            [FromServices] GenerateAllCompletedOrdersReport generateAllCompletedOrderReport) {
+            try {
+
+                if (!DateTime.TryParse(startDate, out var start) || !DateTime.TryParse(endDate, out var end)) {
+                    return BadRequest("Invalid date format.");
+                }
+
+                var baseFilters = new ReportBaseFilters {
+                    ClientID = 0,
+                    StartDate = start,
+                    EndDate = end
+                };
+                return Ok(generateAllCompletedOrderReport.Execute(baseFilters));
+            }
+            catch (SqlException sqlEx) {
+                return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+            }
+            catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("CompletedOrders/pdf")]
+        public ActionResult AllCompletedOrdersReportPDF(
+            string startDate, string endDate,
+            [FromServices] GenerateAllCompletedOrderReportPDF generateAllCompletedOrderReportPDF) {
+            try {
+
+                if (!DateTime.TryParse(startDate, out var start) || !DateTime.TryParse(endDate, out var end)) {
+                    return BadRequest("Invalid date format.");
+                }
+
+                var baseFilters = new ReportBaseFilters {
+                    ClientID = 0,
+                    StartDate = start,
+                    EndDate = end
+                };
+                return File(generateAllCompletedOrderReportPDF.Execute(baseFilters), "application/pdf", "AllCompletedOrdersReport(" + DateTime.Now.ToLongDateString() + ").pdf");
+            }
+            catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
