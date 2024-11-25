@@ -28,7 +28,7 @@ import RejectsReport from './components/AdminRejectsReport.vue';
 import PendingReport from './components/AdminPendingReport.vue';
 import CompletedReport from './components/AdminCompletedReport.vue';
 import AdminEarningsReport from './components/AdminEarningsReport.vue';
-
+import ClientCompletedOrdersReport from './components/ClientCompletedOrdersReport.vue';
 
 import MyOrders from './components/MyOrders.vue';
 
@@ -61,6 +61,7 @@ const router = createRouter({
         { path: "/AdminReports/Pending", name: "Ordenes pendientes", component: PendingReport },
         { path: "/AdminReports/Completed", name: "Ordenes completadas", component: CompletedReport },
         { path: "/AdminReports/Earnings", name: "Ganancias Totales", component: AdminEarningsReport },
+        { path: "/ClientReports/CompletedOrders", name: "Ordenes Completadas", component: ClientCompletedOrdersReport },
     ],
 });
 
