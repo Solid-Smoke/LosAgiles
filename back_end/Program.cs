@@ -67,8 +67,11 @@ builder.Services.AddScoped<IProductDelete, ProductDelete>();
 //Reports Dependencies
 builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
+builder.Services.AddScoped<GenerateAllCancelledOrdersReport>();
+builder.Services.AddScoped<GenerateAllCancelledOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
 
 // Admin dependencies
 builder.Services.AddScoped<IAdminHandler, AdminHandler>();
