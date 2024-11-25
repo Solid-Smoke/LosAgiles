@@ -39,6 +39,8 @@ builder.Services.AddScoped<AddItemToShoppingCart>();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
 builder.Services.AddScoped<IBusinessHandler, BusinessHandler>();
+builder.Services.AddScoped<GetMonthlyRevenueByBusinessID>();
+builder.Services.AddScoped<GetOrdersInProgressByBusinessID>();
 
 //Shopping Cart Dependencies
 builder.Services.AddScoped<GetBusinessByEmployeeID>();
@@ -49,15 +51,19 @@ builder.Services.AddScoped<IShoppingCartHandler, ShoppingCartHandler>();
 
 //Orders dependencies
 builder.Services.AddScoped<GetPendingOrders>();
-builder.Services.AddScoped<GetApprovedOrders>();
 builder.Services.AddScoped<GetOrdersByClientID>();
 builder.Services.AddScoped<GetProductsByOrderID>();
 builder.Services.AddScoped<ApproveOrder>();
 builder.Services.AddScoped<RejectOrder>();
 builder.Services.AddScoped<IOrderHandler, OrderHandler>();
+builder.Services.AddScoped<GetOrdersExcludingCompleted>();
+builder.Services.AddScoped<GetLastTenPurchased>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
+//Product dependencies
+builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
+builder.Services.AddScoped<IProductDelete, ProductDelete>();
 //Reports Dependencies
 builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
@@ -66,6 +72,12 @@ builder.Services.AddScoped<GenerateAllCancelledOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
 builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
+
+// Admin dependencies
+builder.Services.AddScoped<IAdminHandler, AdminHandler>();
+builder.Services.AddScoped<GetMonthlyRevenueQuery>();
+builder.Services.AddScoped<GetMonthlyShippingExpensesQuery>();
+builder.Services.AddScoped<GetOrdersInProgressQuery>();
 
 var app = builder.Build();
 

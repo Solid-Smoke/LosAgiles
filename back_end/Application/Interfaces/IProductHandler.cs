@@ -4,11 +4,11 @@ namespace back_end.Application.Interfaces
 {
     public interface IProductHandler
     {
-        int countProductsBySearch(string searchText);
+        int CountProductsBySearch(string searchText);
         bool CreateProduct(ProductModel product);
         List<ProductModel> GetAllProducts();
         ProductModel GetProductById(int id);
-        List<InventoryItem> getProductsByBusinessID(string businessID);
-        List<ProductsSearchModel> searchProducts(string searchText, int startIndex, int maxResults);
+        List<InventoryItem> GetProductsByBusinessID(string businessID);
+        List<ProductsSearchModel> SearchProducts(string searchText, int startIndex, int maxResults);
     }
 }

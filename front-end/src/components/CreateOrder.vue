@@ -170,7 +170,8 @@
                     .then(() => this.clearCart())
                     .catch(function (error) {
                         console.log(error);
-                        alert("No se pudo realizar la orden por un error en el servidor");
+                        alert("No se pudo realizar la orden porque se borraron algunos productos u ocurrió un error en el servidor,"+
+                             "verifique si su orden tiene todos los productos que intentaba comprar");
                         window.location.href = "/Orden"
                     });
             },
