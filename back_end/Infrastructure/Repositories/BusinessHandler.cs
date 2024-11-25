@@ -189,7 +189,7 @@ namespace back_end.Infrastructure.Repositories
                 FROM [dbo].[Orders] o
                 JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
                 JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
-                WHERE p.BusinessID = @BusinessID AND o.Status <> 'Completada'
+                WHERE p.BusinessID = @BusinessID
                 GROUP BY MONTH(o.CreatedDate)
                 ORDER BY MONTH(o.CreatedDate);";
 
@@ -225,7 +225,7 @@ namespace back_end.Infrastructure.Repositories
                 FROM [dbo].[Orders] o
                 JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
                 JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
-                WHERE p.BusinessID = @BusinessID AND o.Status <> 'Completada'
+                WHERE p.BusinessID = @BusinessID AND o.Status <> 'Completada' AND o.Status <> 'Rechazada'
                 GROUP BY 
                     o.OrderID,
                     o.Status,
