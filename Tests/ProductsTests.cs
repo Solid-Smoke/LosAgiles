@@ -15,6 +15,7 @@ namespace back_end.Tests
     public class ProductTests
     {
         private Mock<IProductHandler> _mockProductHandler;
+        private Mock<IProductDelete> _mockProductDeleteCommand;
         private ProductCommand _productCommand;
         private ProductQuery _productQuery;
         private ProductsController _productsController;
@@ -23,9 +24,10 @@ namespace back_end.Tests
         public void Setup()
         {
             _mockProductHandler = new Mock<IProductHandler>();
+            _mockProductDeleteCommand = new Mock<IProductDelete>();
             _productCommand = new ProductCommand(_mockProductHandler.Object);
             _productQuery = new ProductQuery(_mockProductHandler.Object);
-            _productsController = new ProductsController(_productQuery, _mockProductHandler.Object);
+            _productsController = new ProductsController(_productQuery, _mockProductHandler.Object, _mockProductDeleteCommand.Object);
         }
 
         [Test]
@@ -38,7 +40,7 @@ namespace back_end.Tests
             _mockProductHandler.Setup(handler => handler.CreateProduct(It.IsAny<ProductModel>())).Returns(true);
 
             // Act
-            var result = await _productCommand.createProduct(product, mockHttpRequest.Object);
+            var result = await _productCommand.CreateProduct(product, mockHttpRequest.Object);
 
             // Assert
             Assert.IsTrue(result);

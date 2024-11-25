@@ -6,12 +6,13 @@
             <thead class="table-header">
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col">C閐ula Asociada</th>
-                    <th scope="col">Informaci髇 de Contacto</th>
+                    <th scope="col">C茅dula Asociada</th>
+                    <th scope="col">Informaci贸n de Contacto</th>
                     <th scope="col">Permisos</th>
-                    <th scope="col">Ubicaci髇</th>
+                    <th scope="col">Ubicaci贸n</th>
                     <th scope="col">Ver Inventario</th>
                     <th scope="col">Agregar Producto</th>
+                    <th scope="col">Panel</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,13 +24,16 @@
                     </td>
                     <td class="table-cell">{{ business.permissions }}</td>
                     <td class="table-cell-button">
-                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicaci髇</button>
+                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicaci贸n</button>
                     </td>
                     <td class="table-cell-button">
                         <a @click="viewInventory(business)" class="link-blue">Inventario</a>
                     </td>
                     <td class="table-cell-button">
                         <a @click="openProductModal(business.businessID)" class="link-blue">Agregar Producto</a>
+                    </td>
+                    <td class="table-cell-button">
+                        <button @click="goToBusinessPanel(business.businessID)" class="btn-op-close">Panel</button> 
                     </td>
                 </tr>
             </tbody>
@@ -40,96 +44,94 @@
 </template>
 
 <script>
-    import MainNavbar from './MainNavbar.vue';
-    import AddProductView from './AddProductView.vue';
-    import ActionModalConfirm from './ActionModalConfirm.vue';
-    import { BackendUrl } from '../main.js';
-    import axios from "axios";
+import MainNavbar from './MainNavbar.vue';
+import AddProductView from './AddProductView.vue';
+import ActionModalConfirm from './ActionModalConfirm.vue';
+import { BackendUrl } from '../main.js';
+import axios from "axios";
 
-    export default {
-        components: {
-            MainNavbar,
-            AddProductView,
-            ActionModalConfirm,
-        },
-        data() {
-            return {
-                userID: "1",
-                address: [
-                    {
-                        businessID: 0,
-                        province: '',
-                        canton: '',
-                        district: '',
-                        postalCode: '',
-                        otherSigns: '',
-                    },
-                ],
-                businesses: [
-                    {
-                        businessID: 0,
-                        name: '',
-                        idNumber: '',
-                        email: '',
-                        telephone: '',
-                        permissions: '',
-                    },
-                ],
-            };
-        },
-        methods: {
-            getUserBusiness() {
-                const user = JSON.parse(localStorage.getItem('user'));
-                const id = Number(user[0].userID);
-                axios.get(`${BackendUrl}/Business/Employee/${id}`).then(
-                    (response) => {
-                        this.businesses = response.data;
-                    }
-                );
-            },
-            showContactInfo(business) {
-                const message = `Contacto de ${business.name}\n
-                                 , Correo: ${business.email}\n
-                                 , N鷐ero Telef髇ico: ${business.telephone}`;
-                this.$refs.confirmBusinesstModal.openModal(message);
-            },
-            async loadLocation(business) {
-                try {
-                   
-                    const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
-                    this.address = response.data[0];
-                } catch (error) {
-                    console.error("Error al cargar la ubicaci髇: ", error);
+export default {
+    components: {
+        MainNavbar,
+        AddProductView,
+        ActionModalConfirm,
+    },
+    data() {
+        return {
+            userID: "1",
+            address: [
+                {
+                    businessID: 0,
+                    province: '',
+                    canton: '',
+                    district: '',
+                    postalCode: '',
+                    otherSigns: '',
+                },
+            ],
+            businesses: [
+                {
+                    businessID: 0,
+                    name: '',
+                    idNumber: '',
+                    email: '',
+                    telephone: '',
+                    permissions: '',
+                },
+            ],
+        };
+    },
+    methods: {
+        getUserBusiness() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const id = Number(user[0].userID);
+            axios.get(`${BackendUrl}/Business/Employee/${id}`).then(
+                (response) => {
+                    this.businesses = response.data;
                 }
-            },
-            async showLocation(business) {
-                await this.loadLocation(business);
-                const message = `Ubicaci髇 de ${business.name}\n` +
-                                `, Provincia: ${this.address.province}\n` +
-                                `, Cant髇: ${this.address.canton}\n` +
-                                `, Distrito: ${this.address.district}\n` +    
-                                `, C骴igo Postal: ${this.address.postalCode}\n` +
-                                `, Otras Se馻les: ${this.address.otherSigns}`;
-
-                this.$refs.confirmBusinesstModal.openModal(message);
-                
-            },
-            viewInventory(business) {
-                this.$router.push({
-                    name: 'userBusinessInventory',
-                    query: {
-                        businessID: business.businessID,
-                    },
-                });
-            },
-            openProductModal(businessID) { 
-                this.$refs.addProductModal.openModal(businessID);
-            },
+            );
         },
-        created() {
-            this.getUserBusiness();
+        showContactInfo(business) {
+            const message = `Contacto de ${business.name}\n
+                             , Correo: ${business.email}\n
+                             , N煤mero Telef贸nico: ${business.telephone}`;
+            this.$refs.confirmBusinesstModal.openModal(message);
         },
-    }
+        async loadLocation(business) {
+            try {
+                const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
+                this.address = response.data[0];
+            } catch (error) {
+                console.error("Error al cargar la ubicaci贸n: ", error);
+            }
+        },
+        async showLocation(business) {
+            await this.loadLocation(business);
+            const message = `Ubicaci贸n de ${business.name}\n` +
+                            `, Provincia: ${this.address.province}\n` +
+                            `, Cant贸n: ${this.address.canton}\n` +
+                            `, Distrito: ${this.address.district}\n` +    
+                            `, C贸digo Postal: ${this.address.postalCode}\n` +
+                            `, Otras Se帽ales: ${this.address.otherSigns}`;
+            this.$refs.confirmBusinesstModal.openModal(message);
+        },
+        viewInventory(business) {
+            this.$router.push({
+                name: 'userBusinessInventory',
+                query: {
+                    businessID: business.businessID,
+                },
+            });
+        },
+        openProductModal(businessID) { 
+            this.$refs.addProductModal.openModal(businessID);
+        },
+        goToBusinessPanel(businessID) {
+            this.$router.push({ name: 'HomePageEmprendimiento', params: { businessID } });
+        },
+    },
+    created() {
+        this.getUserBusiness();
+    },
+};
 </script>
-
-<style></style>
