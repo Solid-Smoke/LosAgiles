@@ -69,9 +69,15 @@ builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
 builder.Services.AddScoped<GenerateAllCancelledOrdersReport>();
 builder.Services.AddScoped<GenerateAllCancelledOrderReportPDF>();
+builder.Services.AddScoped<GenerateAllPendingOrdersReport>();
+builder.Services.AddScoped<GenerateAllPendingOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
-builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
+builder.Services.AddScoped<AllCancelledOrderReport>();
+builder.Services.AddScoped<AllPendingOrderReport>();
+builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>>(provider => {
+    return provider.GetRequiredService<AllCancelledOrderReport>();
+});
 
 // Admin dependencies
 builder.Services.AddScoped<IAdminHandler, AdminHandler>();

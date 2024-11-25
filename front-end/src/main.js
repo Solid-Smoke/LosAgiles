@@ -25,6 +25,7 @@ import OrderConfirmation from './components/OrderConfirmation.vue';
 import CreateOrder from './components/CreateOrder.vue';
 import HomePageEmprendimiento from './components/HomePageEmprendimiento.vue';
 import RejectsReport from './components/AdminRejectsReport.vue';
+import PendingReport from './components/AdminPendingReport.vue';
 
 import MyOrders from './components/MyOrders.vue';
 
@@ -54,6 +55,7 @@ const router = createRouter({
         { path: "/MisOrdenes", name: "Mis ordenes", component: MyOrders },
         { path: "/business/:businessID", name: "HomePageEmprendimiento", component: HomePageEmprendimiento },
         { path: "/AdminReports/Cancelled", name: "Ordenes canceladas", component: RejectsReport },
+        { path: "/AdminReports/Pending", name: "Ordenes pendientes", component: PendingReport },
     ],
 });
 
