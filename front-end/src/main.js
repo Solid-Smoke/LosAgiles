@@ -32,7 +32,7 @@ import ClientCompletedOrdersReport from './components/ClientCompletedOrdersRepor
 
 import MyOrders from './components/MyOrders.vue';
 
-export const BackendUrl = "https://localhost:7168/api";
+export const BackendUrl = "https://back-end20241125114521.azurewebsites.net/api";
 export const LosAgilesMapsApiKey = "AIzaSyAJrdPkYVkZfamzm2DvyuvHyaJDAd0rOP4";
 
 const router = createRouter({
@@ -65,7 +65,7 @@ const router = createRouter({
     ],
 });
 
-export const BackendAPIAddress = "https://localhost:7168/api/Shop";
+export const BackendAPIAddress = `${BackendUrl}/Shop`;
 const app = createApp(App);
 
 app.use(BootstrapVue3);
