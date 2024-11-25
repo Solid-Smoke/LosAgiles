@@ -114,7 +114,11 @@
                 })
                 .then((response) => {
                     this.orders = response.data;
-                    this.isValidReport = true;
+                    if (this.orders[0]) {
+                        this.isValidReport = true;
+                    } else {
+                        this.isValidReport = false;
+                    }
                     this.currentReportStartDate = this.startDate;
                     this.currentReportEndDate = this.endDate;
                 })
