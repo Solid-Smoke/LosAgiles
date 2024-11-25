@@ -6,12 +6,13 @@
             <thead class="table-header">
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col">C�dula Asociada</th>
-                    <th scope="col">Informaci�n de Contacto</th>
+                    <th scope="col">Cédula Asociada</th>
+                    <th scope="col">Información de Contacto</th>
                     <th scope="col">Permisos</th>
-                    <th scope="col">Ubicaci�n</th>
+                    <th scope="col">Ubicación</th>
                     <th scope="col">Ver Inventario</th>
                     <th scope="col">Agregar Producto</th>
+                    <th scope="col">Panel</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -24,7 +25,7 @@
                     </td>
                     <td class="table-cell">{{ business.permissions }}</td>
                     <td class="table-cell-button">
-                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicaci�n</button>
+                        <button v-on:click="showLocation(business)" class="btn-op-close">Ver Ubicación</button>
                     </td>
                     <td class="table-cell-button">
                         <a @click="viewInventory(business)" class="link-blue">Inventario</a>
@@ -33,7 +34,10 @@
                         <a @click="openProductModal(business.businessID)" class="link-blue">Agregar Producto</a>
                     </td>
                     <td class="table-cell-button">
-                        <b-button variant="danger" v-on:click="showConfirmDeleteBusinessModal(business)">Eliminar</b-button>
+                        <button @click="goToBusinessPanel(business.businessID)" class="btn-op-close">Panel</button> 
+                    </td>
+                    <td class="table-cell-button">
+                        <b-button variant="danger" v-on:click="showConfirmDeleteBusinessModal(business)">Eliminar</b-button> 
                     </td>
                 </tr>
             </tbody>
@@ -96,131 +100,125 @@
 </template>
 
 <script>
-    import MainNavbar from './MainNavbar.vue';
-    import AddProductView from './AddProductView.vue';
-    import ActionModalConfirm from './ActionModalConfirm.vue';
-    import { BackendUrl } from '../main.js';
-    import axios from "axios";
+import MainNavbar from './MainNavbar.vue';
+import AddProductView from './AddProductView.vue';
+import ActionModalConfirm from './ActionModalConfirm.vue';
+import { BackendUrl } from '../main.js';
+import axios from "axios";
 
-    export default {
-        components: {
-            MainNavbar,
-            AddProductView,
-            ActionModalConfirm,
-        },
-        data() {
-            return {
-                userID: "1",
-                address: [
-                    {
-                        businessID: 0,
-                        province: '',
-                        canton: '',
-                        district: '',
-                        postalCode: '',
-                        otherSigns: '',
-                    },
-                ],
-                businesses: [
-                    {
-                        businessID: 0,
-                        name: '',
-                        idNumber: '',
-                        email: '',
-                        telephone: '',
-                        permissions: '',
-                    },
-                ],
-                showDeleteModal: false,
-                showSuccessModal: false,
-                showErrorModal: false,
-                businessToDelete: {},
-                failedToDeleteProducts: []
-            };
-        },
-        methods: {
-            getUserBusiness() {
-                const user = JSON.parse(localStorage.getItem('user'));
-                const id = Number(user[0].userID);
-                axios.get(`${BackendUrl}/Business/Employee/${id}`).then(
-                    (response) => {
-                        this.businesses = response.data;
-                    }
-                );
-            },
-            showContactInfo(business) {
-                const message = `Contacto de ${business.name}\n
-                                 , Correo: ${business.email}\n
-                                 , N�mero Telef�nico: ${business.telephone}`;
-                this.$refs.confirmBusinesstModal.openModal(message);
-            },
-            async loadLocation(business) {
-                try {
-                   
-                    const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
-                    this.address = response.data[0];
-                } catch (error) {
-                    console.error("Error al cargar la ubicaci�n: ", error);
+export default {
+    components: {
+        MainNavbar,
+        AddProductView,
+        ActionModalConfirm,
+    },
+    data() {
+        return {
+            userID: "1",
+            address: [
+                {
+                    businessID: 0,
+                    province: '',
+                    canton: '',
+                    district: '',
+                    postalCode: '',
+                    otherSigns: '',
+                },
+            ],
+            businesses: [
+                {
+                    businessID: 0,
+                    name: '',
+                    idNumber: '',
+                    email: '',
+                    telephone: '',
+                    permissions: '',
+                },
+            ],
+            showDeleteModal: false,
+            showSuccessModal: false,
+            showErrorModal: false,
+            businessToDelete: {},
+            failedToDeleteProducts: []
+        };
+    },
+    methods: {
+        getUserBusiness() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const id = Number(user[0].userID);
+            axios.get(`${BackendUrl}/Business/Employee/${id}`).then(
+                (response) => {
+                    this.businesses = response.data;
                 }
-            },
-            async showLocation(business) {
-                await this.loadLocation(business);
-                const message = `Ubicaci�n de ${business.name}\n` +
-                                `, Provincia: ${this.address.province}\n` +
-                                `, Cant�n: ${this.address.canton}\n` +
-                                `, Distrito: ${this.address.district}\n` +    
-                                `, C�digo Postal: ${this.address.postalCode}\n` +
-                                `, Otras Se�ales: ${this.address.otherSigns}`;
-
-                this.$refs.confirmBusinesstModal.openModal(message);
-                
-            },
-            viewInventory(business) {
-                this.$router.push({
-                    name: 'userBusinessInventory',
-                    query: {
-                        businessID: business.businessID,
-                    },
-                });
-            },
-            openProductModal(businessID) { 
-                this.$refs.addProductModal.openModal(businessID);
-            },
-            showConfirmDeleteBusinessModal(business) {
-                this.businessToDelete = business;
-                this.showDeleteModal = true;
-            },
-            async deleteBusiness() {
-                try {
-                    await axios.delete(`${BackendUrl}/Business/${this.businessToDelete.businessID}`);
-                    this.showDeleteModal = false;
-                    this.showSuccessModal = true;
-                } catch (error) {
-                    console.error("Error al borrar el negocio: ", error);
-                    if (error.response) {
-                        if (error.response.status === 409) {
-                            const failedProductIds = error.response.data.productsIdsFailedToDelete;
-                            const response = await axios.get(`${BackendUrl}/Products/Business/${this.businessToDelete.businessID.toString()}`);
-                            const allProducts = response.data;
-                            this.failedToDeleteProducts = allProducts.filter(product => failedProductIds.includes(product.productID));
-                        } else if (error.response.status === 500) {
-                            this.failedToDeleteProducts = [];
-                        }
-                    } else if (error.message && error.message.includes('Network Error')) {
-                        this.isNetworkError = true;
+            );
+        },
+        showContactInfo(business) {
+            const message = `Contacto de ${business.name}\n
+                             , Correo: ${business.email}\n
+                             , Número Telefónico: ${business.telephone}`;
+            this.$refs.confirmBusinesstModal.openModal(message);
+        },
+        async loadLocation(business) {
+            try {
+                const response = await axios.get(`${BackendUrl}/Business/${business.businessID}/Addresses`, {});
+                this.address = response.data[0];
+            } catch (error) {
+                console.error("Error al cargar la ubicación: ", error);
+            }
+        },
+        async showLocation(business) {
+            await this.loadLocation(business);
+            const message = `Ubicación de ${business.name}\n` +
+                            `, Provincia: ${this.address.province}\n` +
+                            `, Cantón: ${this.address.canton}\n` +
+                            `, Distrito: ${this.address.district}\n` +    
+                            `, Código Postal: ${this.address.postalCode}\n` +
+                            `, Otras Señales: ${this.address.otherSigns}`;
+            this.$refs.confirmBusinesstModal.openModal(message);
+        },
+        viewInventory(business) {
+            this.$router.push({
+                name: 'userBusinessInventory',
+                query: {
+                    businessID: business.businessID,
+                },
+            });
+        },
+        openProductModal(businessID) { 
+            this.$refs.addProductModal.openModal(businessID);
+        },
+        goToBusinessPanel(businessID) {
+            this.$router.push({ name: 'HomePageEmprendimiento', params: { businessID } });
+        },
+        async deleteBusiness() {
+            try {
+                await axios.delete(`${BackendUrl}/Business/${this.businessToDelete.businessID}`);
+                this.showDeleteModal = false;
+                this.showSuccessModal = true;
+            } catch (error) {
+                console.error("Error al borrar el negocio: ", error);
+                if (error.response) {
+                    if (error.response.status === 409) {
+                        const failedProductIds = error.response.data.productsIdsFailedToDelete;
+                        const response = await axios.get(`${BackendUrl}/Products/Business/${this.businessToDelete.businessID.toString()}`);
+                        const allProducts = response.data;
+                        this.failedToDeleteProducts = allProducts.filter(product => failedProductIds.includes(product.productID));
+                    } else if (error.response.status === 500) {
+                        this.failedToDeleteProducts = [];
                     }
-                    this.showDeleteModal = false;
-                    this.showErrorModal = true;
+                } else if (error.message && error.message.includes('Network Error')) {
+                    this.isNetworkError = true;
                 }
-            },
-            refreshPage() {
-                window.location.reload();
-            },
+                this.showDeleteModal = false;
+                this.showErrorModal = true;
+            }
         },
-        created() {
-            this.getUserBusiness();
+        refreshPage() {
+            window.location.reload();
         },
-    }
+    },
+    created() {
+        this.getUserBusiness();
+    },
+};
 </script>
-
-<style></style>
