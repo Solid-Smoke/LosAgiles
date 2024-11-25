@@ -16,6 +16,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:8080");
+            policy.WithOrigins("https://spontaneous-torrone-61d447.netlify.app/");
             policy.AllowAnyMethod();
             policy.AllowAnyHeader();
         });
