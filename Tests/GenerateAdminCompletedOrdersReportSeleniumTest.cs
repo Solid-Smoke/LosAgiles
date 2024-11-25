@@ -55,9 +55,9 @@ namespace ReportTests {
             confirmButton.Click();
             Thread.Sleep(1000);
 
-            // Assert - Verify that report data is visible in the table
+            // Assert - Verify the report was downloaded
             bool isButtonEnabled = generatePDFButton.Enabled;
-            Assert.IsTrue(isButtonEnabled, "Descarga de PDF exitosa.");
+            Assert.IsTrue(isButtonEnabled, "PDF has been downloaded");
         }
 
         [TearDown]
