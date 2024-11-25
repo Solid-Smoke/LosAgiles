@@ -2,6 +2,21 @@
   <AdminNavbar/>
   
   <b-container fluid class="px-4">
+      <b-row class="mt-4">
+          <b-col lg="6" md="6" sm="12" class="mb-4">
+              <b-card class="text-center custom-summary-card">
+                  <b-card-title>Ganancias Totales</b-card-title>
+                  <h3 style="color: green;">&#x20a1;{{ formatPrice(totalRevenue) }}</h3>
+              </b-card>
+          </b-col>
+          <b-col lg="6" md="6" sm="12" class="mb-4">
+              <b-card class="text-center custom-summary-card">
+                  <b-card-title>Gastos de Envío Totales</b-card-title>
+                  <h3 style="color: red;">&#x20a1;-{{ formatPrice(totalShippingExpenses) }}</h3>
+              </b-card>
+          </b-col>
+      </b-row>
+
       <b-row>
           <b-col lg="6" md="6" sm="12" class="mb-4">
               <b-card style="margin-top: 20px;">
@@ -31,9 +46,9 @@
                       </b-list-group-item>
                       <b-list-group-item v-for="(order, index) in ordersInProgress" :key="index">
                         <div class="d-flex justify-content-between" style="width: 100%;">
-                          <span  style="width: 35%">#{{ order.orderID }}</span>
-                          <span  style="width: 35%">{{ order.status }}</span>
-                          <span  style="width: 35%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
+                          <span  style="width: 30%">#{{ order.orderID }}</span>
+                          <span  style="width: 40%">{{ order.status }}</span>
+                          <span  style="width: 30%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
                         </div>
                       </b-list-group-item>
                   </b-list-group>
@@ -58,6 +73,8 @@ export default {
       gananciasData: [],
       gastosData: [],
       ordersInProgress: [],
+      totalRevenue: 0,
+      totalShippingExpenses: 0,
       months: [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", 
         "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -74,6 +91,7 @@ export default {
         .get(`${BackendUrl}/admin/Monthly/Revenue`)
         .then((response) => {
           this.gananciasData = response.data;
+          this.totalRevenue = response.data.reduce((acc, item) => acc + item.total, 0);
           this.renderRevenueChart();
         })
         .catch((error) => {
@@ -85,6 +103,7 @@ export default {
         .get(`${BackendUrl}/admin/Shipping/Expenses`)
         .then((response) => {
           this.gastosData = response.data;
+          this.totalShippingExpenses = response.data.reduce((acc, item) => acc + item.total, 0);
           this.renderShippingExpensesChart();
         })
         .catch((error) => {
@@ -102,74 +121,74 @@ export default {
         });
     },
     renderRevenueChart() {
-        const gananciasMonths = this.months.map((month, index) => {
-            const data = this.gananciasData.find((d) => parseInt(d.month) - 1 === index);
-            return data ? data.total : 0;
-        });
+      const gananciasMonths = this.months.map((month, index) => {
+        const data = this.gananciasData.find((d) => parseInt(d.month) - 1 === index);
+        return data ? data.total : 0;
+      });
 
-        const ctx = document.getElementById("revenueChart").getContext('2d');
+      const ctx = document.getElementById("revenueChart").getContext('2d');
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: this.months,
-                datasets: [{
-                    data: gananciasMonths,
-                    backgroundColor: this.barColors,
-                    borderColor: "#42A5F5",
-                    fill: true,
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            },
-        });
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: this.months,
+              datasets: [{
+                  data: gananciasMonths,
+                  backgroundColor: this.barColors,
+                  borderColor: "#42A5F5",
+                  fill: true,
+              }],
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                  }
+              },
+              plugins: {
+                  legend: {
+                      display: false
+                  }
+              }
+          },
+      });
     },
     renderShippingExpensesChart() {
-        const gastoEnviosMonths = this.months.map((month, index) => {
-            const data = this.gastosData.find((d) => parseInt(d.month) - 1 === index);
-            return data ? data.total : 0; 
-        });
+      const gastoEnviosMonths = this.months.map((month, index) => {
+          const data = this.gastosData.find((d) => parseInt(d.month) - 1 === index);
+          return data ? data.total : 0; 
+      });
 
-        const ctx = document.getElementById("shippingExpensesChart").getContext('2d');
+      const ctx = document.getElementById("shippingExpensesChart").getContext('2d');
 
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: this.months,
-            datasets: [{
-                data: gastoEnviosMonths,
-                backgroundColor: this.barColors,
-                borderColor: "#FF7043",
-                fill: true,
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        },
-    });
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: this.months,
+              datasets: [{
+                  data: gastoEnviosMonths,
+                  backgroundColor: this.barColors,
+                  borderColor: "#FF7043",
+                  fill: true,
+              }],
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                  }
+              },
+              plugins: {
+                  legend: {
+                      display: false
+                  }
+              }
+          },
+      });
     },
     formatPrice(price) {
       return new Intl.NumberFormat("en-US").format(price);
@@ -200,5 +219,12 @@ canvas {
 
 b-list-group-item {
   font-size: 0.875rem;
+}
+
+.custom-summary-card {
+  min-height: 150px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>

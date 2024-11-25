@@ -2,6 +2,8 @@ using back_end.Application.Commands;
 using back_end.Application.interfaces;
 using back_end.Application.Interfaces;
 using back_end.Application.Queries;
+using back_end.Application.Reports;
+using back_end.Domain;
 using back_end.Infrastructure.Repositories;
 using System.Data.SqlClient;
 
@@ -59,9 +61,14 @@ builder.Services.AddScoped<GetLastTenPurchased>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
+//Product dependencies
+builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
+builder.Services.AddScoped<IProductDelete, ProductDelete>();
 //Reports Dependencies
 builder.Services.AddScoped<GenerateCompletedOrdersReport>();
+builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
+builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
 
 // Admin dependencies
 builder.Services.AddScoped<IAdminHandler, AdminHandler>();

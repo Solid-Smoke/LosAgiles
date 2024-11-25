@@ -81,17 +81,24 @@ namespace back_end.APIS
         [HttpPost]
         public async Task<ActionResult<bool>> CreateOrder(CreateOrderModel orderData)
         {
-            return orderCommand.CreateOrder(orderData);
+            try
+            {
+                return orderCommand.CreateOrder(orderData);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando orden, operación abortada.");
+            }
         }
 
-        [HttpGet("GetOrdersExcludingCompleted/{userID}")]
+        [HttpGet("Orders/Excluding/Completed/{userID}")]
         public ActionResult<List<OrderModel>> GetOrdersExcludingCompleted(int userID, [FromServices] IOrderHandler orderHandler)
         {
             var orders = orderHandler.GetOrdersExcludingCompleted(userID);
             return Ok(orders);
         }
 
-        [HttpGet("GetLastTenPurchased/{userID}")]
+        [HttpGet("Last/Ten/Purchased/{userID}")]
         public ActionResult<List<OrderProductsModel>> GetLastTenPurchased(int userID, [FromServices] GetLastTenPurchased getLastTenPurchased)
         {
             var products = getLastTenPurchased.Execute(userID);
