@@ -30,7 +30,7 @@ namespace back_end.Infrastructure.Repositories
         public List<BusinessModel> getAllBusiness()
         {
             List<BusinessModel> businessData = new List<BusinessModel>();
-            string query = "SELECT * FROM [dbo].[Businesses]";
+            string query = "SELECT * FROM [dbo].[Businesses] WHERE IsDeleted = 0";
             SqlCommand command = new SqlCommand(query, _connection);
             DataTable tableQueryResult = createTableResult(command);
             foreach (DataRow column in tableQueryResult.Rows)
@@ -55,7 +55,7 @@ namespace back_end.Infrastructure.Repositories
                 SELECT * 
                 FROM [dbo].[Employees] 
                 JOIN [dbo].[Businesses] ON [Employees].[BusinessID] = [Businesses].[BusinessID] 
-                WHERE [Employees].[UserID] = @EmployeeID";
+                WHERE [Employees].[UserID] = @EmployeeID AND IsDeleted = 0";
             SqlCommand command = new SqlCommand(query, _connection);
             command.Parameters.AddWithValue("@EmployeeID", employeeID);
             DataTable tableQueryResult = createTableResult(command);

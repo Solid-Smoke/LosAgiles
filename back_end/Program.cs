@@ -38,7 +38,13 @@ builder.Services.AddScoped<GetShoppingCartInvalidItems>();
 builder.Services.AddScoped<AddItemToShoppingCart>();
 builder.Services.AddScoped<DeleteUserShoppingCart>();
 builder.Services.AddScoped<GetUserShoppingCart>();
+builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 builder.Services.AddScoped<IBusinessHandler, BusinessHandler>();
+builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
+builder.Services.AddScoped<IProductDelete, ProductDelete>();
+builder.Services.AddScoped<IBusinessDeleteHandler, BusinessDeleteHandler>();
+builder.Services.AddScoped<IBusinessDelete, BusinessDelete>();
+
 builder.Services.AddScoped<GetMonthlyRevenueByBusinessID>();
 builder.Services.AddScoped<GetOrdersInProgressByBusinessID>();
 
@@ -61,9 +67,6 @@ builder.Services.AddScoped<GetLastTenPurchased>();
 builder.Services.AddScoped<ISubmitOrder, SubmitOrder>();
 builder.Services.AddScoped<SqlConnection>(auxiliarVariable => new SqlConnection(builder.Configuration.GetConnectionString("ClientsContext")));
 
-//Product dependencies
-builder.Services.AddScoped<IProductDeleteHandler, ProductDeleteHandler>();
-builder.Services.AddScoped<IProductDelete, ProductDelete>();
 //Reports Dependencies
 builder.Services.AddScoped<GenerateCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateCompletedOrderReportPDF>();
