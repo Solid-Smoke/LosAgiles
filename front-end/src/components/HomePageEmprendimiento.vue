@@ -9,7 +9,7 @@
     <b-row class="mt-4">
     <b-col lg="6" md="6" class="mb-4">
         <b-card class="text-center custom-summary-card">
-        <b-card-title>Total de Órdenes</b-card-title>
+        <b-card-title>Total de Órdenes en Progreso</b-card-title>
         <h3>{{ ordersInProgress.length }}</h3>
         </b-card>
     </b-col>
@@ -36,16 +36,16 @@
             <b-list-group-item v-if="ordersInProgress.length === 0">No hay órdenes en progreso.</b-list-group-item>
             <b-list-group-item v-if="ordersInProgress.length !== 0">
                 <div class="d-flex justify-content-between">
-                <span style="width: 30%"><strong>Orden</strong></span>
-                <span style="width: 40%"><strong>Estado</strong></span>
-                <span style="width: 30%"><strong>Total</strong></span>
+                <span style="width: 30%"><strong>Orden</strong></span> 
+                <span style="width: 40%; text-align: center;"><strong>Estado</strong></span>
+                <span style="width: 30%; text-align: right;"><strong>Total</strong></span>
                 </div>
             </b-list-group-item>
             <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID">
                 <div class="d-flex justify-content-between" style="width: 100%;">
                 <span style="width: 30%">#{{ order.orderID }}</span>
-                <span style="width: 40%">{{ order.status }}</span>
-                <span style="width: 30%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
+                <span style="width: 40%; text-align: center;">{{ order.status }}</span>
+                <span style="width: 30%; text-align: right;">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
                 </div>
             </b-list-group-item>
             </b-list-group>
