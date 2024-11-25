@@ -49,9 +49,9 @@
                         <td>{{ order.orderID }}</td>
                         <td>{{ order.businessName || "General" }}</td>
                         <td>{{ order.amount }}</td>
-                        <td>{{ order.createdDate }}</td>
-                        <td>{{ order.deliveryDate }}</td>
-                        <td>{{ order.receivedDate }}</td>
+                        <td>{{ formatDate(order.createdDate) }}</td>
+                        <td>{{ formatDate(order.deliveryDate) }}</td>
+                        <td>{{ formatDate(order.receivedDate) }}</td>
                         <td class="text-end">₡ {{ formatPrice(order.subtotalCost) }}</td>
                         <td class="text-end">₡ {{ formatPrice(order.deliveryCost) }}</td>
                         <td class="text-end">₡ {{ formatPrice(order.totalCost) }}</td>
@@ -92,6 +92,13 @@
                 if (this.startDate) {
                     this.endDate = '';
                 }
+            },
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${day}/${month}/${year}`;
             },
             formatPrice(price) {
                 return new Intl.NumberFormat("en-US").format(price);
