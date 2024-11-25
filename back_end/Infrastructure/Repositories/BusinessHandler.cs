@@ -214,7 +214,7 @@ namespace back_end.Infrastructure.Repositories
         public List<OrderModel> GetOrdersInProgressByBusinessID(int businessID)
         {
             string query = @"
-                SELECT 
+                SELECT TOP 10
                     o.OrderID,
                     o.Status,
                     o.CreatedDate,
