@@ -190,6 +190,10 @@ export default {
         goToBusinessPanel(businessID) {
             this.$router.push({ name: 'HomePageEmprendimiento', params: { businessID } });
         },
+        showConfirmDeleteBusinessModal(business) {
+            this.businessToDelete = business;
+            this.showDeleteModal = true;
+        },
         async deleteBusiness() {
             try {
                 await axios.delete(`${BackendUrl}/Business/${this.businessToDelete.businessID}`);
