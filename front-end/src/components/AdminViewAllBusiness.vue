@@ -5,6 +5,7 @@
         <table class="table-custom table-striped">
             <thead class="table-header">
                 <tr>
+                    <th class="center-checkbox">Seleccionar todos <input type="checkbox"></th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Cédula Asociada</th>
                     <th scope="col">Información de Contacto</th>
@@ -15,6 +16,7 @@
             </thead>
             <tbody>
                 <tr v-for="business in businesses" :key="business.businessID">
+                    <td class="table-cell center-checkbox"><input type="checkbox"></td>
                     <td class="table-cell">{{ business.name }}</td>
                     <td class="table-cell">{{ business.idNumber }}</td>
                     <td class="table-cell-button">
@@ -30,6 +32,11 @@
                 </tr>
             </tbody>
         </table>
+        <div class="inventory-buttons fixed-bottom">
+        <button class="btn btn-op2">
+            Eliminar emprendimientos seleccionados
+        </button>
+    </div>
     </div>
 </template>
 
@@ -114,4 +121,24 @@
     }
 </script>
 
-<style></style>
+<style>
+.center-checkbox {
+    text-align: center;
+}
+.center-checkbox input {
+    margin: 0 auto;
+}
+.inventory-buttons {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+.table-responsive-sm {
+    margin-bottom: 100px;
+}
+</style>
