@@ -81,7 +81,14 @@ namespace back_end.APIS
         [HttpPost]
         public async Task<ActionResult<bool>> CreateOrder(CreateOrderModel orderData)
         {
-            return orderCommand.CreateOrder(orderData);
+            try
+            {
+                return orderCommand.CreateOrder(orderData);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando orden, operación abortada.");
+            }
         }
 
         [HttpGet("Orders/Excluding/Completed/{userID}")]
