@@ -7,12 +7,13 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-
                     <b-nav-item-dropdown text="Mi perfil" right>
                         <b-dropdown-item @click="openPersonalDetailsModal">Mis datos</b-dropdown-item>
                         <b-dropdown-item href="/VerCarrito">Carrito</b-dropdown-item>
                         <b-dropdown-item href="/MisOrdenes">Ordenes</b-dropdown-item>
                         <b-dropdown-item href="/direcciones">Direcciones de entrega</b-dropdown-item>
+                        <b-dropdown-divider></b-dropdown-divider>
+                        <b-dropdown-item href="/ClientReports/CompletedOrders">Ordenes Completadas</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <b-nav-item-dropdown text="Mis empresas">

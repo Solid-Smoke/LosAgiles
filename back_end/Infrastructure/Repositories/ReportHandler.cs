@@ -76,5 +76,50 @@ namespace back_end.Infrastructure.Repositories
             }
             return queryResultTable;
         }
+        public DataTable FetchEarningsReport(int year, int? businessId = null)
+        {
+            DataTable queryResultTable = new DataTable();
+            try
+            {
+                string query = @"SELECT 
+                                    [BusinessName], 
+                                    [Month], 
+                                    [TotalPurchase], 
+                                    [DeliveryCost], 
+                                    [TotalCost]
+                                 FROM 
+                                    [dbo].[GetBusinessEarningsReportByMonthAndYear](@Year, @BusinessID)";
+
+                using (var sqlCommand = new SqlCommand(query, sqlConnection))
+                {
+                    sqlCommand.Parameters.AddWithValue("@Year", year);
+
+                    if (businessId.HasValue)
+                    {
+                        sqlCommand.Parameters.AddWithValue("@BusinessID", businessId.Value);
+                    }
+                    else
+                    {
+                        sqlCommand.Parameters.AddWithValue("@BusinessID", DBNull.Value);
+                    }
+
+                    sqlConnection.Open();
+
+                    using (var sqlAdapter = new SqlDataAdapter(sqlCommand))
+                    {
+                        sqlAdapter.Fill(queryResultTable);
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new InvalidOperationException("An error occurred while fetching the completed orders report.", sqlEx);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return queryResultTable;
+        }
     }
 }

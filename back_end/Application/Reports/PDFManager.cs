@@ -58,18 +58,23 @@ public class PDFManager : IDisposable
         _currentTable.AddCell(cell);
     }
 
-    public void AddTableBodyCell(string cellText)
+    public void AddTableBodyCell(string cellText, bool? isBold = false)
     {
         if (_currentTable == null)
         {
-            throw new InvalidOperationException("Table isnt created or added to this document.(AddTableBodyCell)");
+            throw new InvalidOperationException("Table isn't created or added to this document. (AddTableBodyCell)");
         }
 
-        var cell = new PdfPCell(new Phrase(cellText, ParagraphFont))
+        var fontToUse = isBold.HasValue && isBold.Value
+            ? FontFactory.GetFont(ParagraphFont.Familyname, ParagraphFont.Size, Font.BOLD)
+            : ParagraphFont;
+
+        var cell = new PdfPCell(new Phrase(cellText, fontToUse))
         {
             HorizontalAlignment = Element.ALIGN_CENTER,
             Padding = 5
         };
+
         _currentTable.AddCell(cell);
     }
 

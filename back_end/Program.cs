@@ -76,6 +76,8 @@ builder.Services.AddScoped<GenerateAllPendingOrdersReport>();
 builder.Services.AddScoped<GenerateAllPendingOrderReportPDF>();
 builder.Services.AddScoped<GenerateAllCompletedOrdersReport>();
 builder.Services.AddScoped<GenerateAllCompletedOrderReportPDF>();
+builder.Services.AddScoped<GenerateAdminEarningsReport>();
+builder.Services.AddScoped<GenerateEarningsReportPDF>();
 builder.Services.AddScoped<IReportHandler, ReportHandler>();
 builder.Services.AddScoped<OrderReportTemplate<ReportCompletedOrderData>, CompletedOrderReport>();
 builder.Services.AddScoped<AllCancelledOrderReport>();
@@ -90,6 +92,7 @@ builder.Services.AddScoped<IAdminHandler, AdminHandler>();
 builder.Services.AddScoped<GetMonthlyRevenueQuery>();
 builder.Services.AddScoped<GetMonthlyShippingExpensesQuery>();
 builder.Services.AddScoped<GetOrdersInProgressQuery>();
+builder.Services.AddScoped<EarningsReportTemplate<ReportEarningsFilters>, AdminEarningsReport>();
 
 var app = builder.Build();
 

@@ -55,7 +55,70 @@ namespace back_end.APIS
                     StartDate = start,
                     EndDate = end
                 };
-                return File(generateCompletedOrderReportPDF.Execute(baseFilters), "application/pdf", "CompletedOrdersReport(" + DateTime.Now.ToLongDateString() + ").pdf");
+                var pdfBytes = generateCompletedOrderReportPDF.Execute(baseFilters);
+                if (pdfBytes.Length == 0)
+                {
+                    return NotFound("No data available for the requested report.");
+                }
+
+                return File(pdfBytes, "application/pdf", "CompletedOrdersReport(" + DateTime.Now.ToLongDateString() + ").pdf");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("Earnings")]
+        public ActionResult GenerateEarningsReport(
+            int year, int? businessId,
+            [FromServices] GenerateAdminEarningsReport generateEarningsReport)
+        {
+            try
+            {
+                if (year < 0)
+                {
+                    return BadRequest("Year must be a non-negative value.");
+                }
+
+                var filters = new ReportEarningsFilters
+                {
+                    Year = year,
+                    BusinessID = businessId
+                };
+
+                return Ok(generateEarningsReport.Execute(filters));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("Earnings/pdf")]
+        public ActionResult GenerateEarningsReportPDF(
+            int year, int? businessId,
+           [FromServices] GenerateEarningsReportPDF generateEarningsReportPDF)
+        {
+            try
+            {
+                if (year < 0)
+                {
+                    return BadRequest("Year must be a non-negative value.");
+                }
+
+                var filters = new ReportEarningsFilters
+                {
+                    Year = year,
+                    BusinessID = businessId
+                };
+
+                var pdfBytes = generateEarningsReportPDF.Execute(filters);
+
+                if (pdfBytes.Length == 0)
+                {
+                    return NotFound("No data available for the requested report.");
+                }
+
+                return File(pdfBytes, "application/pdf", $"EarningsReport({year}).pdf");
             }
             catch (Exception ex)
             {
