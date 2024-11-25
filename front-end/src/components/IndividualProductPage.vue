@@ -8,7 +8,7 @@
       <b-col lg="8" md="10" sm="12" class="text-center">
         <img :src="getProductImage(product.productImageBase64)" alt="Product Image" class="img-fluid product-image mb-3" />
         <h2 class="product-name">{{ product.name }}</h2>
-        <p class="product-price"><strong>Precio:</strong> &#x20a1;{{ product.price ? product.price.toFixed(2) : 'No disponible' }}</p>
+        <p class="product-price"><strong>Precio:</strong> &#x20a1;{{ formatPrice(product.price) }}</p>
       </b-col>
     </b-row>
 
@@ -121,7 +121,13 @@
     },
     redirectToRegister() {
         this.$router.push('/registro');
-    }
+    },
+    formatPrice(price) {
+      if (price !== null && price !== undefined) {
+        return new Intl.NumberFormat('en-US').format(price);
+      }
+      return price;
+    },
   },
   mounted() {
     const productId = this.$route.params.id;
