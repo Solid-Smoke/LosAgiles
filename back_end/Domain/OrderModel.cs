@@ -7,7 +7,7 @@
         public int? ClientID { get; set; }
         public int? DeliveryAddress { get; set; }
         public string? Buyer { get; set; }
-        public int? TotalAmount { get; set; }
+        public decimal? TotalAmount { get; set; }
         public string? Address { get; set; }
     }
 }
