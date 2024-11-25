@@ -15,7 +15,7 @@ public class AdminHandler : IAdminHandler
     public List<MonthlyDataModel> GetMonthlyRevenue()
     {
         var result = new List<MonthlyDataModel>();
-        var query = "SELECT MONTH(CreatedDate) AS Month, SUM(TotalCost) AS Total FROM Orders GROUP BY MONTH(CreatedDate) ORDER BY MONTH(CreatedDate)";
+        var query = "SELECT MONTH(CreatedDate) AS Month, SUM(TotalCost) AS Total FROM Orders WHERE STATUS = 'Completada' GROUP BY MONTH(CreatedDate) ORDER BY MONTH(CreatedDate) ";
 
         using (var command = new SqlCommand(query, _sqlConnection))
         {
@@ -40,7 +40,7 @@ public class AdminHandler : IAdminHandler
     public List<MonthlyDataModel> GetMonthlyShippingExpense()
     {
         var result = new List<MonthlyDataModel>();
-        var query = "SELECT MONTH(DeliveryDate) AS Month, SUM(DeliveryCost) AS Total FROM Orders GROUP BY MONTH(DeliveryDate) ORDER BY MONTH(DeliveryDate)";
+        var query = "SELECT MONTH(DeliveryDate) AS Month, SUM(DeliveryCost) AS Total FROM Orders WHERE STATUS = 'Completada' GROUP BY MONTH(DeliveryDate) ORDER BY MONTH(DeliveryDate)";
 
         using (var command = new SqlCommand(query, _sqlConnection))
         {
@@ -78,7 +78,7 @@ public class AdminHandler : IAdminHandler
                     {
                         OrderID = Convert.ToInt32(reader["OrderID"]),
                         Status = reader["Status"].ToString(),
-                        TotalAmount = Convert.ToInt32(reader["TotalCost"])
+                        TotalAmount = Convert.ToDecimal(reader["TotalCost"])
                     });
                 }
             }
