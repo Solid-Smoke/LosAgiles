@@ -24,15 +24,15 @@
                 <b-list-group-item v-if="ordersInProgress.length !== 0">
                   <div class="d-flex justify-content-between">
                     <span style="width: 30%"><strong>Orden</strong></span>
-                    <span style="width: 40%"><strong>Estado</strong></span>
-                    <span style="width: 30%"><strong>Total</strong></span>
+                    <span style="width: 40%; text-align: center"><strong>Estado</strong></span>
+                    <span style="width: 30%; text-align: right"><strong>Total</strong></span>
                   </div>
                 </b-list-group-item>
                 <b-list-group-item v-for="order in ordersInProgress" :key="order.orderID">
                   <div class="d-flex justify-content-between" style="width: 100%;">
                     <span style="width: 30%">#{{ order.orderID }}</span>
-                    <span style="width: 40%">{{ order.status }}</span>
-                    <span style="width: 30%">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
+                    <span style="width: 40%; text-align: center">{{ order.status }}</span>
+                    <span style="width: 30%; text-align: right">&#x20a1;{{ formatPrice(order.totalAmount) }}</span>
                   </div>
                 </b-list-group-item>
               </b-list-group>
@@ -42,11 +42,18 @@
               <b-card-title>Últimos 10 Productos Comprados</b-card-title>
               <b-list-group>
                 <b-list-group-item v-if="lastTenPurchased.length === 0">No hay productos comprados recientemente.</b-list-group-item>
+                <b-list-group-item v-if="lastTenPurchased.length !== 0">
+                  <div class="d-flex justify-content-between">
+                    <span style="width: 30%"><strong>Producto</strong></span>
+                    <span style="width: 40%; text-align: center"><strong>Cantidad</strong></span>
+                    <span style="width: 30%; text-align: right"><strong>Precio Unitario</strong></span>
+                  </div>
+                </b-list-group-item>
                 <b-list-group-item v-for="item in lastTenPurchased" :key="item.productID">
                   <div class="d-flex justify-content-between" style="width: 100%;">
-                    <span style="width: 35%"><strong>Producto:</strong> {{ item.productName }}</span>
-                    <span style="width: 30%"><strong>Cantidad:</strong> {{ item.amount }}</span>
-                    <span style="width: 35%"><strong>Precio:</strong> &#x20a1;{{ formatPrice(item.price) }}</span>
+                    <span style="width: 30%;"> {{ item.productName }}</span>
+                    <span style="width: 40%; text-align: center"> {{ item.amount }}</span>
+                    <span style="width: 30%; text-align: right">&#x20a1;{{ formatPrice(item.price) }}</span>
                   </div>
                 </b-list-group-item>
               </b-list-group>
