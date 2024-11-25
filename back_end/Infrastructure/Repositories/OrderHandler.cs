@@ -270,12 +270,12 @@ namespace back_end.Infrastructure.Repositories {
         {
             List<OrderModel> orders = new List<OrderModel>();
             string query = @"
-                SELECT 
+                SELECT TOP 10
                     OrderID, 
                     Status, 
                     TotalCost
                 FROM Orders
-                WHERE Status != 'Completada' AND ClientID = @UserID";
+                WHERE Status != 'Completada' AND Status != 'Rechazada' AND ClientID = @UserID ORDER BY CreatedDate ASC";
 
             try
             {
