@@ -26,13 +26,15 @@
 
         <p class="business-name"><strong>Emprendimiento:</strong> {{ product.businessName }}</p>
 
-        <b-form-group label="Cantidad a ordenar:">
+        <b-form-group v-if="this.product.stock > 0" label="Cantidad a ordenar:">
           <b-form-select v-model="quantity" :options="quantityOptions" />
         </b-form-group>
-
+        <div v-if="this.product.stock == 0">
+            <p style="text-align: center;"> <strong>No hay stock disponible</strong> </p>
+        </div>
         <div class="text-center mt-2">
           <template v-if="isClient">
-              <b-button variant="primary" class="add-to-cart-btn" @click="confirmAddToCart">Añadir al Carrito</b-button>
+              <b-button v-if="this.product.stock > 0" variant="primary" class="add-to-cart-btn" @click="confirmAddToCart">Añadir al Carrito</b-button>
           </template>
           <template v-else>
               <b-button variant="primary" class="add-to-cart-btn" @click="redirectToRegister">Registrarse en el sitio</b-button>
@@ -100,7 +102,6 @@
     addToShoppingCart() {
       const user = JSON.parse(localStorage.getItem('user'));
       const id = Number(user[0].userID);
-
       axios
         .post(`${BackendUrl}/ShoppingCart/${id}`, {
             productId: this.product.productID,

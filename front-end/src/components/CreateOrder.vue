@@ -44,7 +44,7 @@
                 <div style="margin: 10px">
                     <input v-model="selectedDeliveryDate" type="date" :min="todayDate" name="date-selector" id="order-date-selector">
                 </div>
-                <strong>Subtotal: ₡{{ formatPrice(totalPrice) }}</strong>
+                <strong style="text-align: left;">Subtotal: ₡{{ formatPrice(totalPrice) }}</strong>
                 <br>
                 <strong>Costo de envío: ₡{{ formatPrice(deliveryCost) }}</strong>
                 <br>
