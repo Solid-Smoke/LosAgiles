@@ -275,7 +275,7 @@ namespace back_end.Infrastructure.Repositories {
                     Status, 
                     TotalCost
                 FROM Orders
-                WHERE Status != 'Completada' AND Status != 'Rechazada' AND ClientID = @UserID";
+                WHERE Status != 'Completada' AND Status != 'Rechazada' AND ClientID = @UserID ORDER BY CreatedDate ASC";
 
             try
             {
