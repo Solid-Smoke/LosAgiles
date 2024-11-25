@@ -23,8 +23,8 @@
                                 <td>{{ product.businessName }}</td>
                                 <td>{{ product.amount }}</td>
                                 <td>{{ product.weight }} Kg</td>
-                                <td>₡ {{ product.price }}</td>
-                                <td>₡ {{ product.totalSales }}</td>
+                                <td>₡ {{ formatPrice(product.price) }}</td>
+                                <td>₡ {{ formatPrice(product.totalSales) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -44,16 +44,16 @@
                 <div style="margin: 10px">
                     <input v-model="selectedDeliveryDate" type="date" :min="todayDate" name="date-selector" id="order-date-selector">
                 </div>
-                <strong>Subtotal: ₡{{ totalPrice }}</strong>
+                <strong>Subtotal: ₡{{ formatPrice(totalPrice) }}</strong>
                 <br>
-                <strong>Costo de envío: ₡{{deliveryCost}}</strong>
+                <strong>Costo de envío: ₡{{ formatPrice(deliveryCost) }}</strong>
                 <br>
-                <strong>IVA: ₡{{IVATaxAmmount}}</strong>
+                <strong>IVA: ₡{{ formatPrice(IVATaxAmmount) }}</strong>
                 <br>
-                <strong>Total: ₡{{ totalOrderAmmount }}</strong>
+                <strong>Total: ₡{{ formatPrice(totalOrderAmmount) }}</strong>
                 <br>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
-                    <button @click="validateOrderFields" type="submit" class="btn btn-success btn-block">
+                    <button style="margin-right: 10px;" @click="validateOrderFields" type="submit" class="btn btn-success btn-block">
                         Comprar
                     </button>
                     <button @click="returnToShoppingCart" type="submit" class="btn btn-op2">
@@ -183,7 +183,10 @@
                 .catch((error) => {
                     console.log("El carrito no pudo vaciarse", error);
                 });
-            }
+            },
+            formatPrice(price) {
+                return new Intl.NumberFormat("en-US").format(price);
+            },
         },
         computed: {
             totalOrderAmmount() {
