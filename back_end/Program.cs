@@ -92,8 +92,6 @@ builder.Services.AddScoped<IAdminHandler, AdminHandler>();
 builder.Services.AddScoped<GetMonthlyRevenueQuery>();
 builder.Services.AddScoped<GetMonthlyShippingExpensesQuery>();
 builder.Services.AddScoped<GetOrdersInProgressQuery>();
-builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllCancelledOrderReport>();
-builder.Services.AddScoped<OrderReportTemplate<AdminReportOrderData>, AllPendingOrderReport>();
 builder.Services.AddScoped<EarningsReportTemplate<ReportEarningsFilters>, AdminEarningsReport>();
 
 var app = builder.Build();
