@@ -42,9 +42,9 @@
                             <td>{{ order.amount }}</td>
                             <td>{{ formatDate(order.createdDate) }}</td>
                             <td>{{ order.deliveryDate ? formatDate(order.deliveryDate) : '-' }}</td>
-                            <td class="text-end pe-5">₡ {{ order.subtotalCost }}</td>
-                            <td class="text-end pe-5">₡ {{ order.deliveryCost }}</td>
-                            <td class="text-end pe-5">₡ {{ order.totalCost }}</td>
+                            <td class="text-end pe-5">₡ {{ formatPrice(order.subtotalCost) }}</td>
+                            <td class="text-end pe-5">₡ {{ formatPrice(order.deliveryCost) }}</td>
+                            <td class="text-end pe-5">₡ {{ formatPrice(order.totalCost) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -155,6 +155,9 @@
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 return `${day}/${month}/${year}`;
+            },
+            formatPrice(price) {
+                return new Intl.NumberFormat("en-US").format(price);
             },
         },
         props: {
