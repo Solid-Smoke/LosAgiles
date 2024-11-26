@@ -15,10 +15,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:8080");
-            policy.WithOrigins("https://agile-buy.netlify.app/");
-            policy.AllowAnyMethod();
-            policy.AllowAnyHeader();
+            policy.WithOrigins("https://agile-buy.netlify.app", "http://localhost:8080")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
 });
 
@@ -107,9 +107,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseAuthorization();
 
 app.MapControllers();
 
