@@ -1,35 +1,28 @@
 USE LosAgilesDB
 GO
 
-CREATE FUNCTION [dbo].[GetBusinessEarningsReportByMonthAndYear]
-(
-    @Year INT,
-    @BusinessID INT = NULL
-)
+CREATE FUNCTION [GetBusinessEarningsReportByMonthAndYear] (@Year INT, @BusinessID INT = NULL)
 RETURNS TABLE
 AS
 RETURN
 (
-    SELECT 
-        [b].[Name] AS [BusinessName],
-        FORMAT([o].[StatusChangeDate], 'MM') AS [Month],
-        SUM([op].[Amount] * [op].[PriceAtTimeOfPurchase]) AS [TotalPurchase], 
-        SUM([o].[DeliveryCost]) AS [DeliveryCost],
-        SUM([o].[TotalCost]) AS [TotalCost] 
-    FROM 
-        [dbo].[BusinessOrders] [bo]
-    INNER JOIN 
-        [dbo].[Orders] [o] ON [bo].[OrderID] = [o].[OrderID]
-    INNER JOIN 
-        [dbo].[Businesses] [b] ON [bo].[BusinessID] = [b].[BusinessID]
-    INNER JOIN
-        [dbo].[OrderProducts] [op] ON [o].[OrderID] = [op].[OrderID]
-    WHERE 
-        [o].[Status] = 'Completada' 
-        AND YEAR([o].[StatusChangeDate]) = @Year 
-        AND (@BusinessID IS NULL OR [b].[BusinessID] = @BusinessID) 
+    SELECT
+        
+b.Name
+ AS [BusinessName],
+        MONTH(o.CreatedDate) AS [Month],
+        SUM(op.Amount * p.Price) AS [TotalPurchase],
+        SUM(o.DeliveryCost) AS [DeliveryCost],
+		SUM((op.Amount * p.Price)+o.DeliveryCost) AS [TotalCost]
+    FROM [dbo].[Orders] o
+    JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
+    JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
+    JOIN [dbo].[Businesses] b ON p.BusinessID = b.BusinessID
+    WHERE YEAR(o.CreatedDate) = @Year
+    AND (@BusinessID IS NULL OR p.BusinessID = @BusinessID)
+    AND Status = 'Completada'
     GROUP BY 
-        [b].[Name],
-        FORMAT([o].[StatusChangeDate], 'MM') 
+b.Name
+, MONTH(o.CreatedDate)
 );
 GO
