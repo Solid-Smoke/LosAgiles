@@ -65,7 +65,7 @@ const router = createRouter({
     ],
 });
 
-export const BackendAPIAddress = "https://localhost:7168/api/Shop";
+export const BackendAPIAddress = `${BackendUrl}/Shop`;
 const app = createApp(App);
 
 app.use(BootstrapVue3);

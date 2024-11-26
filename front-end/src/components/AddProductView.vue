@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import { BackendUrl } from '../main.js';
 import axios from 'axios';
 
 export default {
@@ -172,7 +173,7 @@ export default {
             }
             formData.append("businessID", this.formData.businessId);
             formData.append("productImage", this.formData.productImage);
-            axios.post('https://localhost:7168/api/Products', formData, {
+            axios.post(`${BackendUrl}/Products`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

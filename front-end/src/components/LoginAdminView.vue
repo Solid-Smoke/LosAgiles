@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import { BackendUrl } from '../main.js';
     import axios from 'axios';
 
     export default {
@@ -52,7 +53,7 @@
         methods: {
             verifyUser() {
                 console.log("Datos a utilizar:", this.formData);
-                axios.get("https://localhost:7168/api/SuperUserLogin", {
+                axios.get(`${BackendUrl}/SuperUserLogin`, {
                     params: {
                         UserName: this.formData.userName,
                         UserPassword: this.formData.userPassword
@@ -65,7 +66,7 @@
                         window.location.href = "/";
                     } else {
                         console.log("Sin datos");
-                        this.errorMessage = 'Usuario o contraseña incorrectas!';
+                        this.errorMessage = 'Usuario o contraseï¿½a incorrectas!';
                     }
                 }).catch(function (error) {
                     console.log(error);

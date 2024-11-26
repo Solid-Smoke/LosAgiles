@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { BackendUrl } from '../main.js';
 import axios from "axios";
 
     export default {
@@ -108,7 +109,7 @@ import axios from "axios";
             saveUserDetails() {
                 console.log("Datos a guardar:", this.formData);
                 axios
-                    .post("https://localhost:7168/api/Clients", {
+                    .post(`${BackendUrl}/Clients`, {
                         UserID: 0, // Ignored in back-end
                         UserName: this.formData.UserName,
                         Email: this.formData.Email,
