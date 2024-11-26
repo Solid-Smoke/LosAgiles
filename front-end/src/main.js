@@ -32,7 +32,7 @@ import ClientCompletedOrdersReport from './components/ClientCompletedOrdersRepor
 
 import MyOrders from './components/MyOrders.vue';
 
-export const BackendUrl = "https://losagiles.azurewebsites.net/api";
+export const BackendUrl = "https://localhost:7168/api";
 export const LosAgilesMapsApiKey = "AIzaSyAJrdPkYVkZfamzm2DvyuvHyaJDAd0rOP4";
 
 const router = createRouter({
