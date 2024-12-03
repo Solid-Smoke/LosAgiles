@@ -2,6 +2,7 @@
 using back_end.Domain;
 using back_end.Application.Commands;
 using back_end.Application.Queries;
+using back_end.Application.Interfaces;
 
 namespace back_end.APIS
 {
@@ -14,55 +15,95 @@ namespace back_end.APIS
         public OrderController(ISubmitOrder orderCommand)
         {
             this.orderCommand = orderCommand;
-        }   
+        }
 
-        [HttpGet("GetPendingOrders")]
+        [HttpGet("PendingOrders")]
         public ActionResult<List<OrderModel>> GetPendingOrders(
-        [FromServices] GetPendingOrders GetPendingOrders) {
+        [FromServices] GetPendingOrders GetPendingOrders)
+        {
             var pendingOrders = GetPendingOrders.Execute();
             return Ok(pendingOrders);
         }
 
-        [HttpGet("GetOrdersByClientID/{id}")]
+        [HttpGet("ApprovedOrders")]
+        public ActionResult<List<OrderModel>> GetApprovedOrders(
+        [FromServices] GetApprovedOrders GetApprovedOrders) {
+            var approvedOrders = GetApprovedOrders.Execute();
+            return Ok(approvedOrders);
+        }
+
+        [HttpGet("OrdersByClientID/{id}")]
         public ActionResult<List<OrderModel>> GetOrdersByClientID(string id,
-        [FromServices] GetOrdersByClientID GetOrdersByClientID) {
+        [FromServices] GetOrdersByClientID GetOrdersByClientID)
+        {
             var ClientOrders = GetOrdersByClientID.Execute(id);
             return Ok(ClientOrders);
         }
 
-        [HttpGet("GetProductsByOrderID/{id}")]
+        [HttpGet("ProductsByOrderID/{id}")]
         public ActionResult<List<OrderProductsModel>> GetProductsByOrderID(string id,
-        [FromServices] GetProductsByOrderID GetProductsByOrderID) {
+        [FromServices] GetProductsByOrderID GetProductsByOrderID)
+        {
             var productsInOrder = GetProductsByOrderID.Execute(id);
             return Ok(productsInOrder);
         }
 
-        [HttpPut("ApproveOrder/{id}")]
+        [HttpPut("{id}/Approval")]
         public IActionResult ApproveOrder(string id,
-        [FromServices] ApproveOrder ApproveOrder) {
+        [FromServices] ApproveOrder ApproveOrder)
+        {
             var wasApproved = ApproveOrder.Execute(id);
-            if (wasApproved) {
+            if (wasApproved)
+            {
                 return NoContent();
-            } else {
+            }
+            else
+            {
                 return NotFound();
             }
         }
 
-        [HttpPut("RejectOrder/{id}")]
+        [HttpPut("{id}/Rejection")]
         public IActionResult RejectOrder(string id,
-        [FromServices] RejectOrder RejectOrder) {
+        [FromServices] RejectOrder RejectOrder)
+        {
             var wasRejected = RejectOrder.Execute(id);
-            if (wasRejected) {
+            if (wasRejected)
+            {
                 return NoContent();
-            } else {
+            }
+            else
+            {
                 return NotFound();
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> createOrder(CreateOrderModel orderData)
+        public async Task<ActionResult<bool>> CreateOrder(CreateOrderModel orderData)
         {
-            return orderCommand.createOrder(orderData);
+            try
+            {
+                return orderCommand.CreateOrder(orderData);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando orden, operación abortada.");
+            }
         }
+
+        [HttpGet("Orders/Excluding/Completed/{userID}")]
+        public ActionResult<List<OrderModel>> GetOrdersExcludingCompleted(int userID, [FromServices] IOrderHandler orderHandler)
+        {
+            var orders = orderHandler.GetOrdersExcludingCompleted(userID);
+            return Ok(orders);
+        }
+
+        [HttpGet("Last/Ten/Purchased/{userID}")]
+        public ActionResult<List<OrderProductsModel>> GetLastTenPurchased(int userID, [FromServices] GetLastTenPurchased getLastTenPurchased)
+        {
+            var products = getLastTenPurchased.Execute(userID);
+            return Ok(products);
+        }
+
     }
 }

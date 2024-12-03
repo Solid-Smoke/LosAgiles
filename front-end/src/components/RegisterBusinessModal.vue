@@ -130,7 +130,7 @@
             },
             saveBusinessData() {
                 axios
-                    .post(`${BackendUrl}/NewBusiness`, {
+                    .post(`${BackendUrl}/Business`, {
                         userid: this.getUserId(),
                         businessid: 0,
                         name: this.businessData.businessName,

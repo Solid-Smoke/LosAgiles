@@ -5,10 +5,10 @@ namespace back_end.Application.Queries
 {
     public interface IProductQuery
     {
-        int countProductsBySearch(string? searchText);
+        int CountProductsBySearch(string? searchText);
         List<ProductModel> getAllProducts();
         ProductModel GetProductById(int id);
-        List<ProductsSearchModel> searchProducts(int startIndex, int maxResults, string? searchText);
+        List<ProductsSearchModel> SearchProducts(int startIndex, int maxResults, string? searchText);
         public List<InventoryItem> GetProductsByBusinessID(string businessID);
     }
 
@@ -36,12 +36,14 @@ namespace back_end.Application.Queries
             return products;
         }
 
-        public List<ProductsSearchModel> searchProducts(
+        public List<ProductsSearchModel> SearchProducts(
             int startIndex, int maxResults, string? searchText)
         {
+            if (startIndex < 0)
+                throw new ArgumentException("startIndex must be greater than or equal to 0");
             if (searchText == null)
                 searchText = "";
-            var products = productHandler.searchProducts(searchText, startIndex,
+            var products = productHandler.SearchProducts(searchText, startIndex,
                 maxResults);
             foreach (var product in products)
                 if (product.ProductImage != null)
@@ -50,11 +52,11 @@ namespace back_end.Application.Queries
             return products;
         }
 
-        public int countProductsBySearch(string? searchText)
+        public int CountProductsBySearch(string? searchText)
         {
             if (searchText == null)
                 searchText = "";
-            return productHandler.countProductsBySearch(searchText);
+            return productHandler.CountProductsBySearch(searchText);
         }
         public ProductModel GetProductById(int id)
         {
@@ -70,7 +72,7 @@ namespace back_end.Application.Queries
 
         public List<InventoryItem> GetProductsByBusinessID(string businessID)
         {
-            return productHandler.getProductsByBusinessID(businessID);
+            return productHandler.GetProductsByBusinessID(businessID);
         }
     }
 }

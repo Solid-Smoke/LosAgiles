@@ -30,7 +30,7 @@ namespace back_end.Infrastructure.Repositories
         public List<BusinessModel> getAllBusiness()
         {
             List<BusinessModel> businessData = new List<BusinessModel>();
-            string query = "SELECT * FROM [dbo].[Businesses]";
+            string query = "SELECT * FROM [dbo].[Businesses] WHERE IsDeleted = 0";
             SqlCommand command = new SqlCommand(query, _connection);
             DataTable tableQueryResult = createTableResult(command);
             foreach (DataRow column in tableQueryResult.Rows)
@@ -55,7 +55,7 @@ namespace back_end.Infrastructure.Repositories
                 SELECT * 
                 FROM [dbo].[Employees] 
                 JOIN [dbo].[Businesses] ON [Employees].[BusinessID] = [Businesses].[BusinessID] 
-                WHERE [Employees].[UserID] = @EmployeeID";
+                WHERE [Employees].[UserID] = @EmployeeID AND IsDeleted = 0";
             SqlCommand command = new SqlCommand(query, _connection);
             command.Parameters.AddWithValue("@EmployeeID", employeeID);
             DataTable tableQueryResult = createTableResult(command);
@@ -154,6 +154,107 @@ namespace back_end.Infrastructure.Repositories
             {
                 _connection.Close();
             }
+        }
+        public BusinessModel getBusinessByID(int businessID)
+        {
+            string query = "SELECT * FROM [dbo].[Businesses] WHERE BusinessID = @BusinessID";
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@BusinessID", businessID);
+
+            DataTable tableQueryResult = createTableResult(command);
+
+            if (tableQueryResult.Rows.Count == 0)
+            {
+                return null;
+            }
+
+            var column = tableQueryResult.Rows[0];
+            return new BusinessModel
+            {
+                BusinessID = Convert.ToInt32(column["BusinessID"]),
+                Name = Convert.ToString(column["Name"]),
+                IDNumber = Convert.ToString(column["IDNumber"]),
+                Email = Convert.ToString(column["Email"]),
+                Telephone = Convert.ToString(column["Telephone"]),
+                Permissions = Convert.ToString(column["Permissions"]),
+            };
+        }
+
+        public List<MonthlyRevenueModel> GetMonthlyRevenueByBusinessID(int businessID)
+        {
+            string query = @"
+                SELECT 
+                    MONTH(o.CreatedDate) AS Month, 
+                    SUM(op.Amount * p.Price) AS Total
+                FROM [dbo].[Orders] o
+                JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
+                JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
+                WHERE p.BusinessID = @BusinessID AND Status = 'Completada'
+                GROUP BY MONTH(o.CreatedDate)
+                ORDER BY MONTH(o.CreatedDate);";
+
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@BusinessID", businessID);
+
+            DataTable tableQueryResult = createTableResult(command);
+
+            List<MonthlyRevenueModel> revenues = new List<MonthlyRevenueModel>();
+            foreach (DataRow row in tableQueryResult.Rows)
+            {
+                revenues.Add(new MonthlyRevenueModel
+                {
+                    Month = Convert.ToInt32(row["Month"]),
+                    Total = Convert.ToDecimal(row["Total"]),
+                });
+            }
+
+            return revenues;
+        }
+
+        public List<OrderModel> GetOrdersInProgressByBusinessID(int businessID)
+        {
+            string query = @"
+                SELECT TOP 10
+                    o.OrderID,
+                    o.Status,
+                    o.CreatedDate,
+                    o.DeliveryDate,
+                    o.ClientID,
+                    o.DeliveryAddress,
+                    SUM(op.Amount * p.Price) AS TotalCost
+                FROM [dbo].[Orders] o
+                JOIN [dbo].[OrderProducts] op ON o.OrderID = op.OrderID
+                JOIN [dbo].[Products] p ON op.ProductID = p.ProductID
+                WHERE p.BusinessID = @BusinessID AND o.Status <> 'Completada' AND o.Status <> 'Rechazada'
+                GROUP BY 
+                    o.OrderID,
+                    o.Status,
+                    o.CreatedDate,
+                    o.DeliveryDate,
+                    o.ClientID,
+                    o.DeliveryAddress";
+
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.AddWithValue("@BusinessID", businessID);
+
+            DataTable tableQueryResult = createTableResult(command);
+
+            List<OrderModel> orders = new List<OrderModel>();
+            foreach (DataRow row in tableQueryResult.Rows)
+            {
+                orders.Add(new OrderModel
+                {
+                    OrderID = Convert.ToInt32(row["OrderID"]),
+                    Status = Convert.ToString(row["Status"]),
+                    CreatedDate = Convert.ToDateTime(row["CreatedDate"]),
+                    DeliveryDate = row["DeliveryDate"] == DBNull.Value ? null : Convert.ToDateTime(row["DeliveryDate"]),
+                    ClientID = row["ClientID"] == DBNull.Value ? null : Convert.ToInt32(row["ClientID"]),
+                    DeliveryAddress = row["DeliveryAddress"] == DBNull.Value ? null : Convert.ToInt32(row["DeliveryAddress"]),
+                    TotalAmount = Convert.ToDecimal(row["TotalCost"])
+                });
+            }
+
+            return orders;
         }
     }
 }

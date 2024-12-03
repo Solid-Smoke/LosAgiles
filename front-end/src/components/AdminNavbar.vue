@@ -10,6 +10,13 @@
                     <b-nav-item href="/AdminViewAllBusiness">Ver todas las empresas registradas</b-nav-item>
                     <b-nav-item href="/UserList">Ver todos los usuarios</b-nav-item>
                     <b-nav-item href="/confirmarOrdenes">Revisar ordenes entrantes</b-nav-item>
+
+                    <b-nav-item-dropdown text="Reportes">
+                        <b-dropdown-item href="/AdminReports/Cancelled">Canceladas</b-dropdown-item>
+                        <b-dropdown-item href="/AdminReports/Pending">Pendientes</b-dropdown-item>
+                        <b-dropdown-item href="/AdminReports/Completed">Completadas</b-dropdown-item>
+                        <b-dropdown-item href="/AdminReports/Earnings">Ganancias Totales</b-dropdown-item>
+                    </b-nav-item-dropdown>
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ms-auto">

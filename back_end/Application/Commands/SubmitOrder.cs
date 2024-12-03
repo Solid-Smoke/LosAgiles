@@ -5,7 +5,7 @@ namespace back_end.Application.Commands
 {
     public interface ISubmitOrder
     {
-        bool createOrder(CreateOrderModel orderData);
+        bool CreateOrder(CreateOrderModel orderData);
     }
 
     public class SubmitOrder : ISubmitOrder
@@ -17,16 +17,19 @@ namespace back_end.Application.Commands
             _ordersHandler = ordersHandler;
         }
 
-        public bool createOrder(CreateOrderModel orderData)
+        public bool CreateOrder(CreateOrderModel orderData)
         {
+            if (orderData.Products == null)
+            {
+                throw new ArgumentException("Products list cannot be null");
+            }   
             try
             {
-                return _ordersHandler.createOrder(orderData);
+                return _ordersHandler.CreateOrder(orderData);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-                throw ex;
+                throw;
             }
         }
     }

@@ -23,6 +23,12 @@ import IndividualProductPage from './components/IndividualProductPage.vue';
 import MetodoPago from './components/MetodoPago.vue';
 import OrderConfirmation from './components/OrderConfirmation.vue';
 import CreateOrder from './components/CreateOrder.vue';
+import HomePageEmprendimiento from './components/HomePageEmprendimiento.vue';
+import RejectsReport from './components/AdminRejectsReport.vue';
+import PendingReport from './components/AdminPendingReport.vue';
+import CompletedReport from './components/AdminCompletedReport.vue';
+import AdminEarningsReport from './components/AdminEarningsReport.vue';
+import ClientCompletedOrdersReport from './components/ClientCompletedOrdersReport.vue';
 
 import MyOrders from './components/MyOrders.vue';
 
@@ -50,10 +56,16 @@ const router = createRouter({
         { path: "/ConfirmarOrdenes", name: "Confirmacion de ordenes", component: OrderConfirmation },
         { path: "/Orden", name: "Orden", component: CreateOrder },
         { path: "/MisOrdenes", name: "Mis ordenes", component: MyOrders },
+        { path: "/business/:businessID", name: "HomePageEmprendimiento", component: HomePageEmprendimiento },
+        { path: "/AdminReports/Cancelled", name: "Ordenes canceladas", component: RejectsReport },
+        { path: "/AdminReports/Pending", name: "Ordenes pendientes", component: PendingReport },
+        { path: "/AdminReports/Completed", name: "Ordenes completadas", component: CompletedReport },
+        { path: "/AdminReports/Earnings", name: "Ganancias Totales", component: AdminEarningsReport },
+        { path: "/ClientReports/CompletedOrders", name: "Ordenes Completadas", component: ClientCompletedOrdersReport },
     ],
 });
 
-export const BackendAPIAddress = "https://localhost:7168/api/Shop";
+export const BackendAPIAddress = `${BackendUrl}/Shop`;
 const app = createApp(App);
 
 app.use(BootstrapVue3);

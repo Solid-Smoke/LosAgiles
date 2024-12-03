@@ -34,6 +34,7 @@
 
 <script>
     import AdminNavbar from './AdminNavbar.vue';
+    import { BackendUrl } from '../main.js';
     import axios from 'axios';
     
     export default {
@@ -50,7 +51,7 @@
 
         methods: {
             getData() {
-                axios.get("https://localhost:7168/api/Clients").then((response) => {
+                axios.get(`${BackendUrl}/Clients`).then((response) => {
                     this.users = response.data;
                 });
             },
